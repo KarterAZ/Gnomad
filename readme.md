@@ -12,4 +12,5 @@ Travel companion is an application to assist travelers.
 
 ### Features
 - Moblie Hotspot Locator
+- Pins to add bathrooms
 - More to come!
