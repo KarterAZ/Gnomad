@@ -1,6 +1,5 @@
 # Travel Companion
 ### What is it?
-I dids it
 Travel companion is an application to assist travelers.
 
 ### Team Developers:
