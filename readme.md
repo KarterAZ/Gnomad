@@ -1,1 +1,14 @@
-JP repo
+# Travel Companion
+### What is it?
+Travel companion is an application to assist travelers.
+
+### Team Developers:
+- Andrew Ramirez
+- Andrew Rice
+- Bryce Schultz
+- Karter Zwetschke
+- Stephen Thomson
+
+### Features
+- Moblie Hotspot Locator
+- More to come!
