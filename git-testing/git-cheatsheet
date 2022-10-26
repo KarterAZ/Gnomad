@@ -18,8 +18,14 @@ git branch -d <local-branch>
 # switch branches
 git checkout <local-branch>
 
+# list local branches
+git branch -l
+
+# list remote branches
+git branch -r
+
 # merge two branches
-git merge 
+git merge <source-branch> <destination-branch>
 
 # attach a local branch to a remote upstream branch
 git branch --set-upstream-to=origin/<remote-branch> <local-branch>
