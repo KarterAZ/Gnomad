@@ -1,0 +1,22 @@
+#------------------------------- Legend ----------------------------------#
+# <some-text> - indicates a required parameter
+# The main branch is called main
+# DO NOT DELETE REMOTE BRANCHES
+#-------------------------------------------------------------------------#
+
+
+#-------------------------- Common Commands ------------------------------#
+# create a local branch:
+git checkout -b <name>
+
+# attach a local branch to a remote upstream branch
+git branch --set-upstream-to=origin/<remote-branch> <local-branch>
+
+# pull updates from remote
+git pull
+
+# push updates back to remote (always pull first)
+git push
+
+# delete a local branch
+git branch -d <local-branch>
