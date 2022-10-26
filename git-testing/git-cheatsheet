@@ -7,7 +7,19 @@
 
 #-------------------------- Common Commands ------------------------------#
 # create a local branch:
-git checkout -b <name>
+git branch <local-branch-name>
+
+# create a local branch and switch to it:
+git checkout -b <local-branch-name>
+
+# delete a local branch
+git branch -d <local-branch>
+
+# switch branches
+git checkout <local-branch>
+
+# merge two branches
+git merge 
 
 # attach a local branch to a remote upstream branch
 git branch --set-upstream-to=origin/<remote-branch> <local-branch>
@@ -17,6 +29,3 @@ git pull
 
 # push updates back to remote (always pull first)
 git push
-
-# delete a local branch
-git branch -d <local-branch>
