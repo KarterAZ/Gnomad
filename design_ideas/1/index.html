@@ -13,25 +13,34 @@
 <body>
     <div id="container">
         <div id="main-content">
-            Map Goes Here
+            <iframe
+                width="100%"
+                height="100%"
+                style="border:0"
+                loading="lazy"
+                allowfullscreen
+                referrerpolicy="no-referrer-when-downgrade"
+                src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o
+                    &q=Oregon+Tech,Klamath+Falls+OR">
+            </iframe>
         </div>
         <div id="footer">
             <div class="footer-button">
-                <a href="#">
+                <button id="map_button">
                     <i class="fa-solid fa-map"></i>
-                </a>
+                </button>
             </div>
 
             <div class="footer-button">
-                <a href="#">
+                <button id="pin_button">
                     <i class="fa-solid fa-map-pin"></i>
-                </a>
+                </button>
             </div>
 
             <div class="footer-button">
-                <a href="#">
+                <button id="settings_button">
                     <i class="fa-solid fa-gear"></i>
-                </a>
+                </button>
             </div>
         </div>
     </div>
@@ -44,7 +53,7 @@
                 </div>
                 <div>Settings</div> 
                 <div class="hz-spacer" id="close-settings">
-                    <a><i class="fa-solid fa-xmark"></i></a>
+                    <button><i class="fa-solid fa-xmark"></i></button>
                 </div>
             </div>
             <div id="settings-body">
