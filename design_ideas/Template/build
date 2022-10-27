@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+name=${PWD##*/}
+name=${name:-/}
+
+docker build . -t "${name,,}":1
+
+if [ "$(docker images -qa -f 'dangling=true')" != "" ]
+then
+    docker rmi $(docker images -qa -f 'dangling=true')
+fi
