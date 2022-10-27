@@ -1,0 +1,7 @@
+#!/usr/bin/bash
+docker build . -t api-env:1
+
+if [ "$(docker images -qa -f 'dangling=true')" != "" ]
+then
+    docker rmi $(docker images -qa -f 'dangling=true')
+fi
