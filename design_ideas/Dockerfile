@@ -8,9 +8,7 @@ COPY src/package*.json ./
 
 RUN npm install
 
-COPY src/ ./
-
-COPY src/public/ ./src/
+COPY src .
 
 EXPOSE ${PORT}
 
