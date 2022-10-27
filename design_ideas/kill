@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+name=${PWD##*/}
+name=${name:-/}
+
+docker kill "${name,,}"

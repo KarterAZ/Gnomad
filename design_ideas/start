@@ -2,4 +2,4 @@
 name=${PWD##*/}
 name=${name:-/}
 
-docker run -d --rm -p 80:80/tcp --name "${name,,}" api-env:1
+docker run -d --rm -p 80:80/tcp --name "${name,,}" "${name,,}":1
