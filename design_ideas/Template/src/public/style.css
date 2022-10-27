@@ -1,0 +1,16 @@
+* {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1em;
+  box-sizing: border-box;
+  --primary-bg-color: ;
+  --secondary-bg-color: ;
+  --primary-fg-color: ;
+  --secondary-fg-color: ;
+  --darken-color: ;
+  --cover-color: ;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}/*# sourceMappingURL=style.css.map */
