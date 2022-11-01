@@ -1,0 +1,9 @@
+{
+  "runtimeOptions": {
+    "additionalProbingPaths": [
+      "C:\\Users\\Bryce\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\Bryce\\.nuget\\packages",
+      "F:\\Programs\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+    ]
+  }
+}
