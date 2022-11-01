@@ -48,5 +48,48 @@ namespace TravelCompanionAPI.Data
 
             return true;
         }
+
+        public MySqlDataReader runQuery(string query)
+        {
+            if (isConnected())
+            {
+                try
+                {
+                    var command = new MySqlCommand(query, _connection);
+                    return command.ExecuteReader();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("{0}", e.Message);
+                }
+            }
+
+            return null;
+        }
+
+        public void runNonQuery(string query)
+        {
+            if (isConnected())
+            {
+                try
+                {
+                    var command = new MySqlCommand(query, _connection);
+                    var result = command.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("{0}", e.Message);
+                }
+            }
+        }
+
+        public void closeConnection()
+        {
+            if (isConnected())
+            {
+                _connection.Close();
+                _connection = null;
+            }
+        }
     }
 }

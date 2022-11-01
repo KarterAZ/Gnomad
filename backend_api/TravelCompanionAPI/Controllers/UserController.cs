@@ -9,33 +9,37 @@ using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("user")]
     [ApiController]
     public class UserController : ControllerBase
     {
-        private DatabaseConnection db = TestingDatabaseConnection.getInstance();
-
-        [HttpGet]
+        [HttpGet("get/{id}")]
         public JsonResult get(int id)
         {
-            //User user = db.getUser(id);
+            User user = UserTableModifier.getUserById(id);
 
-            //if (user == null)
-            //{
-            //    return new JsonResult(NotFound());
-            //}
+            if (user == null)
+            {
+                return new JsonResult(NotFound());
+            }
 
-            return new JsonResult(Ok());
+            return new JsonResult(Ok(user));
         }
 
-        [HttpPost]
+        [HttpGet("all")]
+        public JsonResult getAll()
+        {
+            List<User> users = UserTableModifier.getAllUsers();
+
+            return new JsonResult(Ok(users));
+        }
+
+        [HttpPost("create")]
         public JsonResult create(User user)
         {
-            //if (db.containsUser(user.Id)) return new JsonResult(Ok(user));
+            UserTableModifier.addUser(user);
 
-            //db.addUser(user);
-
-            return new JsonResult(Ok());
+            return new JsonResult(Ok(user));
         }
     }
 }
