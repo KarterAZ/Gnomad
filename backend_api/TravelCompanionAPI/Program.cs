@@ -7,19 +7,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TravelCompanionAPI.Data;
+using System.Diagnostics;
 
 namespace TravelCompanionAPI
 {
     public class Program
     {
-        public static MockUserDatabase userDatabase = new MockUserDatabase();
-
+        private static DatabaseConnection db = TestingDatabaseConnection.getInstance();
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            testDatabaseConnection();
+            createHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        public static void testDatabaseConnection()
+        {
+            if (db.isConnected())
+            {
+                Console.WriteLine("Connected!");
+            }
+            else
+            {
+                Console.WriteLine("Not Connected :(");
+            }
+        }
+
+        public static IHostBuilder createHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

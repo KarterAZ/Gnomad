@@ -13,29 +13,29 @@ namespace TravelCompanionAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private MockUserDatabase db = Program.userDatabase;
+        private DatabaseConnection db = TestingDatabaseConnection.getInstance();
 
         [HttpGet]
-        public JsonResult Get(int id)
+        public JsonResult get(int id)
         {
-            User user = db.getUser(id);
+            //User user = db.getUser(id);
 
-            if (user == null)
-            {
-                return new JsonResult(NotFound());
-            }
+            //if (user == null)
+            //{
+            //    return new JsonResult(NotFound());
+            //}
 
-            return new JsonResult(Ok(user));
+            return new JsonResult(Ok());
         }
 
         [HttpPost]
-        public JsonResult Create(User user)
+        public JsonResult create(User user)
         {
-            if (db.containsUser(user.Id)) return new JsonResult(Ok(user));
+            //if (db.containsUser(user.Id)) return new JsonResult(Ok(user));
 
-            db.addUser(user);
+            //db.addUser(user);
 
-            return new JsonResult(Ok(user));
+            return new JsonResult(Ok());
         }
     }
 }
