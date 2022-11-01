@@ -12,7 +12,7 @@ namespace TravelCompanionAPI
 {
     public class Program
     {
-        public static UserDatabase userDatabase = new UserDatabase();
+        public static MockUserDatabase userDatabase = new MockUserDatabase();
 
         public static void Main(string[] args)
         {

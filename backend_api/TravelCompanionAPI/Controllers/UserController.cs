@@ -13,7 +13,7 @@ namespace TravelCompanionAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private UserDatabase db = Program.userDatabase;
+        private MockUserDatabase db = Program.userDatabase;
 
         [HttpGet]
         public JsonResult Get(int id)

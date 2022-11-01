@@ -6,11 +6,11 @@ using TravelCompanionAPI.Models;
 
 namespace TravelCompanionAPI.Data
 {
-    public class UserDatabase
+    public class MockUserDatabase
     {
         private List<User> _users;
 
-        public UserDatabase()
+        public MockUserDatabase()
         {
             _users = new List<User>();
         }
