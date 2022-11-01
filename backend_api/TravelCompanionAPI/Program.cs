@@ -6,11 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI
 {
     public class Program
     {
+        public static UserDatabase userDatabase = new UserDatabase();
+
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
