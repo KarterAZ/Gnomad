@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TravelCompanionAPI.Models;
+using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI.Controllers
 {
@@ -12,10 +13,12 @@ namespace TravelCompanionAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private UserDatabase db = Program.userDatabase;
+
         [HttpGet]
         public JsonResult Get(int id)
         {
-            User user = Program.userDatabase.getUser(id);
+            User user = db.getUser(id);
 
             if (user == null)
             {
@@ -28,9 +31,9 @@ namespace TravelCompanionAPI.Controllers
         [HttpPost]
         public JsonResult Create(User user)
         {
-            if (Program.userDatabase.containsUser(user.Id)) return new JsonResult(Ok(user));
+            if (db.containsUser(user.Id)) return new JsonResult(Ok(user));
 
-            Program.userDatabase.addUser(user);
+            db.addUser(user);
 
             return new JsonResult(Ok(user));
         }
