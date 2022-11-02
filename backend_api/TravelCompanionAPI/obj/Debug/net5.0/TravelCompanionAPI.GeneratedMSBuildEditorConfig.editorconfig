@@ -7,8 +7,4 @@ build_property.PublishSingleFile =
 build_property.IncludeAllContentForSelfExtract = 
 build_property._SupportedPlatformList = Android,iOS,Linux,macOS,Windows
 build_property.RootNamespace = TravelCompanionAPI
-<<<<<<< HEAD
 build_property.ProjectDir = C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\
-=======
-build_property.ProjectDir = C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\
->>>>>>> 7200ed9d (ran app successfully)

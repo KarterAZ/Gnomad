@@ -484,6 +484,7 @@
           "lib/netcoreapp3.0/Swashbuckle.AspNetCore.SwaggerUI.dll": {}
         }
       },
+<<<<<<< HEAD
       "System.Buffers/4.5.1": {},
       "System.Configuration.ConfigurationManager/4.4.1": {
         "dependencies": {
@@ -558,6 +559,8 @@
           "System.Drawing.Common": "4.7.0"
         }
       },
+=======
+>>>>>>> 939b4893 (yea)
       "Microsoft.AspNetCore.Antiforgery/5.0.0.0": {
         "compile": {
           "Microsoft.AspNetCore.Antiforgery.dll": {}
