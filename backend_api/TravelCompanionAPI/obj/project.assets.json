@@ -1107,19 +1107,19 @@
   },
   "packageFolders": {
     "C:\\Users\\Bryce\\.nuget\\packages\\": {},
-    "F:\\Programs\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Code Projects\\Travel-Companion\\backend_api\\TravelCompanionAPI\\TravelCompanionAPI.csproj",
+      "projectUniqueName": "C:\\Users\\Bryce\\Documents\\Projects\\Travel-Companion\\backend_api\\TravelCompanionAPI\\TravelCompanionAPI.csproj",
       "projectName": "TravelCompanionAPI",
-      "projectPath": "F:\\Code Projects\\Travel-Companion\\backend_api\\TravelCompanionAPI\\TravelCompanionAPI.csproj",
+      "projectPath": "C:\\Users\\Bryce\\Documents\\Projects\\Travel-Companion\\backend_api\\TravelCompanionAPI\\TravelCompanionAPI.csproj",
       "packagesPath": "C:\\Users\\Bryce\\.nuget\\packages\\",
-      "outputPath": "F:\\Code Projects\\Travel-Companion\\backend_api\\TravelCompanionAPI\\obj\\",
+      "outputPath": "C:\\Users\\Bryce\\Documents\\Projects\\Travel-Companion\\backend_api\\TravelCompanionAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "F:\\Programs\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
         "C:\\Users\\Bryce\\AppData\\Roaming\\NuGet\\NuGet.Config",

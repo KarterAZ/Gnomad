@@ -13,7 +13,6 @@ namespace TravelCompanionAPI
 {
     public class Program
     {
-        private static DatabaseConnection db = TestingDatabaseConnection.getInstance();
         public static void Main(string[] args)
         {
             createHostBuilder(args).Build().Run();

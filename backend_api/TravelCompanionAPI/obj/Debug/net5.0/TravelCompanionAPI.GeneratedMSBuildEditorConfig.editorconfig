@@ -7,4 +7,4 @@ build_property.PublishSingleFile =
 build_property.IncludeAllContentForSelfExtract = 
 build_property._SupportedPlatformList = Android,iOS,Linux,macOS,Windows
 build_property.RootNamespace = TravelCompanionAPI
-build_property.ProjectDir = F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\
+build_property.ProjectDir = C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\

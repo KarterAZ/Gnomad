@@ -8,13 +8,13 @@ namespace TravelCompanionAPI.Data
 {
     public class UserTableModifier
     {
-        const string _TABLE = "users";
+        const string TABLE = "users";
         private static DatabaseConnection _database = TestingDatabaseConnection.getInstance();
 
         public static User getUserById(int id)
         {
             User user = null;
-            string query = String.Format("SELECT * FROM {0} WHERE(`id` = '{1}');", _TABLE, id);
+            string query = String.Format("SELECT * FROM {0} WHERE(`id` = '{1}');", TABLE, id);
 
             var reader = _database.runQuery(query);
 
@@ -37,7 +37,7 @@ namespace TravelCompanionAPI.Data
         {
             List<User> users = new List<User>();
 
-            string query = String.Format("SELECT * FROM {0};", _TABLE);
+            string query = String.Format("SELECT * FROM {0};", TABLE);
 
             var reader = _database.runQuery(query);
 
@@ -62,7 +62,7 @@ namespace TravelCompanionAPI.Data
             string query = String.Format
             (
                 "INSERT INTO {0} (email, display_name, first_name, last_name) VALUES ('{1}', '{2}', '{3}', '{4}')",
-                _TABLE,
+                TABLE,
                 user.Email,
                 user.DisplayName,
                 user.FirstName,
