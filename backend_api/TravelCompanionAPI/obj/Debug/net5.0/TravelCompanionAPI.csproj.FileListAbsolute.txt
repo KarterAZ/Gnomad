@@ -28,6 +28,7 @@ F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.
 F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.pdb
 F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.genruntimeconfig.cache
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 0837ba84 (ran app successfully)
@@ -88,6 +89,8 @@ C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAP
 <<<<<<< HEAD
 =======
 >>>>>>> 7200ed9d (ran app successfully)
+=======
+>>>>>>> 812902a3 (changes from Main)
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\appsettings.Development.json
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\appsettings.json
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\TravelCompanionAPI.StaticWebAssets.xml
@@ -97,6 +100,7 @@ C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_ap
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\TravelCompanionAPI.runtimeconfig.dev.json
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\TravelCompanionAPI.dll
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\TravelCompanionAPI.pdb
+<<<<<<< HEAD
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Google.Protobuf.dll
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\K4os.Compression.LZ4.dll
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\K4os.Compression.LZ4.Streams.dll
@@ -111,6 +115,12 @@ C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_ap
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\System.Configuration.ConfigurationManager.dll
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+=======
+C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Microsoft.OpenApi.dll
+C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+>>>>>>> 812902a3 (changes from Main)
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.csproj.AssemblyReference.cache
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.AssemblyInfoInputs.cache
@@ -127,5 +137,8 @@ C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_ap
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.pdb
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.genruntimeconfig.cache
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\ref\TravelCompanionAPI.dll
+<<<<<<< HEAD
 >>>>>>> 812902a3 (changes from Main)
 >>>>>>> 4c3469fc (fixed?)
+=======
+>>>>>>> 812902a3 (changes from Main)
