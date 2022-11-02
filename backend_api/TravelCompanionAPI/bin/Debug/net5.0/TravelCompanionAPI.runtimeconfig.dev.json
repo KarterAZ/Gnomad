@@ -2,12 +2,17 @@
   "runtimeOptions": {
     "additionalProbingPaths": [
 <<<<<<< HEAD
+<<<<<<< HEAD
       "C:\\Users\\Bryce\\.dotnet\\store\\|arch|\\|tfm|",
       "C:\\Users\\Bryce\\.nuget\\packages",
 =======
       "C:\\Users\\Andrew\\.dotnet\\store\\|arch|\\|tfm|",
       "C:\\Users\\Andrew\\.nuget\\packages",
 >>>>>>> 812902a3 (changes from Main)
+=======
+      "C:\\Users\\Andrew\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\Andrew\\.nuget\\packages",
+>>>>>>> 7200ed9d (ran app successfully)
       "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
     ]
   }

@@ -507,6 +507,7 @@
       },
       "System.Memory/4.5.4": {},
 <<<<<<< HEAD
+<<<<<<< HEAD
       "System.Runtime.CompilerServices.Unsafe/5.0.0": {
         "compile": {
           "ref/netstandard2.1/System.Runtime.CompilerServices.Unsafe.dll": {}
@@ -515,6 +516,9 @@
 =======
       "System.Runtime.CompilerServices.Unsafe/5.0.0": {},
 >>>>>>> 0bcb8330 (ran app successfully)
+=======
+      "System.Runtime.CompilerServices.Unsafe/5.0.0": {},
+>>>>>>> 7200ed9d (ran app successfully)
       "System.Security.AccessControl/4.7.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "3.1.0",
