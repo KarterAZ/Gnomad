@@ -28,6 +28,9 @@ F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.
 F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.pdb
 F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.genruntimeconfig.cache
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0837ba84 (ran app successfully)
 F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Google.Protobuf.dll
 F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\K4os.Compression.LZ4.dll
 F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\K4os.Compression.LZ4.Streams.dll
@@ -77,7 +80,10 @@ C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAP
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\ref\TravelCompanionAPI.dll
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.pdb
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.genruntimeconfig.cache
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 0837ba84 (ran app successfully)
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\appsettings.Development.json
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\appsettings.json
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\TravelCompanionAPI.StaticWebAssets.xml
@@ -87,10 +93,20 @@ C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_ap
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\TravelCompanionAPI.runtimeconfig.dev.json
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\TravelCompanionAPI.dll
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\TravelCompanionAPI.pdb
+C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Google.Protobuf.dll
+C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\K4os.Compression.LZ4.dll
+C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\K4os.Compression.LZ4.Streams.dll
+C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\K4os.Hash.xxHash.dll
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Microsoft.OpenApi.dll
+C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\MySql.Data.dll
+C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\ZstdNet.dll
+C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\BouncyCastle.Crypto.dll
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\System.Configuration.ConfigurationManager.dll
+C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.csproj.AssemblyReference.cache
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.AssemblyInfoInputs.cache
