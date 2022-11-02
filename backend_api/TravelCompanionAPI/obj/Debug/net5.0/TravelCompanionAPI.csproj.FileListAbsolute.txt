@@ -81,9 +81,12 @@ C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAP
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.pdb
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.genruntimeconfig.cache
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> 0837ba84 (ran app successfully)
+=======
+>>>>>>> 7200ed9d (ran app successfully)
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\appsettings.Development.json
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\appsettings.json
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\TravelCompanionAPI.StaticWebAssets.xml
@@ -123,4 +126,7 @@ C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_ap
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.pdb
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.genruntimeconfig.cache
 C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\ref\TravelCompanionAPI.dll
+<<<<<<< HEAD
 >>>>>>> 812902a3 (changes from Main)
+=======
+>>>>>>> 7200ed9d (ran app successfully)
