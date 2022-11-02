@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\appsettings.Development.json
 F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\appsettings.json
 F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\TravelCompanionAPI.exe
@@ -41,6 +42,8 @@ F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.
 F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\System.Configuration.ConfigurationManager.dll
 F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\System.Security.Cryptography.ProtectedData.dll
 F:\Code Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+=======
+>>>>>>> 939b4893 (yea)
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\appsettings.Development.json
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\appsettings.json
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\TravelCompanionAPI.exe
@@ -50,6 +53,7 @@ C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAP
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\TravelCompanionAPI.dll
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\ref\TravelCompanionAPI.dll
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\TravelCompanionAPI.pdb
+<<<<<<< HEAD
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Google.Protobuf.dll
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\K4os.Compression.LZ4.dll
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\K4os.Compression.LZ4.Streams.dll
@@ -65,6 +69,12 @@ C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAP
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.csproj.AssemblyReference.cache
+=======
+C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Microsoft.OpenApi.dll
+C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\bin\Debug\net5.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+>>>>>>> 939b4893 (yea)
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.AssemblyInfoInputs.cache
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.AssemblyInfo.cs
@@ -80,6 +90,7 @@ C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAP
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\ref\TravelCompanionAPI.dll
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.pdb
 C:\Users\Bryce\Documents\Projects\Travel-Companion\backend_api\TravelCompanionAPI\obj\Debug\net5.0\TravelCompanionAPI.genruntimeconfig.cache
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -130,3 +141,5 @@ C:\Users\Andrew\OneDrive\Desktop\CSET\Junior_Project\Travel-Companion\backend_ap
 >>>>>>> 812902a3 (changes from Main)
 =======
 >>>>>>> 7200ed9d (ran app successfully)
+=======
+>>>>>>> 939b4893 (yea)
