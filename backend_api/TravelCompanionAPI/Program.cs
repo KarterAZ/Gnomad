@@ -26,3 +26,16 @@ namespace TravelCompanionAPI
                 });
     }
 }
+
+//var builder = WebHostBuilder;
+
+////var builder = WebApplication.CreateBuilder(args);
+//builder
+//builder.Services.Addtransient<IDataRepository<User>, UserTableModifier>();
+
+//var app = builder.Build();
+
+//app.UseStaticFiles();
+//app.MapControllers();
+
+//app.Run();
