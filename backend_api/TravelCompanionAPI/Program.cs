@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -20,9 +21,10 @@ namespace TravelCompanionAPI
 
         public static IHostBuilder createHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureServices((_, services) =>
+                services.AddTransient<IDataRepository<User>, UserTableModifier>())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    
                     webBuilder.UseStartup<Startup>();
                 });
     }
