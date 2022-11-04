@@ -1,23 +1,45 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TravelCompanionAPI.Models;
+using System.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using static Org.BouncyCastle.Math.EC.ECCurve;
+using System.Data.Common;
+using System.Data;
 
 namespace TravelCompanionAPI.Data
 {
-    public class UserTableModifier
+    public class UserTableModifier : IDataRepository<User>
     {
         const string TABLE = "users";
-        private static DatabaseConnection _database = DatabaseConnection.getInstance();
+        private readonly IConfiguration _config;
+        private SqlConnection _connection;
 
-        public static User getUserById(int id)
+        public UserTableModifier(IConfiguration config)
+        {
+            _config = config;
+
+            //Switch depending on mode
+            //_connection = new SqlConnection(_config.GetConnectionString("CodenomeDatabase"));
+            _connection = new SqlConnection(_config.GetConnectionString("TestingDatabase"));
+        }
+
+        public User getById(int id)
         {
             User user = null;
-            string query = String.Format("SELECT * FROM {0} WHERE(`id` = '{1}');", TABLE, id);
+            using SqlCommand command = new SqlCommand();
+            command.Connection = _connection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "SELECT * FROM @Table WHERE(`id` = '@Id');";
+            command.Parameters.AddWithValue("Id", id);
+            command.Parameters.AddWithValue("Table", TABLE);
 
-            var reader = _database.runQuery(query);
+            _connection.Open();
 
+            using SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
                 user = new User();
@@ -28,19 +50,24 @@ namespace TravelCompanionAPI.Data
                 user.LastName = reader.GetString(4);
             }
 
-            _database.closeConnection();
+            _connection.Close();
 
             return user;
         }
 
-        public static List<User> getAllUsers()
+        public List<User> getAll()
         {
             List<User> users = new List<User>();
 
-            string query = String.Format("SELECT * FROM {0};", TABLE);
+            using SqlCommand command = new SqlCommand();
+            command.Connection = _connection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "SELECT * FROM @Table;";
+            command.Parameters.AddWithValue("Table", TABLE);
 
-            var reader = _database.runQuery(query);
+            _connection.Open();
 
+            using SqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
                 User user = new User();
@@ -52,25 +79,31 @@ namespace TravelCompanionAPI.Data
                 users.Add(user);
             }
 
-            _database.closeConnection();
+            _connection.Close();
 
             return users;
         }
 
-        public static int addUser(User user)
+        public int add(User user)
         {
-            string query = String.Format
-            (
-                "INSERT INTO {0} (email, display_name, first_name, last_name) VALUES ('{1}', '{2}', '{3}', '{4}')",
-                TABLE,
-                user.Email,
-                user.DisplayName,
-                user.FirstName,
-                user.LastName
-            );
+            using SqlCommand command = new SqlCommand();
+            command.Connection = _connection;
+            command.CommandType = CommandType.Text;
+            command.CommandText = "INSERT INTO @Table (email, display_name, first_name, last_name) VALUES ('@Email', '@DisplayName', '@FirstName', '@LastName');";
+            command.Parameters.AddWithValue("Table", TABLE);
+            command.Parameters.AddWithValue("Email", user.Email);
+            command.Parameters.AddWithValue("DisplayName", user.DisplayName);
+            command.Parameters.AddWithValue("FirstName", user.FirstName);
+            command.Parameters.AddWithValue("LastName", user.LastName);
 
-            _database.runNonQuery(query);
-            _database.closeConnection();
+            _connection.Open();
+
+            using SqlDataReader reader = command.ExecuteReader();
+
+            command.ExecuteNonQuery();
+
+            _connection.Close();
+
             return 0;
         }
     }
