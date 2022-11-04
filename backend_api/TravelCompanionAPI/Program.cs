@@ -22,6 +22,7 @@ namespace TravelCompanionAPI
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    
                     webBuilder.UseStartup<Startup>();
                 });
     }
@@ -31,7 +32,8 @@ namespace TravelCompanionAPI
 
 ////var builder = WebApplication.CreateBuilder(args);
 //builder
-//builder.Services.Addtransient<IDataRepository<User>, UserTableModifier>();
+//builder.Services.AddTransient<IDataRepository<User>, UserTableModifier>();
+//builder.Services.AddScoped
 
 //var app = builder.Build();
 
