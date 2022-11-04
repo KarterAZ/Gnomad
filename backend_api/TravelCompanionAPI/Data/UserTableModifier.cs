@@ -9,7 +9,7 @@ namespace TravelCompanionAPI.Data
     public class UserTableModifier
     {
         const string TABLE = "users";
-        private static DatabaseConnection _database = TestingDatabaseConnection.getInstance();
+        private static DatabaseConnection _database = DatabaseConnection.getInstance();
 
         public static User getUserById(int id)
         {

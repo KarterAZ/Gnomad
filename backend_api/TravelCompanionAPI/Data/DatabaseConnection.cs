@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 
@@ -21,25 +22,22 @@ namespace TravelCompanionAPI.Data
 {
     public abstract class DatabaseConnection
     {
-        protected string _server;
-        protected string _database;
-        protected string _username;
-        protected string _password;
         protected MySqlConnection _connection;
+        IConfiguration _config;
+
+        public DatabaseConnection(IConfiguration config)
+        {
+            _config = config;
+        }
 
         public bool isConnected()
         {
-            if (String.IsNullOrEmpty(_database))
-            {
-                return false;
-            }
-
             if (_connection == null)
             {
                 try
                 {
-                    string connstring = string.Format("Server={0}; database={1}; UID={2}; password={3}", _server, _database, _username, _password);
-                    _connection = new MySqlConnection(connstring);
+                    _connection = new MySqlConnection(_config.GetConnectionString("CodenomeDatabase"));
+                    //_connection = new MySqlConnection(_config.GetConnectionString("TestingDatabase"));
                     _connection.Open();
                 }
                 catch (Exception e)
@@ -93,5 +91,7 @@ namespace TravelCompanionAPI.Data
                 _connection = null;
             }
         }
+
+
     }
 }
