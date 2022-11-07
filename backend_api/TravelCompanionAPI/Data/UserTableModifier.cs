@@ -16,7 +16,7 @@ namespace TravelCompanionAPI.Data
     {
         const string TABLE = "users";
         private readonly IConfiguration _config;
-        private SqlConnection _connection;
+        private MySqlConnection _connection;
 
         public UserTableModifier(IConfiguration config)
         {
@@ -24,22 +24,20 @@ namespace TravelCompanionAPI.Data
 
             //Switch depending on mode
             //_connection = new SqlConnection(_config.GetConnectionString("CodenomeDatabase"));
-            _connection = new SqlConnection(_config.GetConnectionString("TestingDatabase"));
+            _connection = new MySqlConnection(_config.GetConnectionString("TestingDatabase"));
         }
 
         public User getById(int id)
         {
             User user = null;
-            using SqlCommand command = new SqlCommand();
-            command.Connection = _connection;
+            using MySqlCommand command = new MySqlCommand();
             command.CommandType = CommandType.Text;
-            command.CommandText = "SELECT * FROM @Table WHERE(`id` = '@Id');";
+            command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = '@Id');";
             command.Parameters.AddWithValue("Id", id);
-            command.Parameters.AddWithValue("Table", TABLE);
 
             _connection.Open();
 
-            using SqlDataReader reader = command.ExecuteReader();
+            using MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
                 user = new User();
@@ -59,15 +57,14 @@ namespace TravelCompanionAPI.Data
         {
             List<User> users = new List<User>();
 
-            using SqlCommand command = new SqlCommand();
+            using MySqlCommand command = new MySqlCommand();
             command.Connection = _connection;
             command.CommandType = CommandType.Text;
-            command.CommandText = "SELECT * FROM @Table;";
-            command.Parameters.AddWithValue("Table", TABLE);
+            command.CommandText = @"SELECT * FROM " + TABLE + ";";
 
             _connection.Open();
 
-            using SqlDataReader reader = command.ExecuteReader();
+            using MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read())
             {
                 User user = new User();
@@ -86,19 +83,16 @@ namespace TravelCompanionAPI.Data
 
         public int add(User user)
         {
-            using SqlCommand command = new SqlCommand();
+            using MySqlCommand command = new MySqlCommand();
             command.Connection = _connection;
             command.CommandType = CommandType.Text;
-            command.CommandText = "INSERT INTO @Table (email, display_name, first_name, last_name) VALUES ('@Email', '@DisplayName', '@FirstName', '@LastName');";
-            command.Parameters.AddWithValue("Table", TABLE);
-            command.Parameters.AddWithValue("Email", user.Email);
-            command.Parameters.AddWithValue("DisplayName", user.DisplayName);
-            command.Parameters.AddWithValue("FirstName", user.FirstName);
-            command.Parameters.AddWithValue("LastName", user.LastName);
+            command.CommandText = "INSERT INTO " + TABLE + " (email, display_name, first_name, last_name) VALUES ('@Email', '@DisplayName', '@FirstName', '@LastName');";
+            command.Parameters.AddWithValue("@Email", user.Email);
+            command.Parameters.AddWithValue("@DisplayName", user.DisplayName);
+            command.Parameters.AddWithValue("@FirstName", user.FirstName);
+            command.Parameters.AddWithValue("@LastName", user.LastName);
 
             _connection.Open();
-
-            using SqlDataReader reader = command.ExecuteReader();
 
             command.ExecuteNonQuery();
 
