@@ -35,7 +35,7 @@ namespace TravelCompanionAPI.Data
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = '@Id');";
+                command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = @Id);";
                 command.Parameters.AddWithValue("Id", id);
 
                 _connection.Open();
@@ -97,7 +97,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = _connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO " + TABLE + " (email, display_name, first_name, last_name) VALUES ('@Email', '@DisplayName', '@FirstName', '@LastName');";
+                command.CommandText = "INSERT INTO " + TABLE + " (email, display_name, first_name, last_name) VALUES (@Email, @DisplayName, @FirstName, @LastName);";
                 command.Parameters.AddWithValue("@Email", user.Email);
                 command.Parameters.AddWithValue("@DisplayName", user.DisplayName);
                 command.Parameters.AddWithValue("@FirstName", user.FirstName);

@@ -19,10 +19,14 @@ namespace TravelCompanionAPI
             createHostBuilder(args).Build().Run();
         }
 
+        //Sets up the program
         public static IHostBuilder createHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureServices((_, services) =>
-                services.AddTransient<IDataRepository<User>, UserTableModifier>())
+            //Adds dependency injection so that UserTableModifier gets called wherever IDataRepository gets called
+            .ConfigureServices((_, services) => services.AddTransient<IDataRepository<User>, UserTableModifier>())
+            //Adds a signleton to UserTableModifier
+            .ConfigureServices((_, services) => services.AddSingleton<UserTableModifier>())
+                //services.AddSingleton<UserTableModifier>())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
