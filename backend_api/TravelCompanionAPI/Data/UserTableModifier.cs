@@ -17,12 +17,12 @@ namespace TravelCompanionAPI.Data
         const string TABLE = "users";
         private readonly IConfiguration _config;
         private MySqlConnection _connection;
+        //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
         public UserTableModifier(IConfiguration config)
         {
             //Switch depending on mode
             string connection = null;
-
             //connection = config.GetConnectionString("CodenomeDatabase");
             connection = config.GetConnectionString("TestingDatabase");
 
