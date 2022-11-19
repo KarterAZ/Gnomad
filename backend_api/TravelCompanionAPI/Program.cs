@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,8 +19,13 @@ namespace TravelCompanionAPI
             createHostBuilder(args).Build().Run();
         }
 
+        //Sets up the program for Main.
         public static IHostBuilder createHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+            //Adds dependency injection so that UserTableModifier gets called wherever IDataRepository gets called
+            .ConfigureServices((_, services) => services.AddTransient<IDataRepository<User>, UserTableModifier>())
+            //Adds a signleton to UserTableModifier
+            .ConfigureServices((_, services) => services.AddSingleton<UserTableModifier>())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

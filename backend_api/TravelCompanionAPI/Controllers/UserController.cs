@@ -13,10 +13,17 @@ namespace TravelCompanionAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
+        private IDataRepository<User> _repo;
+        public UserController(IDataRepository<User> repo)
+        {
+            _repo = repo;
+        }
+
         [HttpGet("get/{id}")]
         public JsonResult get(int id)
         {
-            User user = UserTableModifier.getUserById(id);
+
+            User user = _repo.getById(id);
 
             if (user == null)
             {
@@ -29,7 +36,7 @@ namespace TravelCompanionAPI.Controllers
         [HttpGet("all")]
         public JsonResult getAll()
         {
-            List<User> users = UserTableModifier.getAllUsers();
+            List<User> users = _repo.getAll();
 
             return new JsonResult(Ok(users));
         }
@@ -37,7 +44,7 @@ namespace TravelCompanionAPI.Controllers
         [HttpPost("create")]
         public JsonResult create(User user)
         {
-            UserTableModifier.addUser(user);
+            _repo.add(user);
 
             return new JsonResult(Ok(user));
         }

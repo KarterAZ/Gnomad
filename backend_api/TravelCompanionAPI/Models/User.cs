@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI.Models
 {
-    public class User
+    public class User : IDataEntity
     {
         public User()
         { }
@@ -18,6 +20,7 @@ namespace TravelCompanionAPI.Models
             FirstName = first_name;
             LastName = last_name;
         }
+        [BindNever] //User shouldn't be able to change Id
         public int Id { get; set; }
         public string Email { get; set; }
         public string DisplayName { get; set; }
