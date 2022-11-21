@@ -24,7 +24,7 @@ namespace TravelCompanionAPI
             Host.CreateDefaultBuilder(args)
             //Adds dependency injection so that UserTableModifier gets called wherever IDataRepository gets called
             .ConfigureServices((_, services) => services.AddTransient<IDataRepository<User>, UserTableModifier>())
-            //Adds a signleton to UserTableModifier
+            //Adds a singleton to UserTableModifier
             .ConfigureServices((_, services) => services.AddSingleton<UserTableModifier>())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

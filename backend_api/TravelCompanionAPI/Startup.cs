@@ -18,7 +18,7 @@ namespace TravelCompanionAPI
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = configuration; //What do we use this for?
         }
 
         public IConfiguration Configuration { get; }
