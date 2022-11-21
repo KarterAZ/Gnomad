@@ -12,6 +12,11 @@ using System.Data;
 
 namespace TravelCompanionAPI.Data
 {
+    //******************************************************************************
+    //This class updates the User table, inheriting from IDataRepository.
+    //No new methods added.
+    //Implements getById, getAll, and add.
+    //******************************************************************************
     public class UserTableModifier : IDataRepository<User>
     {
         const string TABLE = "users";

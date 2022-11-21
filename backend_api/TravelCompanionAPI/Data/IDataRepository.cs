@@ -14,14 +14,10 @@ namespace TravelCompanionAPI.Data
 {
     public interface IDataRepository<T> where T : IDataEntity
     {
-        //Singleton stuff:
-        //private static IDataRepository<User> _instance;
-        //public static IDataRepository<User> getInstance(IDataRepository<User> instance)
-        //{
-        //    if (_instance == null)
-        //        _instance = instance;
-        //    return _instance;
-        //}
+        //******************************************************************************
+        //This class defines the default functions for dependency injection
+        //Declares getById, getAll, and add.
+        //******************************************************************************
 
         public T getById(int id);
 
