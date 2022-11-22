@@ -15,18 +15,11 @@ namespace TravelCompanionAPI.Data
     public class UserTableModifier : IDataRepository<User>
     {
         const string TABLE = "users";
-        private readonly IConfiguration _config;
         private MySqlConnection _connection;
 
         public UserTableModifier(IConfiguration config)
         {
-            //Switch depending on mode
-            string connection = null;
-
-            //connection = config.GetConnectionString("CodenomeDatabase");
-            connection = config.GetConnectionString("TestingDatabase");
-
-            _connection = new MySqlConnection(connection);
+            _connection = DatabaseConnection.getInstance().getConnection();
         }
 
         public User getById(int id)
@@ -34,8 +27,9 @@ namespace TravelCompanionAPI.Data
             User user = null;
             using (MySqlCommand command = new MySqlCommand())
             {
+                command.Connection = _connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = '@Id');";
+                command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(id = @Id);";
                 command.Parameters.AddWithValue("Id", id);
 
                 _connection.Open();
