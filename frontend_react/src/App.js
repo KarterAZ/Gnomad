@@ -5,9 +5,9 @@ import Home from './pages/home/Home';
 
 function App() {
   return (
-    <layout>
+    <Layout>
       <Home/>
-    </layout>
+    </Layout>
   );
 }
 
