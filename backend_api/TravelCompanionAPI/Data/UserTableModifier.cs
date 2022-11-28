@@ -20,7 +20,6 @@ namespace TravelCompanionAPI.Data
     public class UserTableModifier : IDataRepository<User>
     {
         const string TABLE = "users";
-        private readonly IConfiguration _config;
         private MySqlConnection _connection;
         //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
@@ -39,6 +38,7 @@ namespace TravelCompanionAPI.Data
             User user = null;
             using (MySqlCommand command = new MySqlCommand())
             {
+                command.Connection = _connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = @Id);";
                 command.Parameters.AddWithValue("Id", id);
