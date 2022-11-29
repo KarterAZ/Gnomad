@@ -1,0 +1,84 @@
+#container
+{
+    display: flex;
+    flex-direction: column;
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 25%;
+    height: 100vh;
+
+    background-color: aqua;
+}
+
+#handle
+{
+    display: flex;
+
+    position: relative;
+
+    top: 0;
+    right: -100%;
+
+    width: 50px;
+    height: 50px;
+
+    background-color: aquamarine;
+}
+
+#handle:hover
+{
+    filter: brightness(90%);
+}
+
+#content
+{
+    display: flex;
+    flex-direction: column;
+
+    padding: 5px;
+}
+
+.section
+{
+    margin: 5px 0px 5px 0px;
+}
+
+#user-section a
+{
+    text-decoration: none;
+    color: #000;
+}
+
+#user-section a:hover
+{
+    color: #666;
+}
+
+#header-section
+{
+    display: flex;
+    flex-direction: row;
+
+    justify-content: space-between;
+}
+
+#search-section
+{
+    display: flex;
+    flex-direction: column;
+}
+
+#pins-section
+{
+    display: flex;
+}
+
+#pins-list
+{
+    display: flex;
+    flex-grow: 1;
+}
