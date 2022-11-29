@@ -1,4 +1,19 @@
-#container
+.button
+{
+    height: 2em;
+
+    border: none;
+    cursor: pointer;
+
+    background-color: #ecf0f1;
+}
+
+.button:hover
+{
+    background-color: #bdc3c7;
+}
+
+#sidebar-container
 {
     display: flex;
     flex-direction: column;
@@ -11,7 +26,8 @@
     width: 25%;
     height: 100vh;
 
-    background-color: aqua;
+    background-color: #34495e;
+    color: #ecf0f1;
 }
 
 #handle
@@ -26,7 +42,8 @@
     width: 50px;
     height: 50px;
 
-    background-color: aquamarine;
+    background-color: #2c3e50;
+    color: #ecf0f1;
 }
 
 #handle:hover
@@ -34,28 +51,32 @@
     filter: brightness(90%);
 }
 
-#content
+#sidebar-content
 {
     display: flex;
     flex-direction: column;
 
+    height: 100%;
+
     padding: 5px;
+    color: #ecf0f1;
 }
 
 .section
 {
-    margin: 5px 0px 5px 0px;
+    margin-bottom: 20px;
+    
 }
 
 #user-section a
 {
     text-decoration: none;
-    color: #000;
+    color: #ecf0f1;
 }
 
 #user-section a:hover
 {
-    color: #666;
+    color: #bdc3c7;
 }
 
 #header-section
@@ -66,19 +87,90 @@
     justify-content: space-between;
 }
 
+#settings-button
+{
+    height: 2em;
+    aspect-ratio: 1;
+
+    border: none;
+    border-radius: 50%;
+}
+
 #search-section
 {
     display: flex;
     flex-direction: column;
 }
 
+#search-bar
+{
+        background-color: #ecf0f1;
+        height: 2em;
+        border: none;
+
+        margin-bottom: 5px;
+}
+
+#search-button
+{
+    align-self: flex-end;
+
+    height: 2em;
+    width: 50%;
+
+    border: none;
+    cursor: pointer;
+
+    background-color: #ecf0f1;
+}
+
 #pins-section
 {
     display: flex;
+    flex-direction: column;
+
+    height: 50%;
+}
+
+#pin-group
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#pin-select
+{
+    background-color: #ecf0f1;
+    height: 2em;
+    width: 48%;
+    border: none;
+
+    margin-bottom: 5px;
+}
+
+#pin-button
+{
+    height: 2em;
+    width: 48%;
+
+    border: none;
+    cursor: pointer;
+
+    background-color: #ecf0f1;
+
+    margin-bottom: 5px;
 }
 
 #pins-list
 {
     display: flex;
+    flex-direction: column;
     flex-grow: 1;
+
+    width: 100%;
+
+    overflow-y: scroll;
+
+    background-color: #eee;
 }
