@@ -16,7 +16,8 @@ export default function Login() {
                         </div>
                         <div id="login-password-wrapper">
                             <label>Password</label>
-                            <input className="login-input" id="login-password-input" type="password"/>                        </div>
+                            <input className="login-input" id="login-password-input" type="password"/>                        
+                        </div>
                     </div>
                     <div id="login-button-wrapper">
                         <button id="login-button">Login</button>
