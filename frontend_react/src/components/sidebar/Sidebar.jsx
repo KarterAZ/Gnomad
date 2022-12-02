@@ -37,7 +37,7 @@ class Sidebar extends Component
                     <div id="sidebar-content">
                         <section className="section" id="header-section">
                             <div id="user-section">
-                                <a href="#">Register</a> <a href="/login">Login</a>
+                                <a href="/register">Register</a> <a href="/login">Login</a>
                             </div>
 
                             <div id="settings-button-wrapper">

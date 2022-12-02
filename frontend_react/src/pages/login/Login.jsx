@@ -8,7 +8,7 @@ export default function Login() {
                 <h1>Login</h1>
             </div>
             <div id="login-form-wrapper">
-                <form id="login-form" action="/">
+                <form id="login-form" action="/login">
                     <div id="login-info-wrapper">
                         <div id="login-username-wrapper">
                             <label>Username</label>
