@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,6 +35,8 @@ namespace TravelCompanionAPI
         {
 
             services.AddControllers();
+            services.AddAuthentication().AddGoogle();
+            services.Configure<GoogleOptions>(GoogleDefaults.AuthenticationScheme, Configuration.GetSection("Authentication:Google"));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TravelCompanionAPI", Version = "v1" });
