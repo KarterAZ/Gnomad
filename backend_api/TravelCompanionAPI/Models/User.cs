@@ -1,4 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿/************************************************************************************************
+*
+* Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
+* Date: 11/28/2022
+*
+* Purpose: Class for User object. Contains definition of User object for use elsewhere.
+*
+************************************************************************************************/
+
+
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
