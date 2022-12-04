@@ -1,16 +1,14 @@
-.user-button
-{
-    padding: 5px;
-    margin-right: 10px;
+.user-button {
+  padding: 5px;
+  margin-right: 10px;
 
-    background-color: transparent;
-    border: 1px solid;
-    border-radius: 4px;
+  background-color: transparent;
+  border: 1px solid;
+  border-radius: 4px;
 
-    color: #bdc3c7;
+  color: #bdc3c7;
 }
 
-.user-button:hover
-{
-    background-color: #2c3e50;;
+.user-button:hover {
+  background-color: #2c3e50;
 }
