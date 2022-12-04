@@ -1,4 +1,13 @@
-﻿using MySql.Data.MySqlClient;
+﻿/************************************************************************************************
+*
+* Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
+* Date: 11/28/2022
+*
+* Purpose: Defines the default functions for dependency injection. Declares getById, getAll, and add.
+*
+************************************************************************************************/
+
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
