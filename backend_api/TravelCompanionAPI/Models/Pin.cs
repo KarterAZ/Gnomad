@@ -25,7 +25,6 @@ namespace TravelCompanionAPI.Models
         public int Longitude { get; set; }
         public int Latitude { get; set; }
         public string Title { get; set; }
-        public string Tag { get; set; }     //make pin collection class for multiple nearby pins
         public string Street { get; set; }
 
         public void print()
