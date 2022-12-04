@@ -66,14 +66,21 @@
 
     height: 100%;
 
-    padding: 5px;
+    padding: 10px;
     color: #ecf0f1;
 }
 
 .section
 {
     margin-bottom: 20px;
-    
+}
+
+#user-section
+{
+    display: flex;
+    flex-direction: row;
+
+    flex-wrap: nowrap;
 }
 
 #user-section a
@@ -91,6 +98,7 @@
 {
     display: flex;
     flex-direction: row;
+    align-items: center;
 
     justify-content: space-between;
 }
@@ -98,12 +106,6 @@
 #settings-button
 {
     font-size: 2em;
-    aspect-ratio: 1;
-
-    margin: 6px 6px 0 0;
-
-    border: none;
-    border-radius: 50%;
 }
 
 #settings-button:hover
@@ -137,7 +139,9 @@
     display: flex;
     flex-direction: column;
 
-    height: 50%;
+    margin: 0;
+
+    height: 100%;
 }
 
 #pin-group
@@ -167,6 +171,7 @@
 {
     display: flex;
     flex-direction: column;
+
     flex-grow: 1;
 
     width: 100%;

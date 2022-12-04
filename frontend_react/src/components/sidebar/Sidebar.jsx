@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { Icon } from '@iconify/react';
+import { LoginButton, LogoutButton } from '../login_button/LoginButton';
+
 import './sidebar.css';
-//import $ from 'jquery';
+
 
 class Sidebar extends Component
 {
@@ -37,7 +39,8 @@ class Sidebar extends Component
                     <div id="sidebar-content">
                         <section className="section" id="header-section">
                             <div id="user-section">
-                                <a href="/register">Register</a> <a href="/login">Login</a>
+                                <LoginButton/>
+                                <LogoutButton/>
                             </div>
 
                             <div id="settings-button-wrapper">
@@ -53,11 +56,11 @@ class Sidebar extends Component
 
                         <section className="section" id="pins-section">
                             <div id="pin-group">
-                                <select id="pin-select">
-                                    <option value="" disabled selected>Select a Pin Type</option>
-                                    <option value="">All</option>
-                                    <option value="">Bathrooms</option>
-                                    <option value="">Wi-Fi</option>
+                                <select defaultValue={0} id="pin-select">
+                                    <option value="0" disabled>Select a Pin Type</option>
+                                    <option value="1">All</option>
+                                    <option value="2">Bathrooms</option>
+                                    <option value="3">Wi-Fi</option>
                                 </select>
                                 <button className="button" id="pin-button">Create</button>
                             </div>
