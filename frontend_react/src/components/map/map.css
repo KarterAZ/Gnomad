@@ -1,0 +1,12 @@
+#map
+{
+    display: flex;
+
+    flex: 3;
+
+    height: 100px;
+
+    margin-left: -45px;
+
+    background-color: #f0f0;
+}
