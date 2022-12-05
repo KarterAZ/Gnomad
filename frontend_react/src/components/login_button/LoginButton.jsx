@@ -8,6 +8,20 @@ export function LoginButton() {
     flow: 'auth-code',
   });
 
+  const GoogleAuth = () => {
+    const [user, setUser] = useState<User | null>(null);
+    const onSuccess = async (res: any) => {
+      try {
+        const result: AxiosResponse<AuthResponse> = await axios.post("/auth/", {
+          token: res?.tokenId,
+        });
+  
+        setUser(result.data.user);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
   return (
     <button className='user-button' onClick={() => login()}>
       Login
