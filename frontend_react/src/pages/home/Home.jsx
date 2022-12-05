@@ -1,5 +1,6 @@
 import Sidebar from '../../components/sidebar/Sidebar';
 import Routing from '../../components/routing_info/routing'
+import Directions from '../../components/directions/directions'
 import './home.css';
 
 export default function Home() {
@@ -9,6 +10,7 @@ export default function Home() {
       <Sidebar/>
     </div>
     <Routing/>
+    <Directions/>
     </>
   );
 }

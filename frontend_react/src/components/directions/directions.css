@@ -1,0 +1,9 @@
+#directions-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #C0F9FB;
+    border-width: 3px;
+    border-color: #FEE9E1;
+    visibility: hidden;
+}
