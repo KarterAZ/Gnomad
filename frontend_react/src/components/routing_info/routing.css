@@ -5,6 +5,7 @@
     background-color: #FEE9E1;
     border-width: 3px;
     border-color: #B09E99;
+    visibility: hidden;
 }
 #general-next-stop-info {
     border-bottom-width: 3px;
