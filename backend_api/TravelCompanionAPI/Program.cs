@@ -20,12 +20,23 @@ namespace TravelCompanionAPI
         }
 
         //Sets up the program for Main.
-        public static IHostBuilder createHostBuilder(string[] args) =>
+        /*public static IHostBuilder createHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
             //Adds dependency injection so that UserTableModifier gets called wherever IDataRepository gets called
             .ConfigureServices((_, services) => services.AddTransient<IDataRepository<User>, UserTableModifier>())
             //Adds a singleton to UserTableModifier
             .ConfigureServices((_, services) => services.AddSingleton<UserTableModifier>())
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });*/
+
+        public static IHostBuilder createHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+            //Adds dependency injection so that UserTableModifier gets called wherever IDataRepository gets called
+            .ConfigureServices((_, services) => services.AddTransient<IDataRepository<Pin>, PinTableModifier>())
+            //Adds a singleton to UserTableModifier
+            .ConfigureServices((_, services) => services.AddSingleton<PinTableModifier>())
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
