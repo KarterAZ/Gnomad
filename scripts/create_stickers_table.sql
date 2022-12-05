@@ -4,5 +4,4 @@ CREATE TABLE IF NOT EXISTS `codenome_db`.`stickers` (
   `longitude` INT NULL,
   `latitude` INT NULL,
   `title` VARCHAR(45) NULL,
-  `street` VARCHAR(45) NULL,
   PRIMARY KEY (`id`));
