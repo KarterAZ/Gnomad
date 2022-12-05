@@ -4,11 +4,11 @@
   border: none;
   cursor: pointer;
 
-  background-color: #ecf0f1;
+  background-color: #FEE9E1;
 }
 
 .button:hover {
-  background-color: #bdc3c7;
+  background-color: #B09E99;
 }
 
 #sidebar-container {
@@ -20,8 +20,9 @@
 
   height: 100vh;
 
-  background-color: #34495e;
-  color: #ecf0f1;
+  background-color: #64B6AC;
+  background: linear-gradient(#64B6AC, #64b68a);
+  color: #FEE9E1;
 
   overflow: hidden;
 
@@ -45,12 +46,12 @@
 
   border-radius: 0 0 6px 0;
 
-  background-color: #2c3e50;
-  color: #ecf0f1;
+  background-color: #64B6AC;
+  color: #FEE9E1;
 }
 
 #handle:hover {
-  filter: brightness(90%);
+  color: #B09E99;
 }
 
 #sidebar-content {
@@ -60,7 +61,7 @@
   height: 100%;
 
   padding: 10px;
-  color: #ecf0f1;
+  color: #FEE9E1;
 }
 
 .section {
@@ -76,11 +77,11 @@
 
 #user-section a {
   text-decoration: none;
-  color: #ecf0f1;
+  color: #FEE9E1;
 }
 
 #user-section a:hover {
-  color: #bdc3c7;
+  color: #B09E99;
 }
 
 #header-section {
@@ -105,7 +106,7 @@
 }
 
 #search-bar {
-  background-color: #ecf0f1;
+  background-color: #FEE9E1;
   height: 2em;
   border: none;
 
@@ -133,7 +134,7 @@
 }
 
 #pin-select {
-  background-color: #ecf0f1;
+  background-color: #FEE9E1;
   height: 2em;
   width: 48%;
   border: none;
@@ -156,5 +157,5 @@
 
   overflow-y: scroll;
 
-  background-color: #eee;
+  background-color: #FEE9E1;
 }
