@@ -1,0 +1,38 @@
+#routing-wrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #FEE9E1;
+    border-width: 3px;
+    border-color: #B09E99;
+}
+#general-next-stop-info {
+    border-bottom-width: 3px;
+    border-color: #B09E99;
+    display: flex;
+    flex-direction: column;
+}
+#general-destination-info {
+    display: flex;
+    flex-direction: column;
+}
+#next-stop {
+    display: flex;
+    flex-direction: row;
+}
+#next-stop-arrival-time {
+    display: flex;
+    flex-direction: row;
+}
+#destination {
+    display: flex;
+    flex-direction: row;
+}
+#distance {
+    display: flex;
+    flex-direction: row;
+}
+#final-arrival-time {
+    display: flex;
+    flex-direction: row;
+}
