@@ -30,6 +30,7 @@ namespace TravelCompanionAPI.Models
             FirstName = first_name;
             LastName = last_name;
         }
+
         [BindNever] //User shouldn't be able to change Id
         public int Id { get; set; }
         public string Email { get; set; }
