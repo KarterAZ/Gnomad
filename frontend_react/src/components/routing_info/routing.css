@@ -12,6 +12,8 @@
   padding: 10px;
 
   z-index: 100;
+
+  visibility: hidden;
 }
 
 #divider {

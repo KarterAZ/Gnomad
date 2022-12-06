@@ -88,7 +88,7 @@ namespace TravelCompanionAPI.Data
                         pin.Latitude = reader.GetInt32(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
-                        pin.Add(pin);
+                        pins.Add(pin);
                     }
                 }
             }
@@ -122,7 +122,7 @@ namespace TravelCompanionAPI.Data
                         pin.Latitude = reader.GetInt32(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
-                        pin.Add(pin);
+                        pins.Add(pin);
                     }
                 }
             }
