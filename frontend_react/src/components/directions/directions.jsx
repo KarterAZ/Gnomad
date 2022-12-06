@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Icon } from '@iconify/react';
 
 import './directions.css';
 
@@ -24,7 +23,7 @@ class directions extends Component {
   render() {
     return (
       <div id='directions-wrapper'>
-            <div id='next-turn'>Take the next right</div>
+        <div id='next-turn'>Take the next right</div>
       </div>
     );
   }

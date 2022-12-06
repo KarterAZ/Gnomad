@@ -1,21 +1,31 @@
 import React, { Component } from 'react';
+import GoogleMapReact from 'google-map-react';
 import './map.css';
 
-class Map extends Component
-{
-    constructor(props)
-    {
-        super(props)
-    }
+const defaultProps = {
+  center: {
+    lat: 42.2565,
+    lng: -121.7855,
+  },
+  zoom: 17,
+};
 
-    render()
-    {
-        return (
-            <div id="map">
-                a
-            </div>
-        );
-    }
+class Map extends Component {
+  render() {
+    return (
+      <div id='map'>
+        <div id='wrapper'>
+          <GoogleMapReact
+            bootstrapURLKeys={{
+              key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o',
+            }}
+            defaultCenter={defaultProps.center}
+            defaultZoom={defaultProps.zoom}
+          ></GoogleMapReact>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default Map;

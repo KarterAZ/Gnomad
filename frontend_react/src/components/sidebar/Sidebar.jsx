@@ -14,9 +14,9 @@ class Sidebar extends Component {
 
   handleClick() {
     if (this.open) {
-      document.getElementById('sidebar-container').style.width = '0px';
+      document.getElementById('sidebar-container').style.width = '0%';
     } else {
-      document.getElementById('sidebar-container').style.width = '35%';
+      document.getElementById('sidebar-container').style.width = '100%';
     }
 
     this.open = !this.open;
@@ -24,46 +24,44 @@ class Sidebar extends Component {
 
   render() {
     return (
-      <div id='sidebar-wrapper'>
-        <div id='sidebar-container'>
-          <div id='sidebar-content'>
-            <section className='section' id='header-section'>
-              <div id='user-section'>
-                <LoginButton />
-                <LogoutButton />
-              </div>
+      <div id='sidebar-container'>
+        <div id='sidebar-content'>
+          <section className='section' id='header-section'>
+            <div id='user-section'>
+              <LoginButton />
+              <LogoutButton />
+            </div>
 
-              <div id='settings-button-wrapper'>
-                <Icon id='settings-button' icon='ph:gear-six-duotone' />
-              </div>
-            </section>
+            <div id='settings-button-wrapper'>
+              <Icon id='settings-button' icon='ph:gear-six-duotone' />
+            </div>
+          </section>
 
-            <section className='section' id='search-section'>
-              <label>Search:</label>
-              <input id='search-bar' type='text'></input>
-              <button className='button' id='search-button'>
-                Submit
+          <section className='section' id='search-section'>
+            <label>Search:</label>
+            <input id='search-bar' type='text'></input>
+            <button className='button' id='search-button'>
+              Submit
+            </button>
+          </section>
+
+          <section className='section' id='pins-section'>
+            <div id='pin-group'>
+              <select defaultValue={0} id='pin-select'>
+                <option value='0' disabled>
+                  Select a Pin Type
+                </option>
+                <option value='1'>All</option>
+                <option value='2'>Bathrooms</option>
+                <option value='3'>Wi-Fi</option>
+              </select>
+              <button className='button' id='pin-button'>
+                Create
               </button>
-            </section>
+            </div>
 
-            <section className='section' id='pins-section'>
-              <div id='pin-group'>
-                <select defaultValue={0} id='pin-select'>
-                  <option value='0' disabled>
-                    Select a Pin Type
-                  </option>
-                  <option value='1'>All</option>
-                  <option value='2'>Bathrooms</option>
-                  <option value='3'>Wi-Fi</option>
-                </select>
-                <button className='button' id='pin-button'>
-                  Create
-                </button>
-              </div>
-
-              <div id='pins-list'></div>
-            </section>
-          </div>
+            <div id='pins-list'></div>
+          </section>
         </div>
         <div onClick={this.handleClick} id='handle'>
           <Icon icon='charm:menu-hamburger' />

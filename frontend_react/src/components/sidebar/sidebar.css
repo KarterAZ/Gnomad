@@ -4,37 +4,36 @@
   border: none;
   cursor: pointer;
 
-  background-color: #FEE9E1;
+  overflow: hidden;
+
+  background-color: var(--secondary-background);
+  color: var(--secondary-foreground);
 }
 
 .button:hover {
-  background-color: #B09E99;
+  background-color: var(--primary-foreground-hover);
 }
 
 #sidebar-container {
   display: flex;
   flex-direction: column;
 
-  width: 35%;
+  width: 100%;
   max-width: 400px;
 
-  height: 100vh;
-
-  background-color: #64B6AC;
-  background: linear-gradient(#64B6AC, #64b68a);
-  color: #FEE9E1;
+  background-color: #64b6ac;
+  background: var(--gradient-background);
 
   overflow: hidden;
 
-  transition: 0.5s ease-in-out;
-}
-
-#sidebar-wrapper {
-  display: flex;
-  flex-direction: row;
+  transition: width 0.5s ease-in-out;
 }
 
 #handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+
   display: flex;
   justify-content: center;
   align-items: center;
@@ -46,12 +45,14 @@
 
   border-radius: 0 0 6px 0;
 
-  background-color: #64B6AC;
-  color: #FEE9E1;
+  background-color: var(--primary-background);
+  color: var(--primary-foreground);
+
+  z-index: 100;
 }
 
 #handle:hover {
-  color: #B09E99;
+  color: var(--primary-foreground-hover);
 }
 
 #sidebar-content {
@@ -61,7 +62,7 @@
   height: 100%;
 
   padding: 10px;
-  color: #FEE9E1;
+  color: var(--primary-foreground);
 }
 
 .section {
@@ -77,11 +78,11 @@
 
 #user-section a {
   text-decoration: none;
-  color: #FEE9E1;
+  color: var(--primary-foreground);
 }
 
 #user-section a:hover {
-  color: #B09E99;
+  color: var(--primary-foreground-hover);
 }
 
 #header-section {
@@ -89,15 +90,18 @@
   flex-direction: row;
   align-items: center;
 
+  margin-left: 50px;
+
   justify-content: space-between;
 }
 
 #settings-button {
   font-size: 2em;
+  color: var(--primary-foreground);
 }
 
 #settings-button:hover {
-  filter: brightness(70%);
+  color: var(--primary-foreground-hover);
 }
 
 #search-section {
@@ -106,11 +110,13 @@
 }
 
 #search-bar {
-  background-color: #FEE9E1;
+  background-color: var(--secondary-background);
   height: 2em;
   border: none;
 
   margin-bottom: 5px;
+
+  color: var(--secondary-foreground);
 }
 
 #search-button {
@@ -134,10 +140,12 @@
 }
 
 #pin-select {
-  background-color: #FEE9E1;
+  background-color: var(--secondary-background);
   height: 2em;
   width: 48%;
   border: none;
+
+  cursor: pointer;
 
   margin-bottom: 5px;
 }
@@ -157,5 +165,18 @@
 
   overflow-y: scroll;
 
-  background-color: #FEE9E1;
+  background-color: var(--secondary-background);
+}
+
+#pins-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+#pins-list::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+}
+
+#pins-list::-webkit-scrollbar-thumb {
+  background: var(--primary-background-accent);
+  border-radius: 10px;
 }
