@@ -13,4 +13,6 @@
   border-radius: 4px;
 
   visibility: hidden;
+
+  user-select: none;
 }
