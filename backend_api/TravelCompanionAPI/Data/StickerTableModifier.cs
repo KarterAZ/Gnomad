@@ -88,7 +88,7 @@ namespace TravelCompanionAPI.Data
                         sticker.Latitude = reader.GetInt32(3);
                         sticker.Title = reader.GetString(4);
                         sticker.Street = reader.GetString(5);
-                        sticker.Add(sticker);
+                        stickers.Add(sticker);
                     }
                 }
             }
@@ -122,7 +122,7 @@ namespace TravelCompanionAPI.Data
                         sticker.Latitude = reader.GetInt32(3);
                         sticker.Title = reader.GetString(4);
                         sticker.Street = reader.GetString(5);
-                        sticker.Add(sticker);
+                        stickers.Add(sticker);
                     }
                 }
             }
