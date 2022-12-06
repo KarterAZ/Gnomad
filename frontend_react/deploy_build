@@ -2,4 +2,4 @@
 
 scp -r build aws:/home/ubuntu
 
-ssh aws "sudo cp -r ./build/* /var/www/html && rm -r ./build"
+ssh -t aws "sudo cp -r ./build/* /var/www/html && rm -r ./build"
