@@ -1,0 +1,5 @@
+#!/usr/bin/bash
+
+scp -r build aws:/home/ubuntu
+
+ssh aws "sudo cp -r ./build/* /var/www/html && rm -r ./build"
