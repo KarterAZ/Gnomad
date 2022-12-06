@@ -16,6 +16,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Data;
+using TravelCompanionAPI.Extras;
 
 namespace TravelCompanionAPI.Controllers
 {
@@ -53,11 +54,19 @@ namespace TravelCompanionAPI.Controllers
         }
 
         [HttpPost("create")]
-        public JsonResult create(User user)
+        public async Task<JsonResult> create(User user)
         {
-            _repo.add(user);
+            string token = Utilities.parseToken(Request);
+            Identity id = new Identity(token);
 
-            return new JsonResult(Ok(user));
+            if (await id.validateAsync())
+            {
+                return new JsonResult(Ok(user));
+            }
+
+            //_repo.add(user);
+
+            return new JsonResult(Ok("Authentication Failed"));
         }
     }
 }
