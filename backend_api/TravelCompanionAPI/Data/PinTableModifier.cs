@@ -40,7 +40,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = _connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = @Id);";
+                command.CommandText = "SELECT * FROM " + TABLE + " WHERE(`id` = @Id);";
                 command.Parameters.AddWithValue("Id", id);
 
                 _connection.Open();
@@ -107,7 +107,7 @@ namespace TravelCompanionAPI.Data
                 command.Connection = _connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`user_id` = @Uid);";
-                command.Parameters.AddWithValue("Uid", uid);
+                command.Parameters.AddWithValue("@Uid", uid);
 
                 _connection.Open();
 
@@ -138,9 +138,10 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = _connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO " + TABLE + " (longitude, latitude, title, street) VALUES (@Longitude, @Latitude, @Title, @Street);";
+                command.CommandText = "INSERT INTO " + TABLE + " (user_id, longitude, latitude, title, street) VALUES (@userID, @Longitude, @Latitude, @Title, @Street);";
+                command.Parameters.AddWithValue("@userId", pin.UserId);
                 command.Parameters.AddWithValue("@Longitude", pin.Longitude);
-                command.Parameters.AddWithValue("@DLatitude", pin.Latitude);
+                command.Parameters.AddWithValue("@Latitude", pin.Latitude);
                 command.Parameters.AddWithValue("@Title", pin.Title);
                 command.Parameters.AddWithValue("@Street", pin.Street);
 
