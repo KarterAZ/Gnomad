@@ -1,5 +1,7 @@
 #!/usr/bin/bash
 
+npm run build
+
 scp -r build aws:/home/ubuntu
 
 ssh -t aws "sudo cp -r ./build/* /var/www/html && rm -r ./build"

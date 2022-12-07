@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Icon } from '@iconify/react';
 import { LoginButton, LogoutButton } from '../login_button/LoginButton';
+import { getCookie } from '../../cookies';
 
 import './sidebar.css';
 
@@ -22,6 +23,20 @@ class Sidebar extends Component {
     this.open = !this.open;
   }
 
+  search() {
+    console.log('running get request...');
+    const cookie = 'Bearer ' + getCookie('access_token');
+    console.log(cookie);
+    fetch('https://localhost:5000/', {
+      headers: {
+        Accept: '*/*',
+        Authorization: cookie
+      }
+   }) 
+   .then(resp => resp.json())
+   .then(json => console.log(json))
+  }
+
   render() {
     return (
       <div id='sidebar-container'>
@@ -40,7 +55,7 @@ class Sidebar extends Component {
           <section className='section' id='search-section'>
             <label>Search:</label>
             <input id='search-bar' type='text'></input>
-            <button className='button' id='search-button'>
+            <button className='button' id='search-button' onClick={this.search}>
               Submit
             </button>
           </section>

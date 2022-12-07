@@ -1,11 +1,15 @@
 import { useGoogleLogin } from '@react-oauth/google';
 import { googleLogout } from '@react-oauth/google';
+import { setCookie } from '../../cookies';
 import './login_button.css';
+
+function SaveAccessToken(response) {
+  setCookie('access_token', response.access_token);
+}
 
 export function LoginButton() {
   const login = useGoogleLogin({
-    onSuccess: (codeResponse) => console.log(codeResponse),
-    flow: 'auth-code',
+    onSuccess: (codeResponse) => SaveAccessToken(codeResponse),
   });
 
   return (
