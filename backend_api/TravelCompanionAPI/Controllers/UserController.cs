@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Data;
 using TravelCompanionAPI.Extras;
@@ -22,6 +23,7 @@ namespace TravelCompanionAPI.Controllers
 {
     [Route("user")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         //Repo is the list of users in the database

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Data;
 
@@ -11,6 +12,7 @@ namespace TravelCompanionAPI.Controllers
 {
     [Route("pins")]
     [ApiController]
+    [Authorize]
     public class PinController : ControllerBase
     {
         private IDataRepository<Pin> _repo;
