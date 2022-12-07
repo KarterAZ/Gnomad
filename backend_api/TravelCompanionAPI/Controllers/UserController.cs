@@ -58,19 +58,9 @@ namespace TravelCompanionAPI.Controllers
         [HttpPost("create")]
         public async Task<JsonResult> create(User user)
         {
-            /*string token = Utilities.parseToken(Request);
-            Identity id = new Identity(token);
-
-            if (await id.validateAsync())
-            {
-                return new JsonResult(Ok(user));
-            }*/
-
             _repo.add(user);
 
             return new JsonResult(Ok(user));
-
-            //return new JsonResult(Ok("Authentication Failed"));
         }
     }
 }
