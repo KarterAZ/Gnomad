@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TravelCompanionAPI.Models;
 
 namespace TravelCompanionAPI.Controllers;
 
@@ -16,9 +17,13 @@ public class HomeController : Controller
     /// </summary>
     /// <returns></returns>
     [HttpGet]
-    public IActionResult Index()
+    public JsonResult Index()
     {
-        var currentUser = User.Identity.Name;
-        return Ok($"Current User: {currentUser}");
+        var currentUser = User.Identity.Name.Split(' ');
+        var first_name = currentUser[0];
+        var last_name = currentUser[1];
+
+        User user = new User("", "", first_name, last_name);
+        return new JsonResult(Ok(user));
     }
 }

@@ -22,6 +22,7 @@ using System.IO;
 using System.Reflection;
 using TravelCompanionAPI.Data;
 using TravelCompanionAPI.Models;
+using static System.Net.WebRequestMethods;
 
 namespace TravelCompanionAPI
 {
@@ -96,6 +97,10 @@ namespace TravelCompanionAPI
                                     {
                                         "https://www.googleapis.com/auth/userinfo.profile",
                                         "Profile"
+                                    },
+                                    {
+                                        "https://www.googleapis.com/auth/iam",
+                                        "IAM"
                                     }
                                 }
                             }

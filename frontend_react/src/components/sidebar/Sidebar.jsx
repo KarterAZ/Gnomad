@@ -25,7 +25,7 @@ class Sidebar extends Component {
 
   search() {
     console.log('running get request...');
-    const cookie = 'Bearer ' + getCookie('access_token');
+    const cookie = 'Bearer ' + getCookie('id_token');
     console.log(cookie);
     fetch('https://localhost:5000/', {
       headers: {
@@ -37,14 +37,19 @@ class Sidebar extends Component {
    .then(json => console.log(json))
   }
 
+  responseGoogle(response)
+  {
+    console.log(response);
+    //setCookie('access_token', response.access_token);
+  }
+
   render() {
     return (
       <div id='sidebar-container'>
         <div id='sidebar-content'>
           <section className='section' id='header-section'>
             <div id='user-section'>
-              <LoginButton />
-              <LogoutButton />
+              <LoginButton/>
             </div>
 
             <div id='settings-button-wrapper'>
