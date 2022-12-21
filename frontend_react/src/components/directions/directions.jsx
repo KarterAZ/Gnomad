@@ -1,29 +1,30 @@
+//################################################################
+//
+// Authors: Bryce Schultz
+// Date: 12/19/2022
+// 
+// Purpose: React component for rendering the directions
+//
+//################################################################
+
 import React, { Component } from 'react';
 
 import './directions.css';
 
-class directions extends Component {
-  constructor(props) {
+class directions extends Component 
+{
+  constructor(props) 
+  {
     super(props);
 
-    this.handleClick = this.handleClick.bind(this);
-    this.open = true;
+    this.current_direction = "Take the next right"
   }
 
-  handleClick() {
-    if (this.open) {
-      document.getElementById('directions-container').style.width = '0px';
-    } else {
-      document.getElementById('directions-container').style.width = '15%';
-    }
-
-    this.open = !this.open;
-  }
-
-  render() {
+  render() 
+  {
     return (
       <div id='directions-wrapper'>
-        <div id='next-turn'>Take the next right</div>
+        <div id='next-turn'>{this.current_direction}</div>
       </div>
     );
   }

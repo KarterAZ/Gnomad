@@ -33,5 +33,7 @@ namespace TravelCompanionAPI.Data
         public List<T> getAll();
 
         public int add(T data);
+
+        public bool contains(T data);
     }
 }

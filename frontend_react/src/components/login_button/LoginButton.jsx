@@ -1,14 +1,25 @@
-import { useGoogleLogin } from '@react-oauth/google';
+//################################################################
+//
+// Authors: Bryce Schultz
+// Date: 12/19/2022
+// 
+// Purpose: Creates the google login react component
+//
+//################################################################
+
 import { googleLogout } from '@react-oauth/google';
-import { setCookie } from '../../cookies';
+import { setCookie } from '../../utilities/cookies';
 import './login_button.css';
 
-window.SaveAccessToken = (response) => {
-  console.log(response);
+// Save the access token returned on login
+window.SaveAccessToken = (response) => 
+{
   setCookie('id_token', response.credential);
 }
 
-export function LoginButton() {
+// LoginButton component
+function LoginButton() 
+{
   return (
     <>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -21,10 +32,13 @@ export function LoginButton() {
   );
 }
 
-export function LogoutButton() {
+// LogoutButton component
+function LogoutButton() {
   return (
     <button className='user-button' onClick={googleLogout()}>
       Logout
     </button>
   );
 }
+
+export { LoginButton, LogoutButton }

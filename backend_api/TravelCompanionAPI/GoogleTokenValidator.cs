@@ -1,4 +1,13 @@
-﻿using Google.Apis.Auth;
+﻿/************************************************************************************************
+*
+* Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
+* Date: 11/28/2022
+*
+* Purpose: Validates google oauth tokens.
+*
+************************************************************************************************/
+
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
@@ -32,29 +41,39 @@ internal class GoogleTokenValidator : ISecurityTokenValidator
 
     public ClaimsPrincipal ValidateToken(string securityToken, TokenValidationParameters validationParameters, out SecurityToken validatedToken)
     {
+        // call googles validate function
         var payload = GoogleJsonWebSignature.ValidateAsync(securityToken, new GoogleJsonWebSignature.ValidationSettings()).Result;
 
+        // initialize the token to null
+        validatedToken = null;
+
+        // create the claims list
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, payload.Name),
+            new (ClaimTypes.NameIdentifier, payload.Name),
             new (ClaimTypes.Name, payload.Name),
             new (JwtRegisteredClaimNames.Email, payload.Email),
             new (JwtRegisteredClaimNames.Sub, payload.Subject),
             new (JwtRegisteredClaimNames.Iss, payload.Issuer)
         };
 
+        // try to read the security token, if successful return the principle
         try
         {
             validatedToken = _tokenHandler.ReadJwtToken(securityToken);
             var principle = new ClaimsPrincipal();
             principle.AddIdentity(new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme));
+
+            // validation was successful, return the principle
             return principle;
         }
         catch (Exception e)
         {
+            // log the problem
             Console.WriteLine(e);
-            throw;
-
         }
+
+        // validation failed, return null
+        return null;
     }
 }

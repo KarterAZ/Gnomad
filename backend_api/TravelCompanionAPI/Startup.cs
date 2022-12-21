@@ -1,3 +1,12 @@
+/************************************************************************************************
+*
+* Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
+* Date: 11/28/2022
+*
+* Purpose: Sets up the REST API, Swagger, and google authentication.
+*
+************************************************************************************************/
+
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

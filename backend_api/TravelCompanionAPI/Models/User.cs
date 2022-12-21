@@ -22,11 +22,11 @@ namespace TravelCompanionAPI.Models
         public User()
         { }
 
-        public User(string email, string display_name, string first_name, string last_name)
+        public User(string email, string profile_photo_URL, string first_name, string last_name)
         {
             Id = -1;
             Email = email;
-            DisplayName = display_name;
+            ProfilePhotoURL = profile_photo_URL;
             FirstName = first_name;
             LastName = last_name;
         }
@@ -34,15 +34,15 @@ namespace TravelCompanionAPI.Models
         [BindNever] //User shouldn't be able to change Id
         public int Id { get; set; }
         public string Email { get; set; }
-        public string DisplayName { get; set; }
+        public string ProfilePhotoURL { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
         public void print()
         {
             Console.WriteLine(
-                "id: {0}\nemail: {1}\ndisplay name: {2}\nfirst name: {3}\nlast name: {4}"
-                , Id, Email, DisplayName, FirstName, LastName);
+                "id: {0}\nemail: {1}\nprofile photo url: {2}\nfirst name: {3}\nlast name: {4}"
+                , Id, Email, ProfilePhotoURL, FirstName, LastName);
         }
     }
 }

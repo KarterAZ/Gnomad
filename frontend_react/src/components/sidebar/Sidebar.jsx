@@ -1,49 +1,64 @@
+//################################################################
+//
+// Authors: Bryce Schultz
+// Date: 12/19/2022
+// 
+// Purpose: Creates the sidebar react component
+//
+//################################################################
+
 import React, { Component } from 'react';
 import { Icon } from '@iconify/react';
+
 import { LoginButton, LogoutButton } from '../login_button/LoginButton';
-import { getCookie } from '../../cookies';
+import { getCookie } from '../../utilities/cookies';
 
 import './sidebar.css';
 
-class Sidebar extends Component {
-  constructor(props) {
+class Sidebar extends Component 
+{
+  constructor(props) 
+  {
     super(props);
 
     this.handleClick = this.handleClick.bind(this);
     this.open = true;
   }
 
-  handleClick() {
-    if (this.open) {
+  handleClick() 
+  {
+    if (this.open) 
+    {
       document.getElementById('sidebar-container').style.width = '0%';
-    } else {
+    } 
+    else 
+    {
       document.getElementById('sidebar-container').style.width = '100%';
     }
 
     this.open = !this.open;
   }
 
-  search() {
+  search() 
+  {
     console.log('running get request...');
     const cookie = 'Bearer ' + getCookie('id_token');
     console.log(cookie);
-    fetch('https://localhost:5000/', {
-      headers: {
+
+    fetch('https://localhost:5000/', 
+    {
+      headers: 
+      {
         Accept: '*/*',
         Authorization: cookie
       }
-   }) 
-   .then(resp => resp.json())
-   .then(json => console.log(json))
+    })
+    .then(resp => resp.json())
+    .then(json => console.log(json))
   }
 
-  responseGoogle(response)
+  render() 
   {
-    console.log(response);
-    //setCookie('access_token', response.access_token);
-  }
-
-  render() {
     return (
       <div id='sidebar-container'>
         <div id='sidebar-content'>
@@ -53,7 +68,7 @@ class Sidebar extends Component {
             </div>
 
             <div id='settings-button-wrapper'>
-              <Icon id='settings-button' icon='ph:gear-six-duotone' />
+              <Icon id='settings-button' icon='ph:gear-six-duotone'/>
             </div>
           </section>
 
@@ -84,7 +99,7 @@ class Sidebar extends Component {
           </section>
         </div>
         <div onClick={this.handleClick} id='handle'>
-          <Icon icon='charm:menu-hamburger' />
+          <Icon icon='charm:menu-hamburger'/>
         </div>
       </div>
     );

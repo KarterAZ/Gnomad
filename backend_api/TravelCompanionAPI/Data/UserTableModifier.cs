@@ -63,7 +63,7 @@ namespace TravelCompanionAPI.Data
                         user = new User();
                         user.Id = reader.GetInt32(0);
                         user.Email = reader.GetString(1);
-                        user.DisplayName = reader.GetString(2);
+                        user.ProfilePhotoURL = reader.GetString(2);
                         user.FirstName = reader.GetString(3);
                         user.LastName = reader.GetString(4);
                     }
@@ -94,7 +94,7 @@ namespace TravelCompanionAPI.Data
                         User user = new User();
                         user.Id = reader.GetInt32(0);
                         user.Email = reader.GetString(1);
-                        user.DisplayName = reader.GetString(2);
+                        user.ProfilePhotoURL = reader.GetString(2);
                         user.FirstName = reader.GetString(3);
                         user.LastName = reader.GetString(4);
                         users.Add(user);
@@ -107,6 +107,12 @@ namespace TravelCompanionAPI.Data
             return users;
         }
 
+        public bool contains(User user)
+        {
+            //TODO: check databse for user by email or id and if they exist return true, else return false.
+            return false;
+        }
+
         public int add(User user)
         {
             using (MySqlCommand command = new MySqlCommand())
@@ -115,7 +121,7 @@ namespace TravelCompanionAPI.Data
                 command.CommandType = CommandType.Text;
                 command.CommandText = "INSERT INTO " + TABLE + " (email, display_name, first_name, last_name) VALUES (@Email, @DisplayName, @FirstName, @LastName);";
                 command.Parameters.AddWithValue("@Email", user.Email);
-                command.Parameters.AddWithValue("@DisplayName", user.DisplayName);
+                command.Parameters.AddWithValue("@DisplayName", user.ProfilePhotoURL);
                 command.Parameters.AddWithValue("@FirstName", user.FirstName);
                 command.Parameters.AddWithValue("@LastName", user.LastName);
 

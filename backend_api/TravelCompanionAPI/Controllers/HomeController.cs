@@ -1,4 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿/************************************************************************************************
+*
+* Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
+* Date: 11/28/2022
+*
+* Purpose: Temp file to test user authentication.
+*
+************************************************************************************************/
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelCompanionAPI.Models;
 
