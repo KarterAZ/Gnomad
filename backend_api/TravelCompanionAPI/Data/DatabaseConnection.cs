@@ -7,15 +7,7 @@
 *
 ************************************************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Data;
-using Microsoft.Extensions.Configuration;
-using MySql.Data;
 using MySql.Data.MySqlClient;
-using System.Configuration;
 
 namespace TravelCompanionAPI.Data
 {

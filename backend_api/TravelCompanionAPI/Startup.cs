@@ -7,23 +7,15 @@
 *
 ************************************************************************************************/
 
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Google.Apis.Auth.AspNetCore3;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Interfaces;
@@ -31,8 +23,6 @@ using System.IO;
 using System.Reflection;
 using TravelCompanionAPI.Data;
 using TravelCompanionAPI.Models;
-using static System.Net.WebRequestMethods;
-
 namespace TravelCompanionAPI
 {
     public class Startup
@@ -156,7 +146,6 @@ namespace TravelCompanionAPI
 
             app.UseAuthentication();
             
-
             app.UseRouting();
             
             app.UseCors(CorsPolicyName);

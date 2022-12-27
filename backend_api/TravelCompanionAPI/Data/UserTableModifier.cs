@@ -8,15 +8,9 @@
 ************************************************************************************************/
 
 using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TravelCompanionAPI.Models;
-using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using static Org.BouncyCastle.Math.EC.ECCurve;
-using System.Data.Common;
 using System.Data;
 
 namespace TravelCompanionAPI.Data
@@ -51,8 +45,8 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = _connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = @Id);";
-                command.Parameters.AddWithValue("Id", id);
+                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE id = @Id;";
+                command.Parameters.AddWithValue("@Id", id);
 
                 _connection.Open();
 
@@ -119,9 +113,9 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = _connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO " + TABLE + " (email, display_name, first_name, last_name) VALUES (@Email, @DisplayName, @FirstName, @LastName);";
+                command.CommandText = "INSERT INTO " + TABLE + " (email, profile_photo_url, first_name, last_name) VALUES (@Email, @ProfilePhotoURL, @FirstName, @LastName);";
                 command.Parameters.AddWithValue("@Email", user.Email);
-                command.Parameters.AddWithValue("@DisplayName", user.ProfilePhotoURL);
+                command.Parameters.AddWithValue("@ProfilePhotoURL", user.ProfilePhotoURL);
                 command.Parameters.AddWithValue("@FirstName", user.FirstName);
                 command.Parameters.AddWithValue("@LastName", user.LastName);
 
