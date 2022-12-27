@@ -9,8 +9,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import * as serviceWorkerRegistration from './serviceWorkerRegistration';
-import reportWebVitals from './reportWebVitals';
+import * as serviceWorkerRegistration from './pwa_code/serviceWorkerRegistration';
+import reportWebVitals from './pwa_code/reportWebVitals';
 
 import './index.css';
 import App from './App';

@@ -25,7 +25,7 @@ function setCookie(name, value, expire_days = 1)
 // will return and empty string if no value is defined.
 function getCookie(name) 
 {
-  let name = name + '=';
+  name += '=';
   let decodedCookie = decodeURIComponent(document.cookie);
   let ca = decodedCookie.split(';');
 

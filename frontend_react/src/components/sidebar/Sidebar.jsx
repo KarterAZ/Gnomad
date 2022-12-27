@@ -10,7 +10,7 @@
 import React, { Component } from 'react';
 import { Icon } from '@iconify/react';
 
-import { LoginButton, LogoutButton } from '../login_button/LoginButton';
+import { LoginButton } from '../login_button/LoginButton';
 import { getCookie } from '../../utilities/cookies';
 
 import './sidebar.css';
@@ -41,9 +41,7 @@ class Sidebar extends Component
 
   search() 
   {
-    console.log('running get request...');
     const cookie = 'Bearer ' + getCookie('id_token');
-    console.log(cookie);
 
     fetch('https://localhost:5000/', 
     {
@@ -54,7 +52,8 @@ class Sidebar extends Component
       }
     })
     .then(resp => resp.json())
-    .then(json => console.log(json))
+    .then(json => json.value)
+    .then(user => { return user });
   }
 
   render() 
