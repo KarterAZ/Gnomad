@@ -31,7 +31,8 @@
     "workbox-routing": "^6.5.4",
     "workbox-strategies": "^6.5.4",
     "workbox-streams": "^6.5.4",
-    "loader-utils": "^3.2.1"
+    "loader-utils": ">=3.2.1",
+    "nth-check": ">=2.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
