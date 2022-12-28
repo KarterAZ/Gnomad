@@ -95,7 +95,7 @@ namespace TravelCompanionAPI.Data
                     }
                 }
             }
-            
+
             _connection.Close();
 
             return users;
