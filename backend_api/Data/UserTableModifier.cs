@@ -103,8 +103,30 @@ namespace TravelCompanionAPI.Data
 
         public bool contains(User user)
         {
-            //TODO: check databse for user by email or id and if they exist return true, else return false.
-            return false;
+            bool exists = false;
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = _connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email=" + user.Email + ";";
+
+                _connection.Open();
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (user.Email == reader.GetString(0))
+                        {
+                            exists = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            _connection.Close();
+
+            return exists;
         }
 
         public int add(User user)
