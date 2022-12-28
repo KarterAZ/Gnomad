@@ -108,8 +108,8 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = _connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email=" + user.Email + ";";
-
+                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email = @Email;";
+                 command.Parameters.AddWithValue("@Email",user.Email);
                 _connection.Open();
 
                 using (MySqlDataReader reader = command.ExecuteReader())
