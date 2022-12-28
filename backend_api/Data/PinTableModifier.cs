@@ -157,15 +157,16 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = _connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email = @Email;";
-                 command.Parameters.AddWithValue("@Email",user.Email);
+                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
+                command.Parameters.AddWithValue("@Longitude", pin.Longitude);
+                command.Parameters.AddWithValue("@Latitude", pin.Latitude);
                 _connection.Open();
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        if (user.Email == reader.GetString(0))
+                        if (data.longitude == reader.GetString(0) &data.latitude==reader.GetString(1))
                         {
                             exists = true;
                             break;
@@ -177,7 +178,7 @@ namespace TravelCompanionAPI.Data
 
             return exists;
         }
-        
+
         }
     }
 }
