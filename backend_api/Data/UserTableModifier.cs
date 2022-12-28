@@ -101,32 +101,36 @@ namespace TravelCompanionAPI.Data
             return users;
         }
 
+        private readonly object _lockObject = new object();
         public bool contains(User user)
         {
-            bool exists = false;
-            using (MySqlCommand command = new MySqlCommand())
+            lock (_lockObject)
             {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email = @Email;";
-                 command.Parameters.AddWithValue("@Email",user.Email);
-                _connection.Open();
-
-                using (MySqlDataReader reader = command.ExecuteReader())
+                bool exists = false;
+                using (MySqlCommand command = new MySqlCommand())
                 {
-                    while (reader.Read())
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email = @Email;";
+                    command.Parameters.AddWithValue("@Email",user.Email);
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        if (user.Email == reader.GetString(0))
+                        while (reader.Read())
                         {
-                            exists = true;
-                            break;
+                            if (user.Email == reader.GetString(0))
+                            {
+                                exists = true;
+                                break;
+                            }
                         }
                     }
                 }
-            }
-            _connection.Close();
+                _connection.Close();
 
-            return exists;
+                return exists;
+            }
         }
 
         public int add(User user)
