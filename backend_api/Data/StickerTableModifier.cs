@@ -149,9 +149,33 @@ namespace TravelCompanionAPI.Data
             return 0;
         }
 
-        public bool contains(Sticker data)
-        {
-            throw new NotImplementedException();
+       public bool contains(Sticker data)
+         {
+           bool exists = false;
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = _connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
+                command.Parameters.AddWithValue("@Longitude", pin.Longitude);
+                command.Parameters.AddWithValue("@Latitude", pin.Latitude);
+                _connection.Open();
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (data.longitude == reader.GetString(0) && data.latitude==reader.GetString(1))
+                        {
+                            exists = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            _connection.Close();
+
+            return exists;
         }
     }
 }

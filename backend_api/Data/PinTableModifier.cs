@@ -166,7 +166,7 @@ namespace TravelCompanionAPI.Data
                 {
                     while (reader.Read())
                     {
-                        if (data.longitude == reader.GetString(0) &data.latitude==reader.GetString(1))
+                        if (data.longitude == reader.GetString(0) && data.latitude==reader.GetString(1))
                         {
                             exists = true;
                             break;
@@ -177,7 +177,7 @@ namespace TravelCompanionAPI.Data
             _connection.Close();
 
             return exists;
-        }
+        }//c
 
         }
     }
