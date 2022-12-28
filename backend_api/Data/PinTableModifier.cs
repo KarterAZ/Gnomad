@@ -150,34 +150,37 @@ namespace TravelCompanionAPI.Data
             return 0;
         }
 
+        private readonly object _lockObject = new object();
          public bool contains(Pin data)
          {
-           bool exists = false;
-            using (MySqlCommand command = new MySqlCommand())
-            {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
-                command.Parameters.AddWithValue("@Longitude", pin.Longitude);
-                command.Parameters.AddWithValue("@Latitude", pin.Latitude);
-                _connection.Open();
-
-                using (MySqlDataReader reader = command.ExecuteReader())
+            lock (_lockObject)
+            {            
+                bool exists = false;
+                using (MySqlCommand command = new MySqlCommand())
                 {
-                    while (reader.Read())
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
+                    command.Parameters.AddWithValue("@Longitude", pin.Longitude);
+                    command.Parameters.AddWithValue("@Latitude", pin.Latitude);
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        if (data.longitude == reader.GetString(0) && data.latitude==reader.GetString(1))
+                        while (reader.Read())
                         {
-                            exists = true;
-                            break;
+                            if (data.longitude == reader.GetString(0) && data.latitude==reader.GetString(1))
+                            {
+                                exists = true;
+                                break;
+                            }
                         }
                     }
                 }
-            }
-            _connection.Close();
+                _connection.Close();
 
-            return exists;
-        }//c
+                return exists;
+            }//c
 
         }
     }
