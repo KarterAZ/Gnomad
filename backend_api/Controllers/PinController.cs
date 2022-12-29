@@ -1,3 +1,12 @@
+/************************************************************************************************
+*
+* Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
+* Date: 12/28/2022
+*
+* Purpose: Contains Pin Controllers.
+*
+************************************************************************************************/
+
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;

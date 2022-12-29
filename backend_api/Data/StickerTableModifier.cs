@@ -1,4 +1,13 @@
-﻿using MySql.Data.MySqlClient;
+﻿/************************************************************************************************
+*
+* Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
+* Date: 12/28/2022
+*
+* Purpose: Holds the functions for table modifications and access.
+*
+************************************************************************************************/
+
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using TravelCompanionAPI.Models;
@@ -96,12 +105,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = _connection;
                 command.CommandType = CommandType.Text;
-<<<<<<< HEAD:backend_api/TravelCompanionAPI/Data/PinTagTableModifier.cs
                 command.CommandText = @"SELECT * FROM " + TABLE + ";";
-=======
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`user_id` = @UId);";
-                command.Parameters.AddWithValue("UId", uid);
->>>>>>> main:backend_api/Data/StickerTableModifier.cs
 
                 _connection.Open();
 

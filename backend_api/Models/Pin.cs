@@ -1,4 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿/************************************************************************************************
+*
+* Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
+* Date: 11/28/2022
+*
+* Purpose: Class definition for pins
+*
+************************************************************************************************/
+
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;

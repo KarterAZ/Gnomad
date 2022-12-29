@@ -1,4 +1,13 @@
-﻿using MySql.Data.MySqlClient;
+﻿/************************************************************************************************
+*
+* Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
+* Date: 12/28/2022
+*
+* Purpose: Holds the functions for table modifications and access.
+*
+************************************************************************************************/
+
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using TravelCompanionAPI.Models;
