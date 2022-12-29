@@ -43,6 +43,20 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(pins));
         }
 
+        [HttpGet("get/{user}")]
+        public JsonResult get(int uid)
+        {
+
+            Pin pin = _repo.getAllByUser(uid);
+
+            if (pin == null)
+            {
+                return new JsonResult(NotFound());
+            }
+
+            return new JsonResult(Ok(pin));
+        }
+
         [HttpPost("create")]
         public JsonResult create(Pin pin)
         {
