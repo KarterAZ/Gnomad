@@ -8,17 +8,17 @@ using System.Data;
 namespace TravelCompanionAPI.Data
 {
     //******************************************************************************
-    //This class updates the PinTags table, inheriting from IDataRepository.
+    //This class updates the Pins table, inheriting from IDataRepository.
     //No new methods added.
-    //Implements getByPinId, getByTagId, getAll, and add.
+    //Implements getById, getAll, and add.
     //******************************************************************************
-    public class PinTagTableModifier : IDataRepository<PinTag>
+    public class PinTableModifier : IDataRepository<Pin>
     {
-        const string TABLE = "pintags";
+        const string TABLE = "pins";
         private MySqlConnection _connection;
         //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
-        public PinTagTableModifier(IConfiguration config)
+        public PinTableModifier(IConfiguration config)
         {
             //Switch depending on mode
             string connection = null;
@@ -28,16 +28,15 @@ namespace TravelCompanionAPI.Data
             _connection = new MySqlConnection(connection);
         }
 
-        public List<PinTag> getByPinId(int pid)
+        public Pin getById(int id)
         {
-            List<PinTag> pintags = new List<PinTag>();
-
+            Pin pins = null;
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = _connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`pin_id` = @Pid);";
-                command.Parameters.AddWithValue("@Pid", pid);
+                command.CommandText = "SELECT * FROM " + TABLE + " WHERE(`id` = @Id);";
+                command.Parameters.AddWithValue("Id", id);
 
                 _connection.Open();
 
@@ -45,63 +44,31 @@ namespace TravelCompanionAPI.Data
                 {
                     while (reader.Read())
                     {
-                        PinTag pintag = new PinTag();
-                        pintag.PinId = reader.GetInt32(0);
-                        pintag.TagId = reader.GetInt32(1);
-                        pintagtags.Add(pintag);
+                        pins = new Pin();
+                        pins.Id = reader.GetInt32(0);
+                        pins.UserId = reader.GetInt32(1);
+                        pins.Longitude = reader.GetInt32(2);
+                        pins.Latitude = reader.GetInt32(3);
+                        pins.Title = reader.GetString(4);
+                        pins.Street = reader.GetString(5);
                     }
                 }
             }
 
             _connection.Close();
 
-            return pintags;
+            return pins;
         }
 
-        public List<PinTag> getByTagId(int tid)
+        public List<Pin> getAll()
         {
-            List<PinTag> pintags = new List<PinTag>();
+            List<Pin> pins = new List<Pin>();
 
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = _connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`tag_id` = @Tid);";
-                command.Parameters.AddWithValue("@Tid", tid);
-
-                _connection.Open();
-
-                using (MySqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        PinTag pintag = new PinTag();
-                        pintag.PinId = reader.GetInt32(0);
-                        pintag.TagId = reader.GetInt32(1);
-                        pintagtags.Add(pintag);
-                    }
-                }
-            }
-
-            _connection.Close();
-
-            return pintags;
-        }
-
-        public List<PinTag> getAll()
-        {
-            List<PinTag> pintags = new List<PinTag>();
-
-            using (MySqlCommand command = new MySqlCommand())
-            {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-<<<<<<< HEAD:backend_api/TravelCompanionAPI/Data/PinTagTableModifier.cs
                 command.CommandText = @"SELECT * FROM " + TABLE + ";";
-=======
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`user_id` = @UId);";
-                command.Parameters.AddWithValue("UId", uid);
->>>>>>> main:backend_api/Data/StickerTableModifier.cs
 
                 _connection.Open();
 
@@ -109,28 +76,69 @@ namespace TravelCompanionAPI.Data
                 {
                     while (reader.Read())
                     {
-                        PinTag pintag = new PinTag();
-                        pintag.PinId = reader.GetInt32(0);
-                        pintag.TagId = reader.GetInt32(1);
-                        pintags.Add(pintag);
+                        Pin pin = new Pin();
+                        pin.Id = reader.GetInt32(0);
+                        pin.UserId = reader.GetInt32(1);
+                        pin.Longitude = reader.GetInt32(2);
+                        pin.Latitude = reader.GetInt32(3);
+                        pin.Title = reader.GetString(4);
+                        pin.Street = reader.GetString(5);
+                        pins.Add(pin);
                     }
                 }
             }
 
             _connection.Close();
 
-            return pintagtags;
+            return pins;
         }
 
-        public int add(PinTag pintag)
+        public List<Pin> getAllByUser(int uid)
+        {
+            List<Pin> pins = new List<Pin>();
+
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = _connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`user_id` = @Uid);";
+                command.Parameters.AddWithValue("@Uid", uid);
+
+                _connection.Open();
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Pin pin = new Pin();
+                        pin.Id = reader.GetInt32(0);
+                        pin.UserId = reader.GetInt32(1);
+                        pin.Longitude = reader.GetInt32(2);
+                        pin.Latitude = reader.GetInt32(3);
+                        pin.Title = reader.GetString(4);
+                        pin.Street = reader.GetString(5);
+                        pins.Add(pin);
+                    }
+                }
+            }
+
+            _connection.Close();
+
+            return pins;
+        }
+
+        public int add(Pin pin)
         {
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = _connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO " + TABLE + " (pin_id, tag_id) VALUES (@PiD, @Tid);";
-                command.Parameters.AddWithValue("@Pid", pintag.PinId);
-                command.Parameters.AddWithValue("@Tid", pintag.TagId);
+                command.CommandText = "INSERT INTO " + TABLE + " (user_id, longitude, latitude, title, street) VALUES (@userID, @Longitude, @Latitude, @Title, @Street);";
+                command.Parameters.AddWithValue("@userId", pin.UserId);
+                command.Parameters.AddWithValue("@Longitude", pin.Longitude);
+                command.Parameters.AddWithValue("@Latitude", pin.Latitude);
+                command.Parameters.AddWithValue("@Title", pin.Title);
+                command.Parameters.AddWithValue("@Street", pin.Street);
 
                 _connection.Open();
 
@@ -143,10 +151,10 @@ namespace TravelCompanionAPI.Data
         }
 
         private readonly object _lockObject = new object();
-         public bool contains(Sticker data)
+         public bool contains(Pin data)
          {
             lock (_lockObject)
-            {
+            {            
                 bool exists = false;
                 using (MySqlCommand command = new MySqlCommand())
                 {
@@ -172,7 +180,8 @@ namespace TravelCompanionAPI.Data
                 _connection.Close();
 
                 return exists;
-            }
+            }//c
+
         }
     }
 }

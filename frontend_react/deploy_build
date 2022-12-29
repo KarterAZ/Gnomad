@@ -1,5 +1,19 @@
+##################################################################
+##
+## Authors: Bryce Schultz
+## Date: 12/19/2022
+## 
+## Purpose: Builds and depolys the react app to aws.
+##
+##################################################################
+
 #!/usr/bin/bash
 
+# Build the react app.
+npm run build
+
+# Copy the build files over to aws
 scp -r build aws:/home/ubuntu
 
-ssh -t aws "sudo cp -r ./build/* /var/www/html && rm -r ./build"
+# Move the files to the web folder
+ssh -t aws "sudo rm -r /var/www/html/* && sudo cp -r ./build/* /var/www/html && rm -r ./build"
