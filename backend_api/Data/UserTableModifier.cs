@@ -111,19 +111,16 @@ namespace TravelCompanionAPI.Data
                 {
                     command.Connection = _connection;
                     command.CommandType = CommandType.Text;
-                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email = @Email;";
+                    command.CommandText = @"SELECT COUNT(*) FROM " + TABLE + " WHERE email = @Email;";
                     command.Parameters.AddWithValue("@Email",user.Email);
                     _connection.Open();
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        while (reader.Read())
+                        if (reader.GetInt32() != 0) //Should be 1, but checks if in database.
                         {
-                            if (user.Email == reader.GetString(0))
-                            {
-                                exists = true;
-                                break;
-                            }
+                            exists = true;
+                            break;
                         }
                     }
                 }
