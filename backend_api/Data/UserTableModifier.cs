@@ -38,70 +38,78 @@ namespace TravelCompanionAPI.Data
             _connection = new MySqlConnection(connection);
         }
 
+        private readonly object _lockObject = new object();
+
         public User getById(int id)
         {
-            User user = null;
-            using (MySqlCommand command = new MySqlCommand())
+            lock (_lockObject)
             {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE id = @Id;";
-                command.Parameters.AddWithValue("@Id", id);
-
-                _connection.Open();
-
-                using (MySqlDataReader reader = command.ExecuteReader())
+                User user = null;
+                using (MySqlCommand command = new MySqlCommand())
                 {
-                    while (reader.Read())
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE id = @Id;";
+                    command.Parameters.AddWithValue("@Id", id);
+
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        user = new User();
-                        user.Id = reader.GetInt32(0);
-                        user.Email = reader.GetString(1);
-                        user.ProfilePhotoURL = reader.GetString(2);
-                        user.FirstName = reader.GetString(3);
-                        user.LastName = reader.GetString(4);
+                        while (reader.Read())
+                        {
+                            user = new User();
+                            user.Id = reader.GetInt32(0);
+                            user.Email = reader.GetString(1);
+                            user.ProfilePhotoURL = reader.GetString(2);
+                            user.FirstName = reader.GetString(3);
+                            user.LastName = reader.GetString(4);
+                        }
                     }
                 }
+            
+                _connection.Close();
+
+                return user;
             }
-
-            _connection.Close();
-
-            return user;
         }
 
         public List<User> getAll()
         {
-            List<User> users = new List<User>();
-
-            using (MySqlCommand command = new MySqlCommand())
+            lock (_lockObject)
             {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + ";";
+                List<User> users = new List<User>();
 
-                _connection.Open();
-
-                using (MySqlDataReader reader = command.ExecuteReader())
+                using (MySqlCommand command = new MySqlCommand())
                 {
-                    while (reader.Read())
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM " + TABLE + ";";
+
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        User user = new User();
-                        user.Id = reader.GetInt32(0);
-                        user.Email = reader.GetString(1);
-                        user.ProfilePhotoURL = reader.GetString(2);
-                        user.FirstName = reader.GetString(3);
-                        user.LastName = reader.GetString(4);
-                        users.Add(user);
+                        while (reader.Read())
+                        {
+                            User user = new User();
+                            user.Id = reader.GetInt32(0);
+                            user.Email = reader.GetString(1);
+                            user.ProfilePhotoURL = reader.GetString(2);
+                            user.FirstName = reader.GetString(3);
+                            user.LastName = reader.GetString(4);
+                            users.Add(user);
+                        }
                     }
                 }
+            
+                _connection.Close();
+
+                return users;
             }
-
-            _connection.Close();
-
-            return users;
         }
 
-        private readonly object _lockObject = new object();
+       
         public bool contains(User user)
         {
             lock (_lockObject)
@@ -132,24 +140,27 @@ namespace TravelCompanionAPI.Data
 
         public int add(User user)
         {
-            using (MySqlCommand command = new MySqlCommand())
+            lock (_lockObject)
             {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO " + TABLE + " (email, profile_photo_url, first_name, last_name) VALUES (@Email, @ProfilePhotoURL, @FirstName, @LastName);";
-                command.Parameters.AddWithValue("@Email", user.Email);
-                command.Parameters.AddWithValue("@ProfilePhotoURL", user.ProfilePhotoURL);
-                command.Parameters.AddWithValue("@FirstName", user.FirstName);
-                command.Parameters.AddWithValue("@LastName", user.LastName);
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "INSERT INTO " + TABLE + " (email, profile_photo_url, first_name, last_name) VALUES (@Email, @ProfilePhotoURL, @FirstName, @LastName);";
+                    command.Parameters.AddWithValue("@Email", user.Email);
+                    command.Parameters.AddWithValue("@ProfilePhotoURL", user.ProfilePhotoURL);
+                    command.Parameters.AddWithValue("@FirstName", user.FirstName);
+                    command.Parameters.AddWithValue("@LastName", user.LastName);
 
-                _connection.Open();
+                    _connection.Open();
 
-                command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
+                }
+
+                _connection.Close();
+
+                return 0;
             }
-
-            _connection.Close();
-
-            return 0;
         }
     }
 }
