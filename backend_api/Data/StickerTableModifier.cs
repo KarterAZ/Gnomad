@@ -28,128 +28,141 @@ namespace TravelCompanionAPI.Data
             _connection = new MySqlConnection(connection);
         }
 
+        private readonly object _lockObject = new object();
+
         public Sticker getById(int id)
         {
-            Sticker stickers = null;
-            using (MySqlCommand command = new MySqlCommand())
+            lock (_lockObject)
             {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = @Id);";
-                command.Parameters.AddWithValue("Id", id);
-
-                _connection.Open();
-
-                using (MySqlDataReader reader = command.ExecuteReader())
+                Sticker stickers = null;
+                using (MySqlCommand command = new MySqlCommand())
                 {
-                    while (reader.Read())
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = @Id);";
+                    command.Parameters.AddWithValue("Id", id);
+
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        stickers = new Sticker();
-                        stickers.Id = reader.GetInt32(0);
-                        stickers.UserId = reader.GetInt32(1);
-                        stickers.Longitude = reader.GetInt32(2);
-                        stickers.Latitude = reader.GetInt32(3);
-                        stickers.Title = reader.GetString(4);
-                        stickers.Street = reader.GetString(5);
+                        while (reader.Read())
+                        {
+                            stickers = new Sticker();
+                            stickers.Id = reader.GetInt32(0);
+                            stickers.UserId = reader.GetInt32(1);
+                            stickers.Longitude = reader.GetInt32(2);
+                            stickers.Latitude = reader.GetInt32(3);
+                            stickers.Title = reader.GetString(4);
+                            stickers.Street = reader.GetString(5);
+                        }
                     }
                 }
+
+                _connection.Close();
+
+                return stickers;
             }
-
-            _connection.Close();
-
-            return stickers;
         }
 
         public List<Sticker> getAll()
         {
-            List<Sticker> stickers = new List<Sticker>();
-
-            using (MySqlCommand command = new MySqlCommand())
+            lock (_lockObject)
             {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + ";";
+                List<Sticker> stickers = new List<Sticker>();
 
-                _connection.Open();
-
-                using (MySqlDataReader reader = command.ExecuteReader())
+                using (MySqlCommand command = new MySqlCommand())
                 {
-                    while (reader.Read())
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM " + TABLE + ";";
+
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        Sticker sticker = new Sticker();
-                        sticker.Id = reader.GetInt32(0);
-                        sticker.UserId = reader.GetInt32(1);
-                        sticker.Longitude = reader.GetInt32(2);
-                        sticker.Latitude = reader.GetInt32(3);
-                        sticker.Title = reader.GetString(4);
-                        sticker.Street = reader.GetString(5);
-                        stickers.Add(sticker);
+                        while (reader.Read())
+                        {
+                            Sticker sticker = new Sticker();
+                            sticker.Id = reader.GetInt32(0);
+                            sticker.UserId = reader.GetInt32(1);
+                            sticker.Longitude = reader.GetInt32(2);
+                            sticker.Latitude = reader.GetInt32(3);
+                            sticker.Title = reader.GetString(4);
+                            sticker.Street = reader.GetString(5);
+                            stickers.Add(sticker);
+                        }
                     }
                 }
+
+                _connection.Close();
+
+                return stickers;
             }
-
-            _connection.Close();
-
-            return stickers;
         }
 
         public List<Sticker> getAllByUser(int uid)
         {
-            List<Sticker> stickers = new List<Sticker>();
-
-            using (MySqlCommand command = new MySqlCommand())
+            lock (_lockObject)
             {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`user_id` = @UId);";
-                command.Parameters.AddWithValue("UId", uid);
+                List<Sticker> stickers = new List<Sticker>();
 
-                _connection.Open();
-
-                using (MySqlDataReader reader = command.ExecuteReader())
+                using (MySqlCommand command = new MySqlCommand())
                 {
-                    while (reader.Read())
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`user_id` = @UId);";
+                    command.Parameters.AddWithValue("UId", uid);
+
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        Sticker sticker = new Sticker();
-                        sticker.Id = reader.GetInt32(0);
-                        sticker.UserId = reader.GetInt32(1);
-                        sticker.Longitude = reader.GetInt32(2);
-                        sticker.Latitude = reader.GetInt32(3);
-                        sticker.Title = reader.GetString(4);
-                        sticker.Street = reader.GetString(5);
-                        stickers.Add(sticker);
+                        while (reader.Read())
+                        {
+                            Sticker sticker = new Sticker();
+                            sticker.Id = reader.GetInt32(0);
+                            sticker.UserId = reader.GetInt32(1);
+                            sticker.Longitude = reader.GetInt32(2);
+                            sticker.Latitude = reader.GetInt32(3);
+                            sticker.Title = reader.GetString(4);
+                            sticker.Street = reader.GetString(5);
+                            stickers.Add(sticker);
+                        }
                     }
                 }
+
+                _connection.Close();
+
+                return stickers;
             }
-
-            _connection.Close();
-
-            return stickers;
         }
 
         public int add(Sticker sticker)
         {
-            using (MySqlCommand command = new MySqlCommand())
+            lock (_lockObject)
             {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO " + TABLE + " (longitude, latitude, title, street) VALUES (@Longitude, @Latitude, @Title, @Street);";
-                command.Parameters.AddWithValue("@Longitude", sticker.Longitude);
-                command.Parameters.AddWithValue("@DLatitude", sticker.Latitude);
-                command.Parameters.AddWithValue("@Title", sticker.Title);
-                command.Parameters.AddWithValue("@Street", sticker.Street);
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "INSERT INTO " + TABLE + " (longitude, latitude, title, street) VALUES (@Longitude, @Latitude, @Title, @Street);";
+                    command.Parameters.AddWithValue("@Longitude", sticker.Longitude);
+                    command.Parameters.AddWithValue("@DLatitude", sticker.Latitude);
+                    command.Parameters.AddWithValue("@Title", sticker.Title);
+                    command.Parameters.AddWithValue("@Street", sticker.Street);
 
-                _connection.Open();
+                    _connection.Open();
 
-                command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
+                }
+
+                _connection.Close();
+
+                return 0;
             }
-
-            _connection.Close();
-
-            return 0;
         }
 
-        private readonly object _lockObject = new object();
          public bool contains(Sticker data)
          {
             lock (_lockObject)
