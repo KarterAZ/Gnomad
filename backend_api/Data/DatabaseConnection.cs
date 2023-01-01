@@ -13,14 +13,15 @@ namespace TravelCompanionAPI.Data
 {
     public class DatabaseConnection
     {
-        private MySqlConnection _connection;
+        //private MySqlConnection _connection;
         private static DatabaseConnection _instance;
 
         private DatabaseConnection()
         {
             string connection_string = Startup.getConnectionString();
-            _connection = new MySqlConnection(connection_string);
+            //_connection = new MySqlConnection(connection_string);
         }
+
 
         public static DatabaseConnection getInstance()
         {
@@ -32,19 +33,32 @@ namespace TravelCompanionAPI.Data
             return _instance;
         }
 
-        public void openConnection()
-        {
-            _connection.Open();
-        }
 
-        public void closeConnection()
-        {
-            _connection.Close();
-        }
-
+        //Creates an opens a connection
         public MySqlConnection getConnection()
         {
-            return _connection;
+            //If connection pooling is on default by MySql when creating a connection it should grab a connection from the pool here
+            MySqlConnection connection = new MySqlConnection(connection_string);
+            connection.Open();
+            return connection;
         }
+
+        
+        //Closes connection and puts it back in the pool .Net should do it by default
+        public void closeConnection(MySqlConnection connection)
+        {
+            connection.Close();
+        }
+
+        // public MySqlConnection getConnection()
+        // {
+        //     return _connection;
+        // }
+
+        // public void openConnection()
+        // {
+        //     _connection.Open();
+        // }
+
     }
 }
