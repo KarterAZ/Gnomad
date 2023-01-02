@@ -161,15 +161,15 @@ namespace TravelCompanionAPI.Data
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
-                    command.Parameters.AddWithValue("@Longitude", pin.Longitude);
-                    command.Parameters.AddWithValue("@Latitude", pin.Latitude);
+                    command.Parameters.AddWithValue("@Longitude", data.Longitude);
+                    command.Parameters.AddWithValue("@Latitude", data.Latitude);
                     
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            if (data.longitude == reader.GetString(0) && data.latitude==reader.GetString(1))
+                            if (data.Longitude == reader.GetString(0) && data.Latitude==reader.GetString(1))
                             {
                                 exists = true;
                                 break;
