@@ -37,129 +37,142 @@ namespace TravelCompanionAPI.Data
             _connection = new MySqlConnection(connection);
         }
 
+        private readonly object _lockObject = new object();
+
         public Pin getById(int id)
         {
-            Pin pins = null;
-            using (MySqlCommand command = new MySqlCommand())
+            lock (_lockObject)
             {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM " + TABLE + " WHERE(`id` = @Id);";
-                command.Parameters.AddWithValue("Id", id);
-
-                _connection.Open();
-
-                using (MySqlDataReader reader = command.ExecuteReader())
+                Pin pins = null;
+                using (MySqlCommand command = new MySqlCommand())
                 {
-                    while (reader.Read())
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT * FROM " + TABLE + " WHERE(`id` = @Id);";
+                    command.Parameters.AddWithValue("Id", id);
+
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        pins = new Pin();
-                        pins.Id = reader.GetInt32(0);
-                        pins.UserId = reader.GetInt32(1);
-                        pins.Longitude = reader.GetInt32(2);
-                        pins.Latitude = reader.GetInt32(3);
-                        pins.Title = reader.GetString(4);
-                        pins.Street = reader.GetString(5);
+                        while (reader.Read())
+                        {
+                            pins = new Pin();
+                            pins.Id = reader.GetInt32(0);
+                            pins.UserId = reader.GetInt32(1);
+                            pins.Longitude = reader.GetInt32(2);
+                            pins.Latitude = reader.GetInt32(3);
+                            pins.Title = reader.GetString(4);
+                            pins.Street = reader.GetString(5);
+                        }
                     }
                 }
+
+                _connection.Close();
+
+                return pins;
             }
-
-            _connection.Close();
-
-            return pins;
         }
 
         public List<Pin> getAll()
         {
-            List<Pin> pins = new List<Pin>();
-
-            using (MySqlCommand command = new MySqlCommand())
+            lock (_lockObject)
             {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + ";";
+                List<Pin> pins = new List<Pin>();
 
-                _connection.Open();
-
-                using (MySqlDataReader reader = command.ExecuteReader())
+                using (MySqlCommand command = new MySqlCommand())
                 {
-                    while (reader.Read())
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM " + TABLE + ";";
+
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        Pin pin = new Pin();
-                        pin.Id = reader.GetInt32(0);
-                        pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
-                        pin.Title = reader.GetString(4);
-                        pin.Street = reader.GetString(5);
-                        pins.Add(pin);
+                        while (reader.Read())
+                        {
+                            Pin pin = new Pin();
+                            pin.Id = reader.GetInt32(0);
+                            pin.UserId = reader.GetInt32(1);
+                            pin.Longitude = reader.GetInt32(2);
+                            pin.Latitude = reader.GetInt32(3);
+                            pin.Title = reader.GetString(4);
+                            pin.Street = reader.GetString(5);
+                            pins.Add(pin);
+                        }
                     }
                 }
+
+                _connection.Close();
+
+                return pins;
             }
-
-            _connection.Close();
-
-            return pins;
         }
 
         public List<Pin> getAllByUser(int uid)
         {
-            List<Pin> pins = new List<Pin>();
-
-            using (MySqlCommand command = new MySqlCommand())
+            lock (_lockObject)
             {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`user_id` = @Uid);";
-                command.Parameters.AddWithValue("@Uid", uid);
+                List<Pin> pins = new List<Pin>();
 
-                _connection.Open();
-
-                using (MySqlDataReader reader = command.ExecuteReader())
+                using (MySqlCommand command = new MySqlCommand())
                 {
-                    while (reader.Read())
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`user_id` = @Uid);";
+                    command.Parameters.AddWithValue("@Uid", uid);
+
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        Pin pin = new Pin();
-                        pin.Id = reader.GetInt32(0);
-                        pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
-                        pin.Title = reader.GetString(4);
-                        pin.Street = reader.GetString(5);
-                        pins.Add(pin);
+                        while (reader.Read())
+                        {
+                            Pin pin = new Pin();
+                            pin.Id = reader.GetInt32(0);
+                            pin.UserId = reader.GetInt32(1);
+                            pin.Longitude = reader.GetInt32(2);
+                            pin.Latitude = reader.GetInt32(3);
+                            pin.Title = reader.GetString(4);
+                            pin.Street = reader.GetString(5);
+                            pins.Add(pin);
+                        }
                     }
                 }
+
+                _connection.Close();
+
+                return pins;
             }
-
-            _connection.Close();
-
-            return pins;
         }
 
         public int add(Pin pin)
         {
-            using (MySqlCommand command = new MySqlCommand())
+            lock (_lockObject)
             {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO " + TABLE + " (user_id, longitude, latitude, title, street) VALUES (@userID, @Longitude, @Latitude, @Title, @Street);";
-                command.Parameters.AddWithValue("@userId", pin.UserId);
-                command.Parameters.AddWithValue("@Longitude", pin.Longitude);
-                command.Parameters.AddWithValue("@Latitude", pin.Latitude);
-                command.Parameters.AddWithValue("@Title", pin.Title);
-                command.Parameters.AddWithValue("@Street", pin.Street);
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "INSERT INTO " + TABLE + " (user_id, longitude, latitude, title, street) VALUES (@userID, @Longitude, @Latitude, @Title, @Street);";
+                    command.Parameters.AddWithValue("@userId", pin.UserId);
+                    command.Parameters.AddWithValue("@Longitude", pin.Longitude);
+                    command.Parameters.AddWithValue("@Latitude", pin.Latitude);
+                    command.Parameters.AddWithValue("@Title", pin.Title);
+                    command.Parameters.AddWithValue("@Street", pin.Street);
 
-                _connection.Open();
+                    _connection.Open();
 
-                command.ExecuteNonQuery();
+                    command.ExecuteNonQuery();
+                }
+
+                _connection.Close();
+
+                return 0;
             }
-
-            _connection.Close();
-
-            return 0;
         }
 
-        private readonly object _lockObject = new object();
          public bool contains(Pin data)
          {
             lock (_lockObject)

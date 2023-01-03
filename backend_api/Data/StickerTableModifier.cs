@@ -17,17 +17,17 @@ using System.Data;
 namespace TravelCompanionAPI.Data
 {
     //******************************************************************************
-    //This class updates the PinTags table, inheriting from IDataRepository.
+    //This class updates the Stickers table, inheriting from IDataRepository.
     //No new methods added.
-    //Implements getByPinId, getByTagId, getAll, and add.
+    //Implements getById, getByTagId, getAll, and add.
     //******************************************************************************
-    public class PinTagTableModifier : IDataRepository<PinTag>
+    public class StickerTableModifier : IDataRepository<Sticker>
     {
-        const string TABLE = "pintags";
+        const string TABLE = "stickers";
         private MySqlConnection _connection;
         //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
-        public PinTagTableModifier(IConfiguration config)
+        public StickerTableModifier(IConfiguration config)
         {
             //Switch depending on mode
             string connection = null;
@@ -37,116 +37,144 @@ namespace TravelCompanionAPI.Data
             _connection = new MySqlConnection(connection);
         }
 
-        public List<PinTag> getByPinId(int pid)
-        {
-            List<PinTag> pintags = new List<PinTag>();
-
-            using (MySqlCommand command = new MySqlCommand())
-            {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`pin_id` = @Pid);";
-                command.Parameters.AddWithValue("@Pid", pid);
-
-                _connection.Open();
-
-                using (MySqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        PinTag pintag = new PinTag();
-                        pintag.PinId = reader.GetInt32(0);
-                        pintag.TagId = reader.GetInt32(1);
-                        pintagtags.Add(pintag);
-                    }
-                }
-            }
-
-            _connection.Close();
-
-            return pintags;
-        }
-
-        public List<PinTag> getByTagId(int tid)
-        {
-            List<PinTag> pintags = new List<PinTag>();
-
-            using (MySqlCommand command = new MySqlCommand())
-            {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`tag_id` = @Tid);";
-                command.Parameters.AddWithValue("@Tid", tid);
-
-                _connection.Open();
-
-                using (MySqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        PinTag pintag = new PinTag();
-                        pintag.PinId = reader.GetInt32(0);
-                        pintag.TagId = reader.GetInt32(1);
-                        pintagtags.Add(pintag);
-                    }
-                }
-            }
-
-            _connection.Close();
-
-            return pintags;
-        }
-
-        public List<PinTag> getAll()
-        {
-            List<PinTag> pintags = new List<PinTag>();
-
-            using (MySqlCommand command = new MySqlCommand())
-            {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + ";";
-
-                _connection.Open();
-
-                using (MySqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        PinTag pintag = new PinTag();
-                        pintag.PinId = reader.GetInt32(0);
-                        pintag.TagId = reader.GetInt32(1);
-                        pintags.Add(pintag);
-                    }
-                }
-            }
-
-            _connection.Close();
-
-            return pintagtags;
-        }
-
-        public int add(PinTag pintag)
-        {
-            using (MySqlCommand command = new MySqlCommand())
-            {
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO " + TABLE + " (pin_id, tag_id) VALUES (@PiD, @Tid);";
-                command.Parameters.AddWithValue("@Pid", pintag.PinId);
-                command.Parameters.AddWithValue("@Tid", pintag.TagId);
-
-                _connection.Open();
-
-                command.ExecuteNonQuery();
-            }
-
-            _connection.Close();
-
-            return 0;
-        }
 
         private readonly object _lockObject = new object();
+
+        public Sticker getById(int id)
+        {
+            lock (_lockObject)
+            {
+                Sticker stickers = null;
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = @Id);";
+                    command.Parameters.AddWithValue("Id", id);
+
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+
+                        while (reader.Read())
+                        {
+                            stickers = new Sticker();
+                            stickers.Id = reader.GetInt32(0);
+                            stickers.UserId = reader.GetInt32(1);
+                            stickers.Longitude = reader.GetInt32(2);
+                            stickers.Latitude = reader.GetInt32(3);
+                            stickers.Title = reader.GetString(4);
+                            stickers.Street = reader.GetString(5);
+                        }
+                    }
+                }
+
+                _connection.Close();
+
+                return stickers;
+            }
+        }
+
+        public List<Sticker> getByTagId(int tid)
+        {
+            lock (_lockObject)
+            {
+                List<Sticker> stickers = new List<Sticker>();
+
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM " + TABLE + ";";
+
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Sticker sticker = new Sticker();
+                            sticker.Id = reader.GetInt32(0);
+                            sticker.UserId = reader.GetInt32(1);
+                            sticker.Longitude = reader.GetInt32(2);
+                            sticker.Latitude = reader.GetInt32(3);
+                            sticker.Title = reader.GetString(4);
+                            sticker.Street = reader.GetString(5);
+                            stickers.Add(sticker);
+                        }
+                    }
+                }
+
+                _connection.Close();
+
+
+                return stickers;
+            }
+        }
+
+        public List<Sticker> getAll()
+        {
+            lock (_lockObject)
+            {
+                List<Sticker> stickers = new List<Sticker>();
+
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`user_id` = @UId);";
+                    command.Parameters.AddWithValue("UId", uid);
+
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Sticker sticker = new Sticker();
+                            sticker.Id = reader.GetInt32(0);
+                            sticker.UserId = reader.GetInt32(1);
+                            sticker.Longitude = reader.GetInt32(2);
+                            sticker.Latitude = reader.GetInt32(3);
+                            sticker.Title = reader.GetString(4);
+                            sticker.Street = reader.GetString(5);
+                            stickers.Add(sticker);
+                        }
+                    }
+                }
+
+                _connection.Close();
+
+                return stickers;
+            }
+        }
+
+        public int add(Sticker sticker)
+        {
+            lock (_lockObject)
+            {
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "INSERT INTO " + TABLE + " (longitude, latitude, title, street) VALUES (@Longitude, @Latitude, @Title, @Street);";
+                    command.Parameters.AddWithValue("@Longitude", sticker.Longitude);
+                    command.Parameters.AddWithValue("@DLatitude", sticker.Latitude);
+                    command.Parameters.AddWithValue("@Title", sticker.Title);
+                    command.Parameters.AddWithValue("@Street", sticker.Street);
+
+                    _connection.Open();
+
+                    command.ExecuteNonQuery();
+                }
+
+                _connection.Close();
+
+                return 0;
+            }
+        }
+
          public bool contains(Sticker data)
          {
             lock (_lockObject)
@@ -157,8 +185,8 @@ namespace TravelCompanionAPI.Data
                     command.Connection = _connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
-                    command.Parameters.AddWithValue("@Longitude", pin.Longitude);
-                    command.Parameters.AddWithValue("@Latitude", pin.Latitude);
+                    command.Parameters.AddWithValue("@Longitude", data.Longitude);
+                    command.Parameters.AddWithValue("@Latitude", data.Latitude);
                     _connection.Open();
 
                     using (MySqlDataReader reader = command.ExecuteReader())
