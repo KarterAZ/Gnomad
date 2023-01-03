@@ -15,16 +15,11 @@ namespace TravelCompanionAPI.Data
     public class PinTableModifier : IDataRepository<Pin>
     {
         const string TABLE = "pins";
-        //private MySqlConnection _connection;
         //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
         public PinTableModifier(IConfiguration config)
         {
-            //Switch depending on mode
-            //string connection = null;
-            //connection = config.GetConnectionString("CodenomeDatabase");
-            // connection = config.GetConnectionString("TestingDatabase");
-            // _connection = new MySqlConnection(connection);
+           
         }
 
         
@@ -33,8 +28,8 @@ namespace TravelCompanionAPI.Data
         {
 
                 Pin pins = null;
-                DatabaseConnection.getInstance().closeConnection(connection);
-
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+ 
                 using (MySqlCommand command = new MySqlCommand())
                 {
                     command.Connection = connection;
@@ -57,7 +52,6 @@ namespace TravelCompanionAPI.Data
                     }
                 }
 
-                DatabaseConnection.getInstance().closeConnection(connection);
                 return pins;
             
         }
@@ -66,7 +60,7 @@ namespace TravelCompanionAPI.Data
         {
 
                 List<Pin> pins = new List<Pin>();
-                DatabaseConnection.getInstance().closeConnection(connection);
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
 
                 using (MySqlCommand command = new MySqlCommand())
                 {
@@ -91,8 +85,6 @@ namespace TravelCompanionAPI.Data
                     }
                 }
 
-                DatabaseConnection.getInstance().closeConnection(connection);
-
                 return pins;
         }
 
@@ -100,7 +92,7 @@ namespace TravelCompanionAPI.Data
         {
             
                 List<Pin> pins = new List<Pin>();
-                DatabaseConnection.getInstance().closeConnection(connection);
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
 
                 using (MySqlCommand command = new MySqlCommand())
                 {
@@ -125,14 +117,14 @@ namespace TravelCompanionAPI.Data
                     }
                 }
                 
-                DatabaseConnection.getInstance().closeConnection(connection);
+                
                 return pins;
             
         }
 
         public void add(Pin pin)
         {
-                DatabaseConnection.getInstance().closeConnection(connection);
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
 
                 using (MySqlCommand command = new MySqlCommand())
                 {
@@ -147,15 +139,14 @@ namespace TravelCompanionAPI.Data
 
                     command.ExecuteNonQuery();
                 }
-
-                DatabaseConnection.getInstance().closeConnection(connection)
    
         }
 
          public bool contains(Pin data)
          {    
                 bool exists = false;
-                DatabaseConnection.getInstance().closeConnection(connection);
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+
                 using (MySqlCommand command = new MySqlCommand())
                 {
                     command.Connection = connection;
@@ -177,7 +168,6 @@ namespace TravelCompanionAPI.Data
                         }
                     }
                 }
-                DatabaseConnection.getInstance().closeConnection(connection)
 
                 return exists;
 

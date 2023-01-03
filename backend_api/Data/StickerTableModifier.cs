@@ -20,12 +20,7 @@ namespace TravelCompanionAPI.Data
 
         public StickerTableModifier(IConfiguration config)
         {
-            //Switch depending on mode
-            //string connection = null;
-            //connection = config.GetConnectionString("CodenomeDatabase");
-            //connection = config.GetConnectionString("TestingDatabase");
-
-            //_connection = new MySqlConnection(connection);
+        
         }
 
 
@@ -55,12 +50,10 @@ namespace TravelCompanionAPI.Data
                         }
                     }
         
-               DatabaseConnection.getInstance().closeConnection(connection);
-
                 return stickers;
             }
         }
-
+        
         public List<Sticker> getAll()
         {
             
@@ -89,8 +82,6 @@ namespace TravelCompanionAPI.Data
                         }
                     }
                 }
-
-                DatabaseConnection.getInstance().closeConnection(connection);
 
 
                 return stickers;
@@ -129,8 +120,6 @@ namespace TravelCompanionAPI.Data
                     }
                 }
 
-                DatabaseConnection.getInstance().closeConnection(connection);
-
 
                 return stickers;
             }
@@ -154,8 +143,6 @@ namespace TravelCompanionAPI.Data
 
                     command.ExecuteNonQuery();
                 }
-
-                DatabaseConnection.getInstance().closeConnection(connection);
             
         }
 
@@ -186,7 +173,6 @@ namespace TravelCompanionAPI.Data
                         }
                     }
                 }
-                DatabaseConnection.getInstance().closeConnection(connection);
                 return exists;
             }
         }
