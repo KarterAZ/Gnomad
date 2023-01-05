@@ -22,10 +22,12 @@ function LoginButton()
   // Save the access token returned on login
   window.SaveAccessToken = (response) => 
   {
-    // set the token
-    setCookie('id_token', response.credential);
+    //TODO: verify that the token works
 
-    const cookie = 'Bearer ' + getCookie('id_token');
+    // set the token
+    setCookie('id_token', 'Bearer ' + response.credential);
+
+    const cookie = getCookie('id_token');
 
     const user = fetch('https://localhost:5000/', 
     {
