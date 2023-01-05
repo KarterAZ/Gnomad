@@ -24,36 +24,27 @@ namespace TravelCompanionAPI.Data
     public class StickerTableModifier : IDataRepository<Sticker>
     {
         const string TABLE = "stickers";
-        private MySqlConnection _connection;
+        //private MySqlConnection _connection;
         //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
         public StickerTableModifier(IConfiguration config)
         {
-            //Switch depending on mode
-            string connection = null;
-            //connection = config.GetConnectionString("CodenomeDatabase");
-            connection = config.GetConnectionString("TestingDatabase");
-
-            _connection = new MySqlConnection(connection);
+        
         }
 
 
-        private readonly object _lockObject = new object();
-
         public Sticker getById(int id)
         {
-            lock (_lockObject)
-            {
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
                 Sticker stickers = null;
                 using (MySqlCommand command = new MySqlCommand())
                 {
-                    command.Connection = _connection;
+                    command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = @Id);";
                     command.Parameters.AddWithValue("Id", id);
 
-                    _connection.Open();
-
+                    
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
 
@@ -68,27 +59,23 @@ namespace TravelCompanionAPI.Data
                             stickers.Street = reader.GetString(5);
                         }
                     }
-                }
-
-                _connection.Close();
-
+        
                 return stickers;
             }
         }
-
-        public List<Sticker> getByTagId(int tid)
+        
+        public List<Sticker> getAll()
         {
-            lock (_lockObject)
-            {
+            
                 List<Sticker> stickers = new List<Sticker>();
+                 MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
 
                 using (MySqlCommand command = new MySqlCommand())
                 {
-                    command.Connection = _connection;
+                    command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT * FROM " + TABLE + ";";
 
-                    _connection.Open();
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
@@ -106,11 +93,10 @@ namespace TravelCompanionAPI.Data
                     }
                 }
 
-                _connection.Close();
 
 
                 return stickers;
-            }
+            
         }
 
         public List<Sticker> getAll(int uid)
@@ -118,15 +104,16 @@ namespace TravelCompanionAPI.Data
             lock (_lockObject)
             {
                 List<Sticker> stickers = new List<Sticker>();
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
 
                 using (MySqlCommand command = new MySqlCommand())
                 {
-                    command.Connection = _connection;
+                    command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`user_id` = @UId);";
                     command.Parameters.AddWithValue("UId", uid);
 
-                    _connection.Open();
+               
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
@@ -144,19 +131,18 @@ namespace TravelCompanionAPI.Data
                     }
                 }
 
-                _connection.Close();
 
                 return stickers;
             }
         }
 
-        public int add(Sticker sticker)
+        public void add(Sticker sticker)
         {
-            lock (_lockObject)
-            {
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+
                 using (MySqlCommand command = new MySqlCommand())
                 {
-                    command.Connection = _connection;
+                    command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = "INSERT INTO " + TABLE + " (longitude, latitude, title, street) VALUES (@Longitude, @Latitude, @Title, @Street);";
                     command.Parameters.AddWithValue("@Longitude", sticker.Longitude);
@@ -164,36 +150,34 @@ namespace TravelCompanionAPI.Data
                     command.Parameters.AddWithValue("@Title", sticker.Title);
                     command.Parameters.AddWithValue("@Street", sticker.Street);
 
-                    _connection.Open();
+                  
 
                     command.ExecuteNonQuery();
                 }
-
-                _connection.Close();
-
-                return 0;
-            }
+            
         }
 
          public bool contains(Sticker data)
          {
-            lock (_lockObject)
-            {
+           
                 bool exists = false;
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+
                 using (MySqlCommand command = new MySqlCommand())
                 {
-                    command.Connection = _connection;
+                    command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
                     command.Parameters.AddWithValue("@Longitude", data.Longitude);
                     command.Parameters.AddWithValue("@Latitude", data.Latitude);
-                    _connection.Open();
-
+                    
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
+
                             if (data.Longitude == int.Parse(reader.GetString(0)) && data.Latitude == int.Parse(reader.GetString(1)))
+
                             {
                                 exists = true;
                                 break;
@@ -201,8 +185,6 @@ namespace TravelCompanionAPI.Data
                         }
                     }
                 }
-                _connection.Close();
-
                 return exists;
             }
         }

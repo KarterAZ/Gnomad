@@ -11,16 +11,21 @@ using MySql.Data.MySqlClient;
 
 namespace TravelCompanionAPI.Data
 {
-    public class DatabaseConnection
+    public class DatabaseConnection : IDatabaseConnection
     {
-        private MySqlConnection _connection;
+        
+         //connection = config.GetConnectionString("CodenomeDatabase");
+         //connection = config.GetConnectionString("TestingDatabase");
+         //Not sure if the above needs to be used at all? Saw these in all the modifer classes when they were self definining their own connection
+         
         private static DatabaseConnection _instance;
 
         private DatabaseConnection()
         {
             string connection_string = Startup.getConnectionString();
-            _connection = new MySqlConnection(connection_string);
+           
         }
+        
 
         public static DatabaseConnection getInstance()
         {
@@ -32,19 +37,14 @@ namespace TravelCompanionAPI.Data
             return _instance;
         }
 
-        public void openConnection()
-        {
-            _connection.Open();
-        }
-
-        public void closeConnection()
-        {
-            _connection.Close();
-        }
-
+        //Creates an opens a connection
         public MySqlConnection getConnection()
         {
-            return _connection;
+            //If connection pooling is on default by MySql when creating a connection it should grab a connection from the pool here
+            MySqlConnection connection = new MySqlConnection(connection_string);
+            connection.Open();
+            return connection;
         }
+
     }
 }

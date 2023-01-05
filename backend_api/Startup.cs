@@ -130,6 +130,8 @@ namespace TravelCompanionAPI
                 services.AddSingleton<UserTableModifier>();
                 //Adds a singleton to PinTableModifier
                 services.AddSingleton<PinTableModifier>();
+                //Adds a singelton to DatabaseConnection
+                services.AddSingleton<IDatabaseConnection,DatabaseConnection>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

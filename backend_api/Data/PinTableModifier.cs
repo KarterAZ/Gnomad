@@ -24,34 +24,27 @@ namespace TravelCompanionAPI.Data
     public class PinTableModifier : IDataRepository<Pin>
     {
         const string TABLE = "pins";
-        private MySqlConnection _connection;
         //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
         public PinTableModifier(IConfiguration config)
         {
-            //Switch depending on mode
-            string connection = null;
-            //connection = config.GetConnectionString("CodenomeDatabase");
-            connection = config.GetConnectionString("TestingDatabase");
-
-            _connection = new MySqlConnection(connection);
+           
         }
 
-        private readonly object _lockObject = new object();
+        
 
         public Pin getById(int id)
         {
-            lock (_lockObject)
-            {
+
                 Pin pins = null;
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+ 
                 using (MySqlCommand command = new MySqlCommand())
                 {
-                    command.Connection = _connection;
+                    command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = "SELECT * FROM " + TABLE + " WHERE(`id` = @Id);";
                     command.Parameters.AddWithValue("Id", id);
-
-                    _connection.Open();
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
@@ -68,25 +61,22 @@ namespace TravelCompanionAPI.Data
                     }
                 }
 
-                _connection.Close();
-
                 return pins;
-            }
+            
         }
-
+    
         public List<Pin> getAll()
         {
-            lock (_lockObject)
-            {
+
                 List<Pin> pins = new List<Pin>();
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
 
                 using (MySqlCommand command = new MySqlCommand())
                 {
-                    command.Connection = _connection;
+                    command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT * FROM " + TABLE + ";";
 
-                    _connection.Open();
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
@@ -104,26 +94,21 @@ namespace TravelCompanionAPI.Data
                     }
                 }
 
-                _connection.Close();
-
                 return pins;
-            }
         }
 
         public List<Pin> getAllByUser(int uid)
         {
-            lock (_lockObject)
-            {
+            
                 List<Pin> pins = new List<Pin>();
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
 
                 using (MySqlCommand command = new MySqlCommand())
                 {
-                    command.Connection = _connection;
+                    command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`user_id` = @Uid);";
                     command.Parameters.AddWithValue("@Uid", uid);
-
-                    _connection.Open();
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
@@ -140,20 +125,19 @@ namespace TravelCompanionAPI.Data
                         }
                     }
                 }
-
-                _connection.Close();
-
+                
+                
                 return pins;
-            }
+            
         }
 
-        public int add(Pin pin)
+        public void add(Pin pin)
         {
-            lock (_lockObject)
-            {
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+
                 using (MySqlCommand command = new MySqlCommand())
                 {
-                    command.Connection = _connection;
+                    command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = "INSERT INTO " + TABLE + " (user_id, longitude, latitude, title, street) VALUES (@userID, @Longitude, @Latitude, @Title, @Street);";
                     command.Parameters.AddWithValue("@userId", pin.UserId);
@@ -162,36 +146,31 @@ namespace TravelCompanionAPI.Data
                     command.Parameters.AddWithValue("@Title", pin.Title);
                     command.Parameters.AddWithValue("@Street", pin.Street);
 
-                    _connection.Open();
-
                     command.ExecuteNonQuery();
                 }
-
-                _connection.Close();
-
-                return 0;
-            }
+   
         }
 
-         public bool contains(Pin pin)
-         {
-            lock (_lockObject)
-            {            
+
+         public bool contains(Pin data)
+         {    
                 bool exists = false;
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+
                 using (MySqlCommand command = new MySqlCommand())
                 {
-                    command.Connection = _connection;
+                    command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
-                    command.Parameters.AddWithValue("@Longitude", pin.Longitude);
-                    command.Parameters.AddWithValue("@Latitude", pin.Latitude);
-                    _connection.Open();
+                    command.Parameters.AddWithValue("@Longitude", data.Longitude);
+                    command.Parameters.AddWithValue("@Latitude", data.Latitude);
+                    
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            if (pin.Longitude == int.Parse(reader.GetString(0)) && pin.Latitude == int.Parse(reader.GetString(1)))
+                            if (data.Longitude == reader.GetString(0) && data.Latitude==reader.GetString(1))
                             {
                                 exists = true;
                                 break;
@@ -199,10 +178,8 @@ namespace TravelCompanionAPI.Data
                         }
                     }
                 }
-                _connection.Close();
 
                 return exists;
-            }//c
 
         }
 
