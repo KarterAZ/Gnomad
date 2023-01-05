@@ -113,7 +113,7 @@ namespace TravelCompanionAPI.Data
             }
         }
 
-        public List<Sticker> getAll()
+        public List<Sticker> getAll(int uid)
         {
             lock (_lockObject)
             {
@@ -193,7 +193,7 @@ namespace TravelCompanionAPI.Data
                     {
                         while (reader.Read())
                         {
-                            if (data.longitude == reader.GetString(0) && data.latitude==reader.GetString(1))
+                            if (data.Longitude == int.Parse(reader.GetString(0)) && data.Latitude == int.Parse(reader.GetString(1)))
                             {
                                 exists = true;
                                 break;
@@ -205,6 +205,16 @@ namespace TravelCompanionAPI.Data
 
                 return exists;
             }
+        }
+
+        public Pin getAllByUser(int uid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Sticker> getAll()
+        {
+            throw new NotImplementedException();
         }
     }
 }

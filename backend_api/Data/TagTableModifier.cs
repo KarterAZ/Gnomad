@@ -118,5 +118,15 @@ namespace TravelCompanionAPI.Data
 
             return 0;
         }
+
+        public bool contains(Tag data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Pin getAllByUser(int uid)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

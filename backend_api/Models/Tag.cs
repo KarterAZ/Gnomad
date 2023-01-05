@@ -16,12 +16,12 @@ using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI.Models
 {
-    public class Pin : IDataEntity
+    public class Tag : IDataEntity
     {
-        public Pin()
+        public Tag()
         { }
 
-        public Pin(string type)
+        public Tag(string type)
         {
             Id = -1;
             Type = type;

@@ -109,32 +109,31 @@ namespace TravelCompanionAPI.Data
             }
         }
 
-       
+       //TODO: fix this function, this code needs some work.
         public bool contains(User user)
         {
             lock (_lockObject)
             {
-                bool exists = false;
                 using (MySqlCommand command = new MySqlCommand())
                 {
                     command.Connection = _connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT COUNT(*) FROM " + TABLE + " WHERE email = @Email;";
-                    command.Parameters.AddWithValue("@Email",user.Email);
+                    command.Parameters.AddWithValue("@Email", user.Email);
                     _connection.Open();
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        if (reader.GetInt32() != 0) //Should be 1, but checks if in database.
+                        if (reader.GetInt32("") == 1)
                         {
-                            exists = true;
-                            break;
+                            _connection.Close();
+                            return true;
                         }
                     }
                 }
-                _connection.Close();
 
-                return exists;
+                _connection.Close();
+                return false;
             }
         }
 
@@ -161,6 +160,11 @@ namespace TravelCompanionAPI.Data
 
                 return 0;
             }
+        }
+
+        public Pin getAllByUser(int uid)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

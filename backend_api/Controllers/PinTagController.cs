@@ -30,33 +30,19 @@ namespace TravelCompanionAPI.Controllers
             _repo = repo;
         }
 
-        [HttpGet("get/{pin_id}")]
-        public JsonResult get(int pid)
-        {
+        //[HttpGet("getTag/{tag_id}")]
+        //public JsonResult get(int tid)
+        //{
 
-            PinTag pintag = _repo.getByPinId(pid);
+        //    PinTag pintag = _repo.getByTagId(tid);
 
-            if (pintag == null)
-            {
-                return new JsonResult(NotFound());
-            }
+        //    if (pintag == null)
+        //    {
+        //        return new JsonResult(NotFound());
+        //    }
 
-            return new JsonResult(Ok(pintag));
-        }
-
-        [HttpGet("get/{tag_id}")]
-        public JsonResult get(int tid)
-        {
-
-            PinTag pintag = _repo.getByTagId(tid);
-
-            if (pintag == null)
-            {
-                return new JsonResult(NotFound());
-            }
-
-            return new JsonResult(Ok(pintag));
-        }
+        //    return new JsonResult(Ok(pintag));
+        //}
 
         [HttpGet("all")]
         public JsonResult getAll()

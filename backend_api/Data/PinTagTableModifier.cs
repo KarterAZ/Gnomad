@@ -57,7 +57,7 @@ namespace TravelCompanionAPI.Data
                         PinTag pintag = new PinTag();
                         pintag.PinId = reader.GetInt32(0);
                         pintag.TagId = reader.GetInt32(1);
-                        pintagtags.Add(pintag);
+                        pintags.Add(pintag);
                     }
                 }
             }
@@ -87,7 +87,7 @@ namespace TravelCompanionAPI.Data
                         PinTag pintag = new PinTag();
                         pintag.PinId = reader.GetInt32(0);
                         pintag.TagId = reader.GetInt32(1);
-                        pintagtags.Add(pintag);
+                        pintags.Add(pintag);
                     }
                 }
             }
@@ -123,7 +123,7 @@ namespace TravelCompanionAPI.Data
 
             _connection.Close();
 
-            return pintagtags;
+            return pintags;
         }
 
         public int add(PinTag pintag)
@@ -147,7 +147,7 @@ namespace TravelCompanionAPI.Data
         }
 
         private readonly object _lockObject = new object();
-         public bool contains(Sticker data)
+         public bool contains(Sticker sticker)
          {
             lock (_lockObject)
             {
@@ -157,15 +157,15 @@ namespace TravelCompanionAPI.Data
                     command.Connection = _connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
-                    command.Parameters.AddWithValue("@Longitude", pin.Longitude);
-                    command.Parameters.AddWithValue("@Latitude", pin.Latitude);
+                    command.Parameters.AddWithValue("@Longitude", sticker.Longitude);
+                    command.Parameters.AddWithValue("@Latitude", sticker.Latitude);
                     _connection.Open();
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            if (data.longitude == reader.GetString(0) && data.latitude==reader.GetString(1))
+                            if (sticker.Longitude == int.Parse(reader.GetString(0)) && sticker.Latitude == int.Parse(reader.GetString(1)))
                             {
                                 exists = true;
                                 break;
@@ -177,6 +177,21 @@ namespace TravelCompanionAPI.Data
 
                 return exists;
             }
+        }
+
+        public PinTag getById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool contains(PinTag data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Pin getAllByUser(int uid)
+        {
+            throw new NotImplementedException();
         }
     }
 }

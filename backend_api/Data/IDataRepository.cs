@@ -8,6 +8,7 @@
 ************************************************************************************************/
 
 using System.Collections.Generic;
+using TravelCompanionAPI.Models;
 
 namespace TravelCompanionAPI.Data
 {
@@ -25,5 +26,6 @@ namespace TravelCompanionAPI.Data
         public int add(T data);
 
         public bool contains(T data);
+        Pin getAllByUser(int uid);
     }
 }

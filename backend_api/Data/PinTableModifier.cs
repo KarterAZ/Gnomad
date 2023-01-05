@@ -173,7 +173,7 @@ namespace TravelCompanionAPI.Data
             }
         }
 
-         public bool contains(Pin data)
+         public bool contains(Pin pin)
          {
             lock (_lockObject)
             {            
@@ -191,7 +191,7 @@ namespace TravelCompanionAPI.Data
                     {
                         while (reader.Read())
                         {
-                            if (data.longitude == reader.GetString(0) && data.latitude==reader.GetString(1))
+                            if (pin.Longitude == int.Parse(reader.GetString(0)) && pin.Latitude == int.Parse(reader.GetString(1)))
                             {
                                 exists = true;
                                 break;
@@ -204,6 +204,11 @@ namespace TravelCompanionAPI.Data
                 return exists;
             }//c
 
+        }
+
+        Pin IDataRepository<Pin>.getAllByUser(int uid)
+        {
+            throw new NotImplementedException();
         }
     }
 }

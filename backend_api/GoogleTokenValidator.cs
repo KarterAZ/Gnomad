@@ -15,6 +15,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System;
 using System.Text.Json;
+using TravelCompanionAPI.Models;
+using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI;
 
@@ -39,7 +41,7 @@ internal class GoogleTokenValidator : ISecurityTokenValidator
         return _tokenHandler.CanReadToken(securityToken);
     }
 
-    public ClaimsPrincipal ValidateToken(string securityToken, TokenValidationParameters validationParameters, out SecurityToken validatedToken)
+    public ClaimsPrincipal ValidateToken(string securityToken, TokenValidationParameters validationParameters, out SecurityToken validatedToken, IDataRepository<User> repo)
     {
         // call googles validate function
         var payload = GoogleJsonWebSignature.ValidateAsync(securityToken, new GoogleJsonWebSignature.ValidationSettings()).Result;
@@ -55,6 +57,8 @@ internal class GoogleTokenValidator : ISecurityTokenValidator
             new (JwtRegisteredClaimNames.Email, payload.Email),
             new (JwtRegisteredClaimNames.Sub, payload.Subject),
             new (JwtRegisteredClaimNames.Iss, payload.Issuer)
+
+            //Pass in IDataRepository<User>, call _repo.add(new User(ID?, payload.Name, payload.Email, ...));
         };
 
         // try to read the security token, if successful return the principle
@@ -63,6 +67,19 @@ internal class GoogleTokenValidator : ISecurityTokenValidator
             validatedToken = _tokenHandler.ReadJwtToken(securityToken);
             var principle = new ClaimsPrincipal();
             principle.AddIdentity(new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme));
+
+            User user = new User();
+            var current_user = payload.Name.Split(' ');
+            user.FirstName = current_user[0];
+            user.LastName = current_user[1];
+            user.ProfilePhotoURL = payload.Picture;
+            //user.Id = ;  //Not needed?
+            user.Email = payload.Email;
+
+            if(!repo.contains(user))
+            {
+                repo.add(user);
+            }
 
             // validation was successful, return the principle
             return principle;
