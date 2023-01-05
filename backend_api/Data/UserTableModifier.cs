@@ -25,16 +25,11 @@ namespace TravelCompanionAPI.Data
     public class UserTableModifier : IDataRepository<User>
     {
         const string TABLE = "users";
-        // private MySqlConnection _connection;
         //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
         public UserTableModifier(IConfiguration config)
         {
-         //Switch depending on mode
-         // string connection = null;
-         //connection = config.GetConnectionString("CodenomeDatabase");
-         //    connection = config.GetConnectionString("TestingDatabase");
-         //   _connection = new MySqlConnection(connection);
+    
         }
 
     
@@ -50,7 +45,7 @@ namespace TravelCompanionAPI.Data
                     command.CommandText = @"SELECT * FROM " + TABLE + " WHERE id = @Id;";
                     command.Parameters.AddWithValue("@Id", id);
 
-                   // _connection.Open();
+                  
                     
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
@@ -66,8 +61,6 @@ namespace TravelCompanionAPI.Data
                     }
                 }
                 
-                // _connection.Close();
-                DatabaseConnection.getInstance().closeConnection(connection);
 
                 return user;
             
@@ -84,7 +77,6 @@ namespace TravelCompanionAPI.Data
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT * FROM " + TABLE + ";";
 
-                    //_connection.Open();
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
@@ -101,9 +93,7 @@ namespace TravelCompanionAPI.Data
                     }
                 }
 
-                DatabaseConnection.getInstance().closeConnection(connection);
 
-               // _connection.Close();
                  return users;
             
         }
@@ -130,7 +120,6 @@ namespace TravelCompanionAPI.Data
                         }
                     }
                 }
-                DatabaseConnection.getInstance().closeConnection(connection);
 
 
                 return exists;
@@ -154,7 +143,6 @@ namespace TravelCompanionAPI.Data
                     command.ExecuteNonQuery();
                 }
 
-                DatabaseConnection.getInstance().closeConnection(connection);
             
         }
     }

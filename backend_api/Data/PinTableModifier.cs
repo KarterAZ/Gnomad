@@ -55,7 +55,7 @@ namespace TravelCompanionAPI.Data
                 return pins;
             
         }
-
+    
         public List<Pin> getAll()
         {
 
