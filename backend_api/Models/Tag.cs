@@ -3,7 +3,7 @@
 * Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
 * Date: 11/28/2022
 *
-* Purpose: Class definition for pins
+* Purpose: Class definition for tags
 *
 ************************************************************************************************/
 
@@ -16,30 +16,24 @@ using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI.Models
 {
-    public class Pin : IDataEntity
+    public class Tag : IDataEntity
     {
-        public Pin()
+        public Tag()
         { }
 
-        public Pin(int longitude, int latitude, string title)
+        public Tag(string type)
         {
             Id = -1;
-            Longitude = longitude;
-            Latitude = latitude;
-            Title = title;
+            Type = type;
         }
         [BindNever] //User shouldn't be able to change Id
         public int Id { get; set; }
-        public int UserId { get; set; }
-        public int Longitude { get; set; }
-        public int Latitude { get; set; }
-        public string Title { get; set; }
-        public string Street { get; set; }
+        public string Type { get; set; }
 
         public void print()
         {
             Console.WriteLine(
-                "id: {0}\nlongitude: {1}\nlatitude name: {2}\ntitle: {3}\nstreet: {4}", Id, Longitude, Latitude, Title, Street);
+                "id: {0}\ntype: {1}", Id, Type);
         }
     }
 }

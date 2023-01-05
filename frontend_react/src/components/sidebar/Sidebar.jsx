@@ -9,11 +9,13 @@
 
 import React, { Component } from 'react';
 import { Icon } from '@iconify/react';
-
+import { sget } from '../../utilities/session_storage';
+import { lget } from '../../utilities/local_storage';
 import { LoginButton } from '../login_button/LoginButton';
-import { getCookie } from '../../utilities/cookies';
 
 import './sidebar.css';
+
+
 
 class Sidebar extends Component 
 {
@@ -23,9 +25,15 @@ class Sidebar extends Component
 
     this.handleClick = this.handleClick.bind(this);
     this.open = true;
+
+    this.state = 
+    {
+      user_id: -1,
+      user: ''
+    };
   }
 
-  handleClick() 
+  handleClick = () => 
   {
     if (this.open) 
     {
@@ -39,21 +47,21 @@ class Sidebar extends Component
     this.open = !this.open;
   }
 
-  search() 
+  search = async () =>
   {
-    const cookie = 'Bearer ' + getCookie('id_token');
+    let user = sget('user');
+    console.log(user);
+  }
 
-    fetch('https://localhost:5000/', 
-    {
-      headers: 
-      {
-        Accept: '*/*',
-        Authorization: cookie
-      }
-    })
-    .then(resp => resp.json())
-    .then(json => json.value)
-    .then(user => { return user });
+  WelcomeMessage = () =>
+  {
+    let user = sget('user');
+    if (user !== null || user === undefined)
+    return (
+      <div>
+        Welcome, { user.firstName }
+      </div>
+    );
   }
 
   render() 
@@ -64,6 +72,7 @@ class Sidebar extends Component
           <section className='section' id='header-section'>
             <div id='user-section'>
               <LoginButton/>
+              <this.WelcomeMessage/>
             </div>
 
             <div id='settings-button-wrapper'>

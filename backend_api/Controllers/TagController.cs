@@ -3,25 +3,29 @@
 * Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
 * Date: 12/28/2022
 *
-* Purpose: Contains Pin Controllers.
+* Purpose: Contains Tag Controllers.
 *
 ************************************************************************************************/
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI.Controllers
 {
-    [Route("pins")]
+    [Route("tags")]
     [ApiController]
     [Authorize]
-    public class PinController : ControllerBase
+    public class TagController : ControllerBase
     {
-        private IDataRepository<Pin> _repo;
-        public PinController(IDataRepository<Pin> repo)
+        private IDataRepository<Tag> _repo;
+        public TagController(IDataRepository<Tag> repo)
         {
             _repo = repo;
         }
@@ -30,44 +34,30 @@ namespace TravelCompanionAPI.Controllers
         public JsonResult get(int id)
         {
 
-            Pin pin = _repo.getById(id);
+            Tag tag = _repo.getById(id);
 
-            if (pin == null)
+            if (tag == null)
             {
                 return new JsonResult(NotFound());
             }
 
-            return new JsonResult(Ok(pin));
+            return new JsonResult(Ok(tag));
         }
 
         [HttpGet("all")]
         public JsonResult getAll()
         {
-            List<Pin> pins = _repo.getAll();
+            List<Tag> tags = _repo.getAll();
 
-            return new JsonResult(Ok(pins));
-        }
-
-        [HttpGet("getPins/{user}")]
-        public JsonResult getPins(int uid)
-        {
-
-            Pin pin = _repo.getAllByUser(uid);
-
-            if (pin == null)
-            {
-                return new JsonResult(NotFound());
-            }
-
-            return new JsonResult(Ok(pin));
+            return new JsonResult(Ok(tags));
         }
 
         [HttpPost("create")]
-        public JsonResult create(Pin pin)
+        public JsonResult create(Tag tag)
         {
-            _repo.add(pin);
+            _repo.add(tag);
 
-            return new JsonResult(Ok(pin));
+            return new JsonResult(Ok(tag));
         }
     }
 }

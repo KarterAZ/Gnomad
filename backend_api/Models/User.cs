@@ -11,9 +11,12 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TravelCompanionAPI.Data;
+using TravelCompanionAPI.Extras;
 
 namespace TravelCompanionAPI.Models
 {
@@ -29,6 +32,17 @@ namespace TravelCompanionAPI.Models
             ProfilePhotoURL = profile_photo_URL;
             FirstName = first_name;
             LastName = last_name;
+        }
+
+        public User(ClaimsIdentity identity)
+        {
+            Id = -1;
+            Email = identity.FindFirst(JwtRegisteredClaimNames.Email).Value;
+            ProfilePhotoURL = "";
+
+            var full_name =identity.Name;
+            FirstName = Utilities.parseFirstName(full_name);
+            LastName = Utilities.parseLastName(full_name);
         }
 
         [BindNever] //User shouldn't be able to change Id

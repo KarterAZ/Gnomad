@@ -1,4 +1,13 @@
-﻿using MySql.Data.MySqlClient;
+﻿/************************************************************************************************
+*
+* Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
+* Date: 12/28/2022
+*
+* Purpose: Holds the functions for table modifications and access.
+*
+************************************************************************************************/
+
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using TravelCompanionAPI.Models;
@@ -10,7 +19,7 @@ namespace TravelCompanionAPI.Data
     //******************************************************************************
     //This class updates the Stickers table, inheriting from IDataRepository.
     //No new methods added.
-    //Implements getById, getAll, and add.
+    //Implements getById, getByTagId, getAll, and add.
     //******************************************************************************
     public class StickerTableModifier : IDataRepository<Sticker>
     {
@@ -38,6 +47,7 @@ namespace TravelCompanionAPI.Data
                     
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
+
                         while (reader.Read())
                         {
                             stickers = new Sticker();
@@ -84,11 +94,12 @@ namespace TravelCompanionAPI.Data
                 }
 
 
+
                 return stickers;
             
         }
 
-        public List<Sticker> getAllByUser(int uid)
+        public List<Sticker> getAll(int uid)
         {
             lock (_lockObject)
             {
@@ -159,13 +170,14 @@ namespace TravelCompanionAPI.Data
                     command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
                     command.Parameters.AddWithValue("@Longitude", data.Longitude);
                     command.Parameters.AddWithValue("@Latitude", data.Latitude);
-                 
-
+                    
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            if (data.Longitude == reader.GetString(0) && data.Latitude==reader.GetString(1))
+
+                            if (data.Longitude == int.Parse(reader.GetString(0)) && data.Latitude == int.Parse(reader.GetString(1)))
+
                             {
                                 exists = true;
                                 break;
@@ -175,6 +187,16 @@ namespace TravelCompanionAPI.Data
                 }
                 return exists;
             }
+        }
+
+        public Pin getAllByUser(int uid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Sticker> getAll()
+        {
+            throw new NotImplementedException();
         }
     }
 }

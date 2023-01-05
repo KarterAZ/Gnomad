@@ -7,84 +7,57 @@
 //
 //################################################################
 
-import { googleLogout } from '@react-oauth/google';
+import login from '../../utilities/api/login';
 import { useState } from 'react';
-import { setCookie, getCookie } from '../../utilities/cookies';
+import { setCookie } from '../../utilities/cookies';
 
 import './login_button.css';
+import { sstore } from '../../utilities/session_storage';
+import { lstore } from '../../utilities/local_storage';
 
 // LoginButton component
-function LoginButton() 
+export function LoginButton() 
 {
-
   const [logged_in, setLoggedIn] = useState(false);
 
   // Save the access token returned on login
-  window.SaveAccessToken = (response) => 
+  window.SaveAccessToken = async (response) => 
   {
-    // set the token
-    setCookie('id_token', response.credential);
+    //TODO: verify that the token works
+    setCookie('id_token', 'Bearer ' + response.credential);
 
-    const cookie = 'Bearer ' + getCookie('id_token');
+    const user = await login();
 
-    const user = fetch('https://localhost:5000/', 
-    {
-      headers: 
-      {
-        Accept: '*/*',
-        Authorization: cookie
-      }
-    })
-    .then(resp => resp.json())
-    .then(json => { return(json.value) })
-
-    setCookie('first_name', user.firstName);
-    setCookie('last_name', user.LastName);
+    sstore('user', user);
+    lstore('user', user);
     setLoggedIn(true);
   }
 
-  const logout = () =>
-  {
-    googleLogout();
-    setLoggedIn(false);
-  }
+  let in_style = {display: 'flex' };
 
-  if (!logged_in)
+  if (logged_in) 
   {
-    return (
-      <>
-      <div id="g_id_onload"
-        data-client_id="55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com"
-        data-context="signin"
-        data-ux_mode="popup"
-        data-callback="SaveAccessToken"
-        data-auto_prompt="false">
-      </div>
+      in_style = {display: 'none'};
+  };
+    
+  return (
+    <>
+    <div id="g_id_onload"
+      data-client_id="55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com"
+      data-context="signin"
+      data-ux_mode="popup"
+      data-callback="SaveAccessToken"
+      data-auto_prompt="false">
+    </div>
 
-      <div className="g_id_signin"
-        data-type="standard"
-        data-shape="rectangular"
-        data-theme="outline"
-        data-text="signin"
-        data-size="large"
-        data-logo_alignment="left">
-      </div>
-      <button className='user-button' onClick={ logout }>
-        Logout
-      </button>
-      </>
-    );
-  }
-  else
-  {
-    return (
-      <>
-        <button className='user-button' onClick={ logout }>
-          Logout
-        </button>
-      </>
-    );
-  }
+    <div style={in_style} className="g_id_signin"
+      data-type="standard"
+      data-shape="rectangular"
+      data-theme="outline"
+      data-text="signin"
+      data-size="large"
+      data-logo_alignment="left">
+    </div>
+    </>
+  );
 }
-
-export { LoginButton }

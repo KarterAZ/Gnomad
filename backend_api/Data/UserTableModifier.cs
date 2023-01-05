@@ -32,10 +32,10 @@ namespace TravelCompanionAPI.Data
     
         }
 
-    
         public User getById(int id)
         {
                 MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+
                 User user = null;
                 using (MySqlCommand command = new MySqlCommand())
                 {
@@ -60,15 +60,44 @@ namespace TravelCompanionAPI.Data
                         }
                     }
                 }
-                
 
                 return user;
             
         }
 
+        public int getId(User user)
+        {
+            int id = -1;
+            lock (_lock)
+            {
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email = @Email;";
+                    command.Parameters.AddWithValue("@Email", user.Email);
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            id = reader.GetInt32(0);
+                        }
+                    }
+                }
+
+                _connection.Close();
+            }
+
+            return id;
+        }
+
         public List<User> getAll()
         {
+
                 MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+
                 List<User> users = new List<User>();
 
                 using (MySqlCommand command = new MySqlCommand())
@@ -93,42 +122,47 @@ namespace TravelCompanionAPI.Data
                     }
                 }
 
-
                  return users;
             
         }
 
-       
+        //TODO: fix this function, this code needs some work.
         public bool contains(User user)
         {
+
                 bool exists = false;
                 MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+
                 using (MySqlCommand command = new MySqlCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT COUNT(*) FROM " + TABLE + " WHERE email = @Email;";
+
                     command.Parameters.AddWithValue("@Email",user.Email);
-                    
+
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        if (reader.GetInt32() != 0) //Should be 1, but checks if in database.
+                        while (reader.Read())
                         {
-                            exists = true;
-                            break;
+                            if (reader.GetInt32(0) == 1)
+                            {
+                                contains = true;
+                            }
                         }
                     }
                 }
 
-
                 return exists;
+
         }
 
         public void add(User user)
         {
-                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
 
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+                
                 using (MySqlCommand command = new MySqlCommand())
                 {
                     command.Connection = connection;
@@ -144,6 +178,11 @@ namespace TravelCompanionAPI.Data
                 }
 
             
+        }
+
+        public Pin getAllByUser(int uid)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

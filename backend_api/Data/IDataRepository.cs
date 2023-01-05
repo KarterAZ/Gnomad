@@ -8,6 +8,7 @@
 ************************************************************************************************/
 
 using System.Collections.Generic;
+using TravelCompanionAPI.Models;
 
 namespace TravelCompanionAPI.Data
 {
@@ -15,7 +16,7 @@ namespace TravelCompanionAPI.Data
     {
         //******************************************************************************
         //This class defines the default functions for dependency injection
-        //Declares getById, getAll, and add.
+        //Declares getById, getAll, add, and contains.
         //******************************************************************************
 
         public T getById(int id);
@@ -25,5 +26,6 @@ namespace TravelCompanionAPI.Data
         public int add(T data);
 
         public bool contains(T data);
+        Pin getAllByUser(int uid);
     }
 }

@@ -1,9 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32929.386
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelCompanionAPI", "TravelCompanionAPI.csproj", "{31D40396-BB89-4AB9-AA8F-830DED3DB03C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TravelCompanionAPI", "TravelCompanionAPI.csproj", "{31D40396-BB89-4AB9-AA8F-830DED3DB03C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelCompanionAPITests", "..\TravelCompanionAPITests\TravelCompanionAPITests.csproj", "{0C7D12A9-A4A6-491A-A56F-D00367D17D46}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9431ECD4-BB2C-4B0D-9351-64B080593C6D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +22,10 @@ Global
 		{31D40396-BB89-4AB9-AA8F-830DED3DB03C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31D40396-BB89-4AB9-AA8F-830DED3DB03C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31D40396-BB89-4AB9-AA8F-830DED3DB03C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C7D12A9-A4A6-491A-A56F-D00367D17D46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C7D12A9-A4A6-491A-A56F-D00367D17D46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C7D12A9-A4A6-491A-A56F-D00367D17D46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C7D12A9-A4A6-491A-A56F-D00367D17D46}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

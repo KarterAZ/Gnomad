@@ -15,6 +15,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System;
 using System.Text.Json;
+using TravelCompanionAPI.Models;
+using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI;
 
@@ -64,7 +66,6 @@ internal class GoogleTokenValidator : ISecurityTokenValidator
             var principle = new ClaimsPrincipal();
             principle.AddIdentity(new ClaimsIdentity(claims, JwtBearerDefaults.AuthenticationScheme));
 
-            // validation was successful, return the principle
             return principle;
         }
         catch (Exception e)
