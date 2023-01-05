@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Authorization;
 using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Data;
 using TravelCompanionAPI.Extras;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace TravelCompanionAPI.Controllers
 {
@@ -23,10 +25,10 @@ namespace TravelCompanionAPI.Controllers
     public class UserController : ControllerBase
     {
         //Repo is the list of users in the database
-        private IDataRepository<User> _user_database;
+        private UserTableModifier _user_database;
         public UserController(IDataRepository<User> repo)
         {
-            _user_database = repo;
+            _user_database = repo as UserTableModifier;
         }
 
         [HttpGet("get/{id}")]
@@ -55,28 +57,17 @@ namespace TravelCompanionAPI.Controllers
         [HttpPost("login")]
         public JsonResult login()
         {
-            // create local variable for the user id and user
-            int id = User.Identity.ID;
+            var identity = (User.Identity as ClaimsIdentity);
 
-            // check if user exists, if not create them, if so return them from the database
-            if (_user_database.contains(user))
+            User user = new User(identity);
+
+            if (!_user_database.contains(user))
             {
-                user = _user_database.getById(id);
+                _user_database.add(user);
             }
-            else
-            {
-                // user doesn't exist
-                // parse their name and other data then insert them into the database;
-                var full_name = User.Identity.Name;
 
-                var email = User.Identity.Email;
-                var profile_photo_URL = "";
-                var first_name = Utilities.parseFirstName(full_name);
-                var last_name = Utilities.parseLastName(full_name);
-
-
-                user = new User(email, profile_photo_URL, first_name, last_name);
-            }
+            // get the user id and return user
+            user.Id = _user_database.getId(user);
 
             return new JsonResult(Ok(user));
         }

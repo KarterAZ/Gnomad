@@ -2,35 +2,48 @@ import { getCookie } from '../cookies';
 
 const api_uri = 'https://localhost:5000/';
 
-const auth_token = getCookie('id_token') || undefined;
+const auth_token = getCookie('id_token');
 
 export function getToken()
 {
-    return auth_token;
+  console.log(auth_token);
+  return auth_token;
 }
 
 export function isAuthenticated()
 {
-    return (auth_token !== undefined);
+  return (auth_token !== undefined);
 }
 
-export function get(path)
+export async function get(path)
 {
-    const result = fetch(api_uri + path, 
+  const result = await fetch(api_uri + path, 
+  {
+    headers: 
     {
-      headers: 
-      {
-        Accept: '*/*',
-        Authorization: auth_token
-      }
-    })
-    .then(resp => resp.json())
-    .then(json => { return(json) });
+      Accept: '*/*',
+      Authorization: auth_token
+    }
+  })
+  .then(resp => resp.json())
+  .then(json => {return json.value})
 
-    return result;
+  return result;
 }
 
-export function post(path, data)
+export async function post(path, data = {})
 {
-    
+  const result = await fetch(api_uri + path, 
+  {
+    method: 'POST',
+    headers: 
+    {
+      Accept: '*/*',
+      Authorization: auth_token
+    }
+  })
+  .then(resp => resp.json())
+  .then(json => {return json.value});
+
+  return result;
 }

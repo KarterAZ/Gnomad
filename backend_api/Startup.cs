@@ -96,10 +96,6 @@ namespace TravelCompanionAPI
                                     {
                                         "https://www.googleapis.com/auth/userinfo.profile",
                                         "Profile"
-                                    },
-                                    {
-                                        "https://www.googleapis.com/auth/iam",
-                                        "IAM"
                                     }
                                 }
                             }

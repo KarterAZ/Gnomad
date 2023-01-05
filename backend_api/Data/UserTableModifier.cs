@@ -38,11 +38,11 @@ namespace TravelCompanionAPI.Data
             _connection = new MySqlConnection(connection);
         }
 
-        private readonly object _lockObject = new object();
+        private readonly object _lock = new object();
 
         public User getById(int id)
         {
-            lock (_lockObject)
+            lock (_lock)
             {
                 User user = null;
                 using (MySqlCommand command = new MySqlCommand())
@@ -67,16 +67,44 @@ namespace TravelCompanionAPI.Data
                         }
                     }
                 }
-            
+
                 _connection.Close();
 
                 return user;
             }
         }
 
+        public int getId(User user)
+        {
+            int id = -1;
+            lock (_lock)
+            {
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = _connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email = @Email;";
+                    command.Parameters.AddWithValue("@Email", user.Email);
+                    _connection.Open();
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            id = reader.GetInt32(0);
+                        }
+                    }
+                }
+
+                _connection.Close();
+            }
+
+            return id;
+        }
+
         public List<User> getAll()
         {
-            lock (_lockObject)
+            lock (_lock)
             {
                 List<User> users = new List<User>();
 
@@ -102,17 +130,18 @@ namespace TravelCompanionAPI.Data
                         }
                     }
                 }
-            
+
                 _connection.Close();
 
                 return users;
             }
         }
 
-       //TODO: fix this function, this code needs some work.
+        //TODO: fix this function, this code needs some work.
         public bool contains(User user)
         {
-            lock (_lockObject)
+            bool contains = false;
+            lock (_lock)
             {
                 using (MySqlCommand command = new MySqlCommand())
                 {
@@ -124,22 +153,24 @@ namespace TravelCompanionAPI.Data
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        if (reader.GetInt32("") == 1)
+                        while (reader.Read())
                         {
-                            _connection.Close();
-                            return true;
+                            if (reader.GetInt32(0) == 1)
+                            {
+                                contains = true;
+                            }
                         }
                     }
                 }
-
                 _connection.Close();
-                return false;
             }
+
+            return contains;
         }
 
         public int add(User user)
         {
-            lock (_lockObject)
+            lock (_lock)
             {
                 using (MySqlCommand command = new MySqlCommand())
                 {
