@@ -2,6 +2,7 @@ from sys import argv, stderr, exit
 from json import dumps
 import logging
 import http.client
+import json
 http.client.HTTPConnection.debuglevel = 1
 
 logging.basicConfig()
@@ -26,7 +27,7 @@ usage = """Usage:
 clid = "7rCT77hOpd9VBv8K0DAxag"
 clsec = "OyOPKetreHVGT5Ry5koisPp84dI4OjD7wTNrHYDsSllkk54-P5_Blkq2KobpEA6QY0BPvkqyyBClzrS7xtU90w"
 
-search_query = 'https://discover.search.hereapi.com/v1/discover?in=circle:42.2249,-121.7817;r=115000&q=bathroom&apiKey=LbzvmA77Y0eEWFQAjTp-LLpUWmISGj3XWe0rRD4Wei4'
+search_query = 'https://discover.search.hereapi.com/v1/discover?in=circle:42.2249,-121.7817;r=115000&q=bathroom'
 
 # 1. Retrieve token
 try:
@@ -57,4 +58,19 @@ except KeyError as e:
 headers = {'Authorization': f'{token_type} {token}'}
 search_results = dumps(get(search_query, headers=headers).json(), indent=2)
 
-print(f'results:\n{search_results}')
+# print(f'results:\n{search_results}')
+
+# Parse JSON
+pdata = json.loads(search_results)
+
+for item in pdata['items']:
+    title = item['title']
+    address = item['address']['label']
+    latitude = item['position']['lat']
+    longitude = item['position']['lng']
+
+    # Print for testing
+    print(f'Title: {title}')
+    print(f'Address: {address}')
+    print(f'Position: ({latitude}, {longitude})')
+    
