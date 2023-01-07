@@ -9,6 +9,7 @@ import logging
 import http.client
 import json
 import mysql.connector
+import math
 http.client.HTTPConnection.debuglevel = 1
 
 logging.basicConfig()
@@ -80,22 +81,33 @@ except KeyError as e:
 headers = {'Authorization': f'{token_type} {token}'}
 
 # Box with Grid corner Coordinates
-min_lat = 25.82
-max_lat = 49.38
-min_lng = -124.39
-max_lng = -66.94
+min_lat = 41.991794
+max_lat = 46.292035
+min_lng = -124.566244
+max_lng = -116.463504
 
-# Calculate spacing for Grid
-lat_spacing = (max_lat - min_lat) / 10
-lng_spacing = (max_lng - min_lng) / 10
+# Set Values and Calculate Number of Circles Needed
+width = math.fabs(max_lng - min_lng)
+height = math.fabs(max_lat - min_lat)
+circle_radius = 250
+box_area = width * height
+circle_area = 3.14 * circle_radius * circle_radius
+num_circles = box_area / circle_area
+
+# Set Start Point
+x = min_lat + circle_radius
+y = min_lng + circle_radius
 
 # Generate center points
 center_points = []
-for i in range(10):
-    for j in range(10):
-        lat = min_lat + i * lat_spacing + lat_spacing / 2
-        lng = min_lng + j * lng_spacing + lng_spacing / 2
-        center_points.append((lat, lng))
+for i in range(int(num_circles)):
+    #Append
+    center_points.append((x, y))
+    #Next Coordinates
+    x += 2 * circle_radius
+    if x > max_lat:
+        x = min_lng + circle_radius
+        y += 2 * circle_radius
 
 # Iterate through the center points
 for point in center_points:
