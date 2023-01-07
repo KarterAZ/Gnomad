@@ -1,8 +1,14 @@
+# Author: Stephen Thomson, Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez
+# Date: 1/7/2023
+# Purpose: Breaks the US into 100 circles with a 250km radius to theoretically cover the entire US.
+#           Sends 100 requests to the HERE API, parses the bathroom data we need, and inserts it into the Testing Database.
+
 from sys import argv, stderr, exit
 from json import dumps
 import logging
 import http.client
 import json
+import mysql.connector
 http.client.HTTPConnection.debuglevel = 1
 
 logging.basicConfig()
@@ -22,13 +28,13 @@ except ImportError as e:
     raise ImportError(f'{e.msg}\nPackage available at https://pypi.org/project/requests')
 
 # Connect/Insert to database function
-def insert_data(title, address, latitude, longitude):
-    cnx = mysql.connector.connect(user='USERNAME', password='PASSWORD', host='HOSTNAME', database='DATABASE')
+def insert_data(title, street, latitude, longitude):
+    cnx = mysql.connector.connect(user='codenome', password='Codenome!1', host='travel.bryceschultz.com', database='codenome_testing')
     cursor = cnx.cursor()
 
     # Construct the INSERT statement
-    stmt = "INSERT INTO places (title, address, latitude, longitude) VALUES (%s, %s, %s)"
-    values = (title, address, latitude, longitude)
+    stmt = "INSERT INTO pins (title, street, latitude, longitude) VALUES (%s, %s, %s)"
+    values = (title, street, latitude, longitude)
 
     # Execute the statement
     cursor.execute(stmt, values)
@@ -106,7 +112,7 @@ for point in center_points:
     for item in pdata['items']:
         place = {
             'title': item['title'],
-            'address': item['address']['label'],
+            'street': item['address']['label'],
             'latitude': item['position']['lat'],
             'longitude': item['position']['lng']
         }
@@ -114,7 +120,7 @@ for point in center_points:
         insert_data(place)
 
         # Print for testing
-        print(f'Title: {title}')
-        print(f'Address: {address}')
-        print(f'Position: ({latitude}, {longitude})')
+        #print(f'Title: {title}')
+        #print(f'Address: {address}')
+        #print(f'Position: ({latitude}, {longitude})')
     
