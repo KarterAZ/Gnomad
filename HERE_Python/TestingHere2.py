@@ -27,9 +27,7 @@ usage = """Usage:
 clid = "7rCT77hOpd9VBv8K0DAxag"
 clsec = "OyOPKetreHVGT5Ry5koisPp84dI4OjD7wTNrHYDsSllkk54-P5_Blkq2KobpEA6QY0BPvkqyyBClzrS7xtU90w"
 
-search_query = 'https://discover.search.hereapi.com/v1/discover?in=circle:42.2249,-121.7817;r=115000&q=bathroom'
-
-# 1. Retrieve token
+# Retrieve token
 try:
     data = {
         'grantType': 'client_credentials',
@@ -54,23 +52,47 @@ except KeyError as e:
     print(dumps(response, indent=2))
     exit(1)
 
-# 2. Use it in HERE Geocoding And Search query header
+# Use it in HERE Geocoding And Search query header
 headers = {'Authorization': f'{token_type} {token}'}
-search_results = dumps(get(search_query, headers=headers).json(), indent=2)
 
-# print(f'results:\n{search_results}')
+# Box with Grid corner Coordinates
+min_lat = 25.82
+max_lat = 49.38
+min_lng = -124.39
+max_lng = -66.94
 
-# Parse JSON
-pdata = json.loads(search_results)
+# Calculate spacing for Grid
+lat_spacing = (max_lat - min_lat) / 10
+lng_spacing = (max_lng - min_lng) / 10
 
-for item in pdata['items']:
-    title = item['title']
-    address = item['address']['label']
-    latitude = item['position']['lat']
-    longitude = item['position']['lng']
+# Generate center points
+center_points = []
+for i in range(10):
+    for j in range(10):
+        lat = min_lat + i * lat_spacing + lat_spacing / 2
+        lng = min_lng + j * lng_spacing + lng_spacing / 2
+        center_points.append((lat, lng))
 
-    # Print for testing
-    print(f'Title: {title}')
-    print(f'Address: {address}')
-    print(f'Position: ({latitude}, {longitude})')
+# Iterate through the center points
+for point in center_points:
+    # Construct the search query
+    search_query = f'https://discover.search.hereapi.com/v1/discover?in=circle:{point[0]},{point[1]};r=250000&q=bathroom'
+
+    #Peform Search
+    search_results = dumps(get(search_query, headers=headers).json(), indent=2)
+
+    # Parse JSON
+    pdata = json.loads(search_results)
+
+    #Iterate through items
+    for item in pdata['items']:
+        title = item['title']
+        address = item['address']['label']
+        latitude = item['position']['lat']
+        longitude = item['position']['lng']
+
+        # Print for testing
+        print(f'Title: {title}')
+        print(f'Address: {address}')
+        print(f'Position: ({latitude}, {longitude})')
     
