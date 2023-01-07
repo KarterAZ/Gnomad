@@ -21,6 +21,24 @@ try:
 except ImportError as e:
     raise ImportError(f'{e.msg}\nPackage available at https://pypi.org/project/requests')
 
+# Connect/Insert to database function
+def insert_data(title, address, latitude, longitude):
+    cnx = mysql.connector.connect(user='USERNAME', password='PASSWORD', host='HOSTNAME', database='DATABASE')
+    cursor = cnx.cursor()
+
+    # Construct the INSERT statement
+    stmt = "INSERT INTO places (title, address, latitude, longitude) VALUES (%s, %s, %s)"
+    values = (title, address, latitude, longitude)
+
+    # Execute the statement
+    cursor.execute(stmt, values)
+
+    # Commit the changes to the database
+    cnx.commit()
+
+    # Close the connection to the database
+    cnx.close()
+    
 usage = """Usage:
     hgs_access_test.py <key-id> <key_secret>
 """
@@ -84,12 +102,16 @@ for point in center_points:
     # Parse JSON
     pdata = json.loads(search_results)
 
-    #Iterate through items
+    #Iterate through items to create place
     for item in pdata['items']:
-        title = item['title']
-        address = item['address']['label']
-        latitude = item['position']['lat']
-        longitude = item['position']['lng']
+        place = {
+            'title': item['title'],
+            'address': item['address']['label'],
+            'latitude': item['position']['lat'],
+            'longitude': item['position']['lng']
+        }
+        #Call the function
+        insert_data(place)
 
         # Print for testing
         print(f'Title: {title}')
