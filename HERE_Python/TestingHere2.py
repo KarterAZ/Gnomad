@@ -34,8 +34,11 @@ def insert_data(title, street, latitude, longitude):
         cnx = mysql.connector.connect(user='codenome', password='Codenome!1', host='travel.bryceschultz.com', database='codenome_testing')
         cursor = cnx.cursor()
 
+        #Place Holder for Street Address
+        street = "Won't Fit"
+        
         # Construct the INSERT statement
-        stmt = "INSERT INTO pins (title, street, latitude, longitude) VALUES (%s, %s, %s)"
+        stmt = "INSERT INTO pins (title, street, latitude, longitude, user_id) VALUES (%s, %s, %s, %s, 0)"
         values = (title, street, latitude, longitude)
 
         # Testing: print the values of the variables
@@ -99,12 +102,13 @@ min_lng = -124.566244
 max_lng = -116.463504
 
 # Set Values and Calculate Number of Circles Needed
-width = math.fabs((max_lng - min_lng) * 111.32)
-height = math.fabs((max_lat - min_lat) * 110.574)
+width = math.fabs(((max_lng * -1) - (min_lng * -1)) * 111.32)
+height = math.fabs((max_lat - min_lat) * 111.32)
 circle_radius = 250
+circle_degrees = circle_radius / 111.32
 box_area = width * height
 circle_area = 3.14 * circle_radius * circle_radius
-num_circles = box_area / circle_area
+num_circles = math.floor(box_area / circle_area)
 
 #Testing print
 print("Min Lat: ", min_lat)
@@ -114,6 +118,7 @@ print("Max Lng: ", max_lng)
 print("Width: ", width)
 print("Height: ", height)
 print("Radius: ", circle_radius)
+print("Radius Degrees: ", circle_degrees)
 print("Box Area: ", box_area)
 print("Circle Area: ", circle_area)
 print("num_circles: ",num_circles)
@@ -122,20 +127,34 @@ print("num_circles: ",num_circles)
 cont = input("Enter to Cotinue. ")
 
 # Set Start Point
-x = min_lat + circle_radius
-y = min_lng + circle_radius
+x = min_lat + circle_degrees
+y = min_lng + circle_degrees
+
+#Testing Print
+print("X-Lat: ", x)
+print("Y-Lng: ", y)
+
+#Pause for testing
+cont = input("Enter to Cotinue. ")
 
 # Generate center points
 center_points = []
 for i in range(int(num_circles)):
     #Append
     center_points.append((x, y))
-    #Next Coordinates
-    x += 2 * circle_radius
-    if x > max_lat:
-        x = min_lng + circle_radius
-        y += 2 * circle_radius
 
+    #Test Print
+    print(center_points)
+    print("Lat: ", x, "Lng: ", y)
+    
+    #Next Coordinates
+    y += 2 * circle_degrees
+    if y > max_lng:
+        y = min_lng + circle_degrees
+        x += 2 * circle_degrees
+
+#Pause for testing
+cont = input("Enter to Cotinue. ")
 
 # Iterate through the center points
 for point in center_points:
@@ -150,6 +169,9 @@ for point in center_points:
 
     # Parse JSON
     pdata = json.loads(search_results)
+
+    #Test Print
+    print(pdata)
 
     #Iterate through items to create place
     for item in pdata['items']:
