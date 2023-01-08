@@ -1,7 +1,7 @@
 # Author: Stephen Thomson, Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez
 # Date: 1/7/2023
-# Purpose: Breaks the US into 100 circles with a 250km radius to theoretically cover the entire US.
-#           Sends 100 requests to the HERE API, parses the bathroom data we need, and inserts it into the Testing Database.
+# Purpose: Breaks Oregon into 9 circles with a 250km radius to theoretically cover all of Oregon.
+#           Sends 9 requests to the HERE API, parses the bathroom data we need, and inserts it into the Testing Database.
 
 from sys import argv, stderr, exit
 from json import dumps
@@ -30,18 +30,30 @@ except ImportError as e:
 
 # Connect/Insert to database function
 def insert_data(title, street, latitude, longitude):
-    cnx = mysql.connector.connect(user='codenome', password='Codenome!1', host='travel.bryceschultz.com', database='codenome_testing')
-    cursor = cnx.cursor()
+    try:
+        cnx = mysql.connector.connect(user='codenome', password='Codenome!1', host='travel.bryceschultz.com', database='codenome_testing')
+        cursor = cnx.cursor()
 
-    # Construct the INSERT statement
-    stmt = "INSERT INTO pins (title, street, latitude, longitude) VALUES (%s, %s, %s)"
-    values = (title, street, latitude, longitude)
+        # Construct the INSERT statement
+        stmt = "INSERT INTO pins (title, street, latitude, longitude) VALUES (%s, %s, %s)"
+        values = (title, street, latitude, longitude)
 
-    # Execute the statement
-    cursor.execute(stmt, values)
+        # Testing: print the values of the variables
+        print("cnx:", cnx)
+        print("cursor:", cursor)
+        print("stmt:", stmt)
+        print("values:", values)
+    
+        # Execute the statement
+        result = cursor.execute(stmt, values)
+        #Print result to test for error code
+        print("result:", result)
+    
+        # Commit the changes to the database
+        cnx.commit()
 
-    # Commit the changes to the database
-    cnx.commit()
+    except Exception as e:
+        print("Error:", e)
 
     # Close the connection to the database
     cnx.close()
@@ -87,12 +99,27 @@ min_lng = -124.566244
 max_lng = -116.463504
 
 # Set Values and Calculate Number of Circles Needed
-width = math.fabs(max_lng - min_lng)
-height = math.fabs(max_lat - min_lat)
+width = math.fabs((max_lng - min_lng) * 111.32)
+height = math.fabs((max_lat - min_lat) * 110.574)
 circle_radius = 250
 box_area = width * height
 circle_area = 3.14 * circle_radius * circle_radius
 num_circles = box_area / circle_area
+
+#Testing print
+print("Min Lat: ", min_lat)
+print("Max Lat: ", max_lat)
+print("Min Lng: ", min_lng)
+print("Max Lng: ", max_lng)
+print("Width: ", width)
+print("Height: ", height)
+print("Radius: ", circle_radius)
+print("Box Area: ", box_area)
+print("Circle Area: ", circle_area)
+print("num_circles: ",num_circles)
+
+#Pause for testing
+cont = input("Enter to Cotinue. ")
 
 # Set Start Point
 x = min_lat + circle_radius
@@ -109,11 +136,15 @@ for i in range(int(num_circles)):
         x = min_lng + circle_radius
         y += 2 * circle_radius
 
+
 # Iterate through the center points
 for point in center_points:
     # Construct the search query
     search_query = f'https://discover.search.hereapi.com/v1/discover?in=circle:{point[0]},{point[1]};r=250000&q=bathroom'
 
+    #Print to test
+    print("Search: ", search_query)
+    
     #Peform Search
     search_results = dumps(get(search_query, headers=headers).json(), indent=2)
 
@@ -129,10 +160,14 @@ for point in center_points:
             'longitude': item['position']['lng']
         }
         #Call the function
-        insert_data(place)
+        insert_data(place['title'], place['street'], place['latitude'], place['longitude'])
 
         # Print for testing
-        #print(f'Title: {title}')
-        #print(f'Address: {address}')
-        #print(f'Position: ({latitude}, {longitude})')
+        print(place)
+    
+    # Pause each iteration to choose continue or exit
+    cont = input("Enter to Continue, n to exit. ")
+    if cont.lower() == "n":
+        break
+
     
