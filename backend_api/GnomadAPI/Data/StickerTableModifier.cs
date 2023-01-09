@@ -32,33 +32,32 @@ namespace TravelCompanionAPI.Data
         
         }
 
-
         public Sticker getById(int id)
         {
-                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
-                Sticker stickers = null;
-                using (MySqlCommand command = new MySqlCommand())
-                {
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = @Id);";
-                    command.Parameters.AddWithValue("Id", id);
+            MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+            Sticker stickers = null;
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = @Id);";
+                command.Parameters.AddWithValue("Id", id);
 
                     
-                    using (MySqlDataReader reader = command.ExecuteReader())
-                    {
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
 
-                        while (reader.Read())
-                        {
-                            stickers = new Sticker();
-                            stickers.Id = reader.GetInt32(0);
-                            stickers.UserId = reader.GetInt32(1);
-                            stickers.Longitude = reader.GetInt32(2);
-                            stickers.Latitude = reader.GetInt32(3);
-                            stickers.Title = reader.GetString(4);
-                            stickers.Street = reader.GetString(5);
-                        }
+                    while (reader.Read())
+                    {
+                        stickers = new Sticker();
+                        stickers.Id = reader.GetInt32(0);
+                        stickers.UserId = reader.GetInt32(1);
+                        stickers.Longitude = reader.GetInt32(2);
+                        stickers.Latitude = reader.GetInt32(3);
+                        stickers.Title = reader.GetString(4);
+                        stickers.Street = reader.GetString(5);
                     }
+                }
         
                 return stickers;
             }
@@ -66,42 +65,38 @@ namespace TravelCompanionAPI.Data
         
         public List<Sticker> getAll()
         {
-            
-                List<Sticker> stickers = new List<Sticker>();
-                 MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+            List<Sticker> stickers = new List<Sticker>();
+            MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
 
-                using (MySqlCommand command = new MySqlCommand())
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM " + TABLE + ";";
+
+
+                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = @"SELECT * FROM " + TABLE + ";";
-
-
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            Sticker sticker = new Sticker();
-                            sticker.Id = reader.GetInt32(0);
-                            sticker.UserId = reader.GetInt32(1);
-                            sticker.Longitude = reader.GetInt32(2);
-                            sticker.Latitude = reader.GetInt32(3);
-                            sticker.Title = reader.GetString(4);
-                            sticker.Street = reader.GetString(5);
-                            stickers.Add(sticker);
-                        }
+                        Sticker sticker = new Sticker();
+                        sticker.Id = reader.GetInt32(0);
+                        sticker.UserId = reader.GetInt32(1);
+                        sticker.Longitude = reader.GetInt32(2);
+                        sticker.Latitude = reader.GetInt32(3);
+                        sticker.Title = reader.GetString(4);
+                        sticker.Street = reader.GetString(5);
+                        stickers.Add(sticker);
                     }
                 }
+            }
 
-
-
-                return stickers;
-            
+            return stickers;
         }
 
         public List<Sticker> getAll(int uid)
         {
-            lock (_lockObject)
+            lock (_lock)
             {
                 List<Sticker> stickers = new List<Sticker>();
                 MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
@@ -187,14 +182,13 @@ namespace TravelCompanionAPI.Data
                 }
                 return exists;
             }
-        }
 
-        public Pin getAllByUser(int uid)
+        int IDataRepository<Sticker>.add(Sticker data)
         {
             throw new NotImplementedException();
         }
 
-        public List<Sticker> getAll()
+        public Pin getAllByUser(int uid)
         {
             throw new NotImplementedException();
         }
