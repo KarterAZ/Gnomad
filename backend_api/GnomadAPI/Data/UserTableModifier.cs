@@ -34,7 +34,7 @@ namespace TravelCompanionAPI.Data
 
         public User getById(int id)
         {
-                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+                MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
 
                 User user = null;
                 using (MySqlCommand command = new MySqlCommand())
@@ -67,28 +67,26 @@ namespace TravelCompanionAPI.Data
 
         public int getId(User user)
         {
+            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
             int id = -1;
-            lock (_lock)
+            using (MySqlCommand command = new MySqlCommand())
             {
-                using (MySqlCommand command = new MySqlCommand())
-                {
-                    command.Connection = _connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email = @Email;";
-                    command.Parameters.AddWithValue("@Email", user.Email);
-                    _connection.Open();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email = @Email;";
+                command.Parameters.AddWithValue("@Email", user.Email);
+                connection.Open();
 
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            id = reader.GetInt32(0);
-                        }
+                        id = reader.GetInt32(0);
                     }
                 }
-
-                _connection.Close();
             }
+
+            connection.Close();
 
             return id;
         }
@@ -96,7 +94,7 @@ namespace TravelCompanionAPI.Data
         public List<User> getAll()
         {
 
-                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+                MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
 
                 List<User> users = new List<User>();
 
@@ -131,7 +129,7 @@ namespace TravelCompanionAPI.Data
         {
 
                 bool exists = false;
-                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+                MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
 
                 using (MySqlCommand command = new MySqlCommand())
                 {
@@ -148,7 +146,7 @@ namespace TravelCompanionAPI.Data
                         {
                             if (reader.GetInt32(0) == 1)
                             {
-                                contains = true;
+                                exists = true;
                             }
                         }
                     }
@@ -160,27 +158,28 @@ namespace TravelCompanionAPI.Data
 
         public void add(User user)
         {
+            MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
 
-                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
-                
-                using (MySqlCommand command = new MySqlCommand())
-                {
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = "INSERT INTO " + TABLE + " (email, profile_photo_url, first_name, last_name) VALUES (@Email, @ProfilePhotoURL, @FirstName, @LastName);";
-                    command.Parameters.AddWithValue("@Email", user.Email);
-                    command.Parameters.AddWithValue("@ProfilePhotoURL", user.ProfilePhotoURL);
-                    command.Parameters.AddWithValue("@FirstName", user.FirstName);
-                    command.Parameters.AddWithValue("@LastName", user.LastName);
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "INSERT INTO " + TABLE + " (email, profile_photo_url, first_name, last_name) VALUES (@Email, @ProfilePhotoURL, @FirstName, @LastName);";
+                command.Parameters.AddWithValue("@Email", user.Email);
+                command.Parameters.AddWithValue("@ProfilePhotoURL", user.ProfilePhotoURL);
+                command.Parameters.AddWithValue("@FirstName", user.FirstName);
+                command.Parameters.AddWithValue("@LastName", user.LastName);
 
-                 
-                    command.ExecuteNonQuery();
-                }
-
-            
+                command.ExecuteNonQuery();
+            }
         }
 
         public Pin getAllByUser(int uid)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        int IDataRepository<User>.add(User data)
         {
             throw new System.NotImplementedException();
         }
