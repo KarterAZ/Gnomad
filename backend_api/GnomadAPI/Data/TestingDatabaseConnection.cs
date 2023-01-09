@@ -14,7 +14,7 @@ using MySql.Data.MySqlClient;
 namespace TravelCompanionAPI.Data
 {
     public class TestingDatabaseConnection : IDatabaseConnection<TestingDatabase>
-    {         
+    {
         private static TestingDatabaseConnection _instance;
         private static string _connection_string;
 
