@@ -35,7 +35,7 @@ namespace TravelCompanionAPI.Models
         public int Latitude { get; set; }
         public string Title { get; set; }
         public string Street { get; set; }
-        public string Tag { get; set; }
+        public int Tag { get; set; } = 0;
 
         public void print()
         {
