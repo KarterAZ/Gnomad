@@ -7,11 +7,14 @@
 //
 //################################################################
 
+// external imports.
 import React, { Component } from 'react';
 
+// internal imports.
 import './directions.css';
 
-class directions extends Component 
+// this class renders the Directions component
+export default class directions extends Component 
 {
   constructor(props) 
   {
@@ -29,5 +32,3 @@ class directions extends Component
     );
   }
 }
-
-export default directions;

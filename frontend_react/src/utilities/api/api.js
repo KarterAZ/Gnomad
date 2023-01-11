@@ -1,3 +1,12 @@
+//################################################################
+//
+// Authors: Bryce Schultz
+// Date: 12/19/2022
+// 
+// Purpose: Contains code to access the backend api.
+//
+//################################################################
+
 // internal import.
 import { getCookie } from '../cookies';
 

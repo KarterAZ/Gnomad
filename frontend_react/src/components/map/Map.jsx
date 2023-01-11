@@ -7,12 +7,14 @@
 //
 //################################################################
 
+// external imports.
 import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
 
+// internal imports.
 import './map.css';
 
-// Defualt location the map points to.
+// defualt location the map points to.
 const defaultProps = 
 {
   center: {
@@ -22,8 +24,8 @@ const defaultProps =
   zoom: 17,
 };
 
-// Map component.
-class Map extends Component 
+// this class renders the map component.
+export default class Map extends Component 
 {
   render() 
   {
@@ -46,5 +48,3 @@ class Map extends Component
     );
   }
 }
-
-export default Map;
