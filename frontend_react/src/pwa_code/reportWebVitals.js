@@ -7,6 +7,7 @@
 //
 //################################################################
 
+// this function reports web vitals
 const reportWebVitals = (onPerfEntry) => 
 {
   if (onPerfEntry && onPerfEntry instanceof Function) 

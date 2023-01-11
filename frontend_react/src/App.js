@@ -8,19 +8,23 @@
 //
 //################################################################
 
+// external imports.
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import Home from './pages/home/Home';
+// internal imports.
+import HomePage from './pages/home/HomePage';
+import RoutesPage from './pages/routes/RoutesPage';
 
-function App() {
-  return (
+// This function returns the main app content.
+export default function App() 
+{
+  return(
     <Router>
       <Routes>
-        <Route exact path='/' element={<Home/>} />
+        <Route exact path='/' element={<HomePage/>} />
+        <Route path='routes' element={<RoutesPage/>}/>
       </Routes>
     </Router>
   );
 }
-
-export default App;

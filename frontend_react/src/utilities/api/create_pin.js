@@ -1,5 +1,17 @@
+//################################################################
+//
+// Authors: Bryce Schultz
+// Date: 12/19/2022
+// 
+// Purpose: Contains code to create a user pin (sticker)
+//
+//################################################################
+
+// internal imports.
 import { get, post, isAuthenticated } from './api';
 
+// this function takes a pin object and will call
+// the backend api to create it.
 export default function createPin(pin)
 {
     if (!isAuthenticated()) return null;

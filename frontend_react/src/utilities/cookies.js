@@ -10,7 +10,7 @@
 
 // setCookie takes a name and a value, it then sets the cookie 
 // to the value.
-function setCookie(name, value, expire_days = 1) 
+export function setCookie(name, value, expire_days = 1) 
 {
   const d = new Date();
 
@@ -23,7 +23,7 @@ function setCookie(name, value, expire_days = 1)
 
 // getCookie returns the value of a specified cookie
 // will return and empty string if no value is defined.
-function getCookie(name) 
+export function getCookie(name) 
 {
   name += '=';
   let decodedCookie = decodeURIComponent(document.cookie);
@@ -44,6 +44,3 @@ function getCookie(name)
   }
   return '';
 }
-
-// Export the functions for use.
-export { setCookie, getCookie };
