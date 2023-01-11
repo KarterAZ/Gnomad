@@ -29,12 +29,12 @@ namespace TravelCompanionAPI.Data
 
         public StickerTableModifier(IConfiguration config)
         {
-        
+
         }
 
         public Sticker getById(int id)
         {
-            MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
             Sticker stickers = null;
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -43,7 +43,7 @@ namespace TravelCompanionAPI.Data
                 command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = @Id);";
                 command.Parameters.AddWithValue("Id", id);
 
-                    
+
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
 
@@ -58,15 +58,15 @@ namespace TravelCompanionAPI.Data
                         stickers.Street = reader.GetString(5);
                     }
                 }
-        
+
                 return stickers;
             }
         }
-        
+
         public List<Sticker> getAll()
         {
             List<Sticker> stickers = new List<Sticker>();
-            MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -96,92 +96,86 @@ namespace TravelCompanionAPI.Data
 
         public List<Sticker> getAll(int uid)
         {
-            lock (_lock)
+            List<Sticker> stickers = new List<Sticker>();
+            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+
+            using (MySqlCommand command = new MySqlCommand())
             {
-                List<Sticker> stickers = new List<Sticker>();
-                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`user_id` = @UId);";
+                command.Parameters.AddWithValue("UId", uid);
 
-                using (MySqlCommand command = new MySqlCommand())
+
+
+                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`user_id` = @UId);";
-                    command.Parameters.AddWithValue("UId", uid);
-
-               
-
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            Sticker sticker = new Sticker();
-                            sticker.Id = reader.GetInt32(0);
-                            sticker.UserId = reader.GetInt32(1);
-                            sticker.Longitude = reader.GetInt32(2);
-                            sticker.Latitude = reader.GetInt32(3);
-                            sticker.Title = reader.GetString(4);
-                            sticker.Street = reader.GetString(5);
-                            stickers.Add(sticker);
-                        }
+                        Sticker sticker = new Sticker();
+                        sticker.Id = reader.GetInt32(0);
+                        sticker.UserId = reader.GetInt32(1);
+                        sticker.Longitude = reader.GetInt32(2);
+                        sticker.Latitude = reader.GetInt32(3);
+                        sticker.Title = reader.GetString(4);
+                        sticker.Street = reader.GetString(5);
+                        stickers.Add(sticker);
                     }
                 }
-
-
-                return stickers;
             }
+            return stickers;
         }
 
         public void add(Sticker sticker)
         {
-                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
 
-                using (MySqlCommand command = new MySqlCommand())
-                {
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = "INSERT INTO " + TABLE + " (longitude, latitude, title, street) VALUES (@Longitude, @Latitude, @Title, @Street);";
-                    command.Parameters.AddWithValue("@Longitude", sticker.Longitude);
-                    command.Parameters.AddWithValue("@DLatitude", sticker.Latitude);
-                    command.Parameters.AddWithValue("@Title", sticker.Title);
-                    command.Parameters.AddWithValue("@Street", sticker.Street);
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "INSERT INTO " + TABLE + " (longitude, latitude, title, street) VALUES (@Longitude, @Latitude, @Title, @Street);";
+                command.Parameters.AddWithValue("@Longitude", sticker.Longitude);
+                command.Parameters.AddWithValue("@DLatitude", sticker.Latitude);
+                command.Parameters.AddWithValue("@Title", sticker.Title);
+                command.Parameters.AddWithValue("@Street", sticker.Street);
 
-                  
 
-                    command.ExecuteNonQuery();
-                }
-            
+
+                command.ExecuteNonQuery();
+            }
         }
 
-         public bool contains(Sticker data)
-         {
-           
-                bool exists = false;
-                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
+        public bool contains(Sticker data)
+        {
 
-                using (MySqlCommand command = new MySqlCommand())
+            bool exists = false;
+            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
+                command.Parameters.AddWithValue("@Longitude", data.Longitude);
+                command.Parameters.AddWithValue("@Latitude", data.Latitude);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
-                    command.Parameters.AddWithValue("@Longitude", data.Longitude);
-                    command.Parameters.AddWithValue("@Latitude", data.Latitude);
-                    
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+
+                        if (data.Longitude == int.Parse(reader.GetString(0)) && data.Latitude == int.Parse(reader.GetString(1)))
+
                         {
-
-                            if (data.Longitude == int.Parse(reader.GetString(0)) && data.Latitude == int.Parse(reader.GetString(1)))
-
-                            {
-                                exists = true;
-                                break;
-                            }
+                            exists = true;
+                            break;
                         }
                     }
                 }
-                return exists;
             }
+            return exists;
+        }
 
         int IDataRepository<Sticker>.add(Sticker data)
         {

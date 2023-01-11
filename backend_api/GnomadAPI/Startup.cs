@@ -23,24 +23,20 @@ using System.IO;
 using System.Reflection;
 using TravelCompanionAPI.Data;
 using TravelCompanionAPI.Models;
+using GnomadAPI.Data;
+
 namespace TravelCompanionAPI
 {
     public class Startup
     {
         private const string CorsPolicyName = "AppPolicy";
 
-        private static string _connection_string;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration; //What do we use this for?
         }
 
         public IConfiguration Configuration { get; }
-
-        public static string getConnectionString()
-        {
-            return _connection_string;
-        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -122,16 +118,16 @@ namespace TravelCompanionAPI
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
 
-                //Adds dependency injection so that UserTableModifier gets called wherever IDataRepository gets called
-                services.AddTransient<IDataRepository<User>, UserTableModifier>();
-                //Adds dependency injection so that PinTableModifier gets called wherever IDataRepository gets called
-                services.AddTransient<IDataRepository<Pin>, PinTableModifier>();
-                //Adds a singleton to UserTableModifier
-                services.AddSingleton<UserTableModifier>();
-                //Adds a singleton to PinTableModifier
-                services.AddSingleton<PinTableModifier>();
-                //Adds a singelton to DatabaseConnection
-                services.AddSingleton<IDatabaseConnection,DatabaseConnection>();
+            //Adds dependency injection so that UserTableModifier gets called wherever IDataRepository gets called
+            services.AddTransient<IDataRepository<User>, UserTableModifier>();
+            //Adds dependency injection so that PinTableModifier gets called wherever IDataRepository gets called
+            services.AddTransient<IDataRepository<Pin>, PinTableModifier>();
+            //Adds a singleton to UserTableModifier
+            services.AddSingleton<UserTableModifier>();
+            //Adds a singleton to PinTableModifier
+            services.AddSingleton<PinTableModifier>();
+            //Adds a singelton to DatabaseConnection
+            services.AddSingleton<IDatabaseConnection<TestingDatabase>, TestingDatabaseConnection>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -143,9 +139,9 @@ namespace TravelCompanionAPI
             }
 
             app.UseAuthentication();
-            
+
             app.UseRouting();
-            
+
             app.UseCors(CorsPolicyName);
 
             app.UseAuthorization();
