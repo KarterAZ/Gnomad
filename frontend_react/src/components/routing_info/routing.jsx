@@ -7,13 +7,17 @@
 //
 //################################################################
 
+// external imports.
 import React, { Component } from 'react';
 
+// internal imports.
 import './routing.css';
 
-class Routing extends Component 
+// this class renders the Routing component
+export default class Routing extends Component 
 {
-  constructor(props) {
+  constructor(props) 
+  {
     super(props);
 
     this.stop = "Your heart";
@@ -61,5 +65,3 @@ class Routing extends Component
     );
   }
 }
-
-export default Routing;

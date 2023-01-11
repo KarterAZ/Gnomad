@@ -3,21 +3,23 @@
 // Authors: Bryce Schultz
 // Date: 12/19/2022
 // 
-// Purpose: Creates the sidebar react component
+// Purpose: Creates the sidebar react component.
 //
 //################################################################
 
+// external imports.
 import React, { Component } from 'react';
 import { Icon } from '@iconify/react';
+
+// intenral imports.
 import { sget } from '../../utilities/session_storage';
-import { lget } from '../../utilities/local_storage';
 import { LoginButton } from '../login_button/LoginButton';
 
 import './sidebar.css';
 
 
-
-class Sidebar extends Component 
+// this class renders the Sidebar component.
+export default class Sidebar extends Component 
 {
   constructor(props) 
   {
@@ -33,6 +35,7 @@ class Sidebar extends Component
     };
   }
 
+  // show / hide the Sidebar
   handleClick = () => 
   {
     if (this.open) 
@@ -47,12 +50,13 @@ class Sidebar extends Component
     this.open = !this.open;
   }
 
+  // this function is called when the search button is clicked.
   search = async () =>
   {
-    let user = sget('user');
-    console.log(user);
+    const query = document.getElementById('search-bar').value;
   }
 
+  // display a welcome message to the user when they login.
   WelcomeMessage = () =>
   {
     let user = sget('user');
@@ -64,6 +68,7 @@ class Sidebar extends Component
     );
   }
 
+  // render the actual component.
   render() 
   {
     return (
@@ -113,5 +118,3 @@ class Sidebar extends Component
     );
   }
 }
-
-export default Sidebar;
