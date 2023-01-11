@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using TravelCompanionAPI.Models;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace TravelCompanionAPI.Data
 {
@@ -23,7 +24,8 @@ namespace TravelCompanionAPI.Data
     //******************************************************************************
     public class PinTableModifier : IDataRepository<Pin>
     {
-        const string TABLE = "pins";
+        const string PIN_TABLE = "pins";
+        const string TAG_TABLE = "pinTags";
         //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
         public PinTableModifier(IConfiguration config)
@@ -43,7 +45,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM " + TABLE + " WHERE(`id` = @Id);";
+                command.CommandText = "SELECT * FROM " + PIN_TABLE + " WHERE(`id` = @Id);";
                 command.Parameters.AddWithValue("Id", id);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -59,6 +61,7 @@ namespace TravelCompanionAPI.Data
                         pins.Street = reader.GetString(5);
                     }
                 }
+                //TODO: get pinTags data, add to pin (should just be one since pin id, not user id.
             }
 
             return pins;
@@ -74,7 +77,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + ";";
+                command.CommandText = @"SELECT * FROM " + PIN_TABLE + ";";
 
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -91,6 +94,7 @@ namespace TravelCompanionAPI.Data
                         pins.Add(pin);
                     }
                 }
+                //TODO: get pinTags data, add to pin
             }
             return pins;
         }
@@ -104,7 +108,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`user_id` = @Uid);";
+                command.CommandText = @"SELECT * FROM " + PIN_TABLE + " WHERE(`user_id` = @Uid);";
                 command.Parameters.AddWithValue("@Uid", uid);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -121,6 +125,7 @@ namespace TravelCompanionAPI.Data
                         pins.Add(pin);
                     }
                 }
+                //TODO: get pinTags data, add to pin
             }
 
             return pins;
@@ -134,7 +139,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO " + TABLE + " (user_id, longitude, latitude, title, street) VALUES (@userID, @Longitude, @Latitude, @Title, @Street);";
+                command.CommandText = "INSERT INTO " + PIN_TABLE + " (user_id, longitude, latitude, title, street) VALUES (@userID, @Longitude, @Latitude, @Title, @Street);";
                 command.Parameters.AddWithValue("@userId", pin.UserId);
                 command.Parameters.AddWithValue("@Longitude", pin.Longitude);
                 command.Parameters.AddWithValue("@Latitude", pin.Latitude);
@@ -143,6 +148,7 @@ namespace TravelCompanionAPI.Data
 
                 command.ExecuteNonQuery();
             }
+            //TODO: add Tag to pins
         }
 
 
@@ -155,7 +161,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
+                command.CommandText = @"SELECT * FROM " + PIN_TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
                 command.Parameters.AddWithValue("@Longitude", data.Longitude);
                 command.Parameters.AddWithValue("@Latitude", data.Latitude);
 
