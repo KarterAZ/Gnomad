@@ -1,3 +1,12 @@
+/************************************************************************************************
+*
+* Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
+* Date: 1/10/2023
+*
+* Purpose: Contains Interface for MySql getConnection
+*
+************************************************************************************************/
+
 using GnomadAPI.Data;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;

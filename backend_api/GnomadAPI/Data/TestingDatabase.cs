@@ -1,4 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿/************************************************************************************************
+*
+* Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
+* Date: 1/10/2023
+*
+* Purpose: Contains TestingDatabase class
+*
+************************************************************************************************/
+
+using Microsoft.Extensions.Configuration;
 
 namespace GnomadAPI.Data
 {
