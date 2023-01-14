@@ -38,7 +38,7 @@ def insert_data(title, street, latitude, longitude):
         street = "Won't Fit"
         
         # Construct the INSERT statement
-        stmt = "INSERT INTO pins (title, street, latitude, longitude, user_id) VALUES (%s, %s, %s, %s, 0)"
+        stmt = "INSERT INTO pins (title, street, latitude, longitude, user_id, tag_bathroom) VALUES (%s, %s, %s, %s, 0, 1)"
         values = (title, street, latitude, longitude)
 
         # Testing: print the values of the variables
