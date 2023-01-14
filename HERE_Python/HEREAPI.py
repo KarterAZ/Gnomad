@@ -35,7 +35,7 @@ def insert_data(title, street, latitude, longitude):
         cursor = cnx.cursor()
      
         # Construct the INSERT statement
-        stmt = "INSERT INTO pins (title, street, latitude, longitude, user_id, tag_bathroom) VALUES (%s, %s, %s, %s, 0, 1)"
+        stmt = "INSERT INTO pins (title, street, latitude, longitude, user_id, tag_wifi) VALUES (%s, %s, %s, %s, 0, 1)"
         values = (title, street, latitude, longitude)
 
         # Testing: print the values of the variables
@@ -156,7 +156,7 @@ cont = input("Enter to Cotinue. ")
 # Iterate through the center points
 for point in center_points:
     # Construct the search query
-    search_query = f'https://discover.search.hereapi.com/v1/discover?in=circle:{point[0]},{point[1]};r=250000&q=bathroom'
+    search_query = f'https://discover.search.hereapi.com/v1/discover?in=circle:{point[0]},{point[1]};r=250000&q=wifi'
 
     #Print to test
     print("Search: ", search_query)
