@@ -185,8 +185,8 @@ for point in center_points:
         print(place)
     
     # Pause each iteration to choose continue or exit
-    cont = input("Enter to Continue, n to exit. ")
-    if cont.lower() == "n":
-        break
+    #cont = input("Enter to Continue, n to exit. ")
+    #if cont.lower() == "n":
+        #break
 
     
