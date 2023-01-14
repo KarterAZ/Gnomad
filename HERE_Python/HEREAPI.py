@@ -1,7 +1,7 @@
 # Author: Stephen Thomson, Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez
 # Date: 1/7/2023
-# Purpose: Breaks Oregon into 9 circles with a 250km radius to theoretically cover all of Oregon.
-#           Sends 9 requests to the HERE API, parses the bathroom data we need, and inserts it into the Testing Database.
+# Purpose: Breaks Oregon into 2 circles with a 250km radius to theoretically cover all of Oregon.
+#           Sends 2 requests to the HERE API, parses the bathroom data we need, and inserts it into the Testing Database.
 
 from sys import argv, stderr, exit
 from json import dumps
@@ -33,10 +33,7 @@ def insert_data(title, street, latitude, longitude):
     try:
         cnx = mysql.connector.connect(user='codenome', password='Codenome!1', host='travel.bryceschultz.com', database='codenome_testing')
         cursor = cnx.cursor()
-
-        #Place Holder for Street Address
-        street = "Won't Fit"
-        
+     
         # Construct the INSERT statement
         stmt = "INSERT INTO pins (title, street, latitude, longitude, user_id, tag_bathroom) VALUES (%s, %s, %s, %s, 0, 1)"
         values = (title, street, latitude, longitude)
