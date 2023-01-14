@@ -3,7 +3,7 @@
 * Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
 * Date: 12/28/2022
 *
-* Purpose: Contains Tag Controllers.
+* Purpose: Contains Tag Controllers. Probably temporary since tags are defined at launch.
 *
 ************************************************************************************************/
 
@@ -19,12 +19,17 @@ using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI.Controllers
 {
+        /// <summary>
+        /// Default route controller.
+        /// </summary>
     [Route("tags")]
     [ApiController]
     [Authorize]
     public class TagController : ControllerBase
     {
+        //The repository obtained through dependency injection.
         private IDataRepository<Tag> _repo;
+
         public TagController(IDataRepository<Tag> repo)
         {
             _repo = repo;

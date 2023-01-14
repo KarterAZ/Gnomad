@@ -3,7 +3,8 @@
 * Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
 * Date: 12/28/2022
 *
-* Purpose: Contains PinTag Controllers.
+* Purpose: Contains PinTag Controllers. Probably temporary, since should be handled in PinController.cs.
+
 *
 ************************************************************************************************/
 
@@ -19,6 +20,12 @@ using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI.Controllers
 {
+        /// <summary>
+        /// Default route controller.
+        /// </summary>
+        /// <returns>
+        /// S
+        ///</returns>
     [Route("pintags")]
     [ApiController]
     [Authorize]
