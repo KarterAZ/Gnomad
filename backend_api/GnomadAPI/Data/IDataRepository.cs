@@ -23,9 +23,10 @@ namespace TravelCompanionAPI.Data
 
         public List<T> getAll();
 
-        public int add(T data);
+        public bool add(T data);
 
         public bool contains(T data);
-        Pin getAllByUser(int uid);
+        
+        List<T> getAllByUser(int uid);
     }
 }

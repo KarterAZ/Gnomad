@@ -126,7 +126,7 @@ namespace TravelCompanionAPI.Data
             return stickers;
         }
 
-        public void add(Sticker sticker)
+        public bool add(Sticker sticker)
         {
             MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
 
@@ -140,10 +140,10 @@ namespace TravelCompanionAPI.Data
                 command.Parameters.AddWithValue("@Title", sticker.Title);
                 command.Parameters.AddWithValue("@Street", sticker.Street);
 
-
-
                 command.ExecuteNonQuery();
             }
+
+            return true; //Error handling here.
         }
 
         public bool contains(Sticker data)
@@ -177,12 +177,7 @@ namespace TravelCompanionAPI.Data
             return exists;
         }
 
-        int IDataRepository<Sticker>.add(Sticker data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Pin getAllByUser(int uid)
+        public List<Sticker> getAllByUser(int uid)
         {
             throw new NotImplementedException();
         }

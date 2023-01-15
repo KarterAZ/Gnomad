@@ -33,8 +33,6 @@ namespace TravelCompanionAPI.Data
 
         }
 
-
-
         public Pin getById(int id)
         {
 
@@ -131,7 +129,7 @@ namespace TravelCompanionAPI.Data
             return pins;
         }
 
-        public void add(Pin pin)
+        public bool add(Pin pin)
         {
             MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
 
@@ -149,6 +147,8 @@ namespace TravelCompanionAPI.Data
                 command.ExecuteNonQuery();
             }
             //TODO: add Tag to pins
+
+            return true; //Error handling here later.
         }
 
 
@@ -179,16 +179,6 @@ namespace TravelCompanionAPI.Data
             }
 
             return exists;
-        }
-
-        Pin IDataRepository<Pin>.getAllByUser(int uid)
-        {
-            throw new NotImplementedException();
-        }
-
-        int IDataRepository<Pin>.add(Pin data)
-        {
-            throw new NotImplementedException();
         }
     }
 }

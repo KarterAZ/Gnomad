@@ -82,14 +82,14 @@ namespace TravelCompanionAPI.Controllers
         public JsonResult getPins(int uid)
         {
 
-            Pin pin = _repo.getAllByUser(uid);
+            List<Pin> pins = _repo.getAllByUser(uid);
 
-            if (pin == null)
+            if (pins == null)
             {
                 return new JsonResult(NotFound());
             }
 
-            return new JsonResult(Ok(pin));
+            return new JsonResult(Ok(pins));
         }
 
         /// <summary>

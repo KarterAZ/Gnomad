@@ -1,4 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿/************************************************************************************************
+*
+* Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
+* Date: 1/14/2023
+*
+* Purpose: Gets the connection string to connect to the mySql database.
+*
+************************************************************************************************/
+
+using Microsoft.Extensions.Configuration;
 
 namespace GnomadAPI.Data
 {

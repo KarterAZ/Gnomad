@@ -156,7 +156,7 @@ namespace TravelCompanionAPI.Data
 
         }
 
-        public void add(User user)
+        public bool add(User user)
         {
             MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
 
@@ -172,14 +172,11 @@ namespace TravelCompanionAPI.Data
 
                 command.ExecuteNonQuery();
             }
+
+            return true; //Error handling here.
         }
 
-        public Pin getAllByUser(int uid)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        int IDataRepository<User>.add(User data)
+        public List<User> getAllByUser(int uid)
         {
             throw new System.NotImplementedException();
         }

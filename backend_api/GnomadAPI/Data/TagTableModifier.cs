@@ -99,7 +99,7 @@ namespace TravelCompanionAPI.Data
             return tags;
         }
 
-        public int add(Tag tag)
+        public bool add(Tag tag)
         {
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -116,7 +116,7 @@ namespace TravelCompanionAPI.Data
 
             _connection.Close();
 
-            return 0;
+            return true; //Error handling here.
         }
 
         public bool contains(Tag data)
@@ -124,7 +124,7 @@ namespace TravelCompanionAPI.Data
             throw new NotImplementedException();
         }
 
-        public Pin getAllByUser(int uid)
+        public List<Tag> getAllByUser(int uid)
         {
             throw new NotImplementedException();
         }
