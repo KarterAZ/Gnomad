@@ -12,10 +12,10 @@ import { get, post, isAuthenticated } from './api';
 
 // this function takes a pin object and will call
 // the backend api to create it.
-export default function createPin(pin)
+export default async function createPin(pin)
 {
     if (!isAuthenticated()) return null;
 
-    const response = post('pins/create', pin);
+    const response = await post('pins/create', pin);
     return response;
 }

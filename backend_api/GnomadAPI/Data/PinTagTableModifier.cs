@@ -126,7 +126,7 @@ namespace TravelCompanionAPI.Data
             return pintags;
         }
 
-        public int add(PinTag pintag)
+        public bool add(PinTag pintag)
         {
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -143,7 +143,7 @@ namespace TravelCompanionAPI.Data
 
             _connection.Close();
 
-            return 0;
+            return true; //Error handling later.
         }
 
         private readonly object _lockObject = new object();
@@ -189,7 +189,7 @@ namespace TravelCompanionAPI.Data
             throw new NotImplementedException();
         }
 
-        public Pin getAllByUser(int uid)
+        public List<PinTag> getAllByUser(int uid)
         {
             throw new NotImplementedException();
         }

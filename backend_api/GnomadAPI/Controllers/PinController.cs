@@ -15,17 +15,35 @@ using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI.Controllers
 {
+    /// <summary>
+    /// The default route controller.
+    /// </summary>
     [Route("pins")]
     [ApiController]
     [Authorize]
     public class PinController : ControllerBase
     {
+        //The repository obtained through dependency injection.
         private IDataRepository<Pin> _repo;
+
+        /// <summary>
+        /// Constructor that takes in repo through dependecy injection
+        /// </summary>
+        /// <returns>
+        /// Sets repository to PinTableModifier (defined in setup.cs)
+        ///</returns>
         public PinController(IDataRepository<Pin> repo)
         {
             _repo = repo;
         }
 
+        /// <summary>
+        /// Gets a pin based on the pin's id.
+        /// </summary>
+        /// <returns>
+        /// Returns a JsonResult of NotFound() if it's not found or 
+        ///Ok(pin) with the pin found.
+        ///</returns>
         [HttpGet("get/{id}")]
         public JsonResult get(int id)
         {
@@ -40,6 +58,12 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(pin));
         }
 
+        /// <summary>
+        /// Gets all of the pins in the database.
+        /// </summary>
+        /// <returns>
+        /// Returns a JsonResult of Ok(pins) where pins is a list of every pin.
+        ///</returns>
         [HttpGet("all")]
         public JsonResult getAll()
         {
@@ -48,20 +72,32 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(pins));
         }
 
+        /// <summary>
+        /// Gets all of the pins that a specific user has placed.
+        /// </summary>
+        /// <returns>
+        /// Returns a JsonResult of NotFound() if no pins, or Ok(pins) if there are pins.
+        ///</returns>
         [HttpGet("getPins/{user}")]
         public JsonResult getPins(int uid)
         {
 
-            Pin pin = _repo.getAllByUser(uid);
+            List<Pin> pins = _repo.getAllByUser(uid);
 
-            if (pin == null)
+            if (pins == null)
             {
                 return new JsonResult(NotFound());
             }
 
-            return new JsonResult(Ok(pin));
+            return new JsonResult(Ok(pins));
         }
 
+        /// <summary>
+        /// Creates a pin.
+        /// </summary>
+        /// <returns>
+        /// Returns a JsonResult of Ok(pin), where the pin is the one added to the database.
+        ///</returns>
         [HttpPost("create")]
         public JsonResult create(Pin pin)
         {
