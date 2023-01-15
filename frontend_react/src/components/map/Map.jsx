@@ -41,7 +41,10 @@ export default class Map extends Component
             }
 
             defaultCenter = { defaultProps.center }
-            defaultZoom = { defaultProps.zoom }
+            defaultZoom={defaultProps.zoom}
+
+                map= new google.maps.Map(document.getElementById("map"));
+                map.data.loadGeoJson(./bdc_41_4G-LTE_mobile_broadband_h3_063022.json);
           />
         </div>
       </div>
