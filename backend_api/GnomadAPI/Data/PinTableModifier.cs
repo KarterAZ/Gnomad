@@ -180,5 +180,10 @@ namespace TravelCompanionAPI.Data
 
             return exists;
         }
+
+        public int getId(Pin data)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -25,10 +25,10 @@ namespace TravelCompanionAPI.Controllers
     public class UserController : ControllerBase
     {
         //Repo is the list of users in the database
-        private UserTableModifier _user_database;
+        private IDataRepository<User> _user_database;
         public UserController(IDataRepository<User> repo)
         {
-            _user_database = repo as UserTableModifier;
+            _user_database = repo;
         }
 
         [HttpGet("get/{id}")]

@@ -21,6 +21,8 @@ namespace TravelCompanionAPI.Data
 
         public T getById(int id);
 
+        public int getId(T data);
+
         public List<T> getAll();
 
         public bool add(T data);

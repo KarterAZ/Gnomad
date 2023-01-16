@@ -181,5 +181,10 @@ namespace TravelCompanionAPI.Data
         {
             throw new NotImplementedException();
         }
+
+        public int getId(Sticker data)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

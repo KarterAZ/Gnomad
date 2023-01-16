@@ -193,5 +193,10 @@ namespace TravelCompanionAPI.Data
         {
             throw new NotImplementedException();
         }
+
+        public int getId(PinTag data)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
