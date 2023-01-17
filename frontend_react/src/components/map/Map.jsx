@@ -13,6 +13,7 @@ import GoogleMapReact from 'google-map-react';
 
 // internal imports.
 import './map.css';
+//import '../../bdc_41_4G-LTE_mobile_broadband_h3_063022.json';
 
 // defualt location the map points to.
 const defaultProps = 
@@ -42,11 +43,12 @@ export default class Map extends Component
 
             defaultCenter = { defaultProps.center }
             defaultZoom={defaultProps.zoom}
-
-                map= new google.maps.Map(document.getElementById("map"));
-                map.data.loadGeoJson(./bdc_41_4G-LTE_mobile_broadband_h3_063022.json);
-          />
-        </div>
+                />
+            </div>
+            <script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+                    <script src="/assets/gmap3.js?body=1" type="text/javascript"></script>
+                    var map = new google.maps.Map(document.getElementById('map'));
+                    map.data.loadGeoJson('./bdc_41_4G-LTE_mobile_broadband_h3_063022.json');
       </div>
     );
   }

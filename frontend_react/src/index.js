@@ -27,6 +27,17 @@ root.render(
     <App/>
 );
 
+/*let map;
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: { lat: 40.416775, lng: -3.703790 },
+        zoom: 12
+    });
+    map.data.loadGeoJson('bdc_41_4G-LTE_mobile_broadband_h3_063022.json');
+}
+Window.initMap = initMap;*/
+
 // register the service worker to make the PWA cache correctly.
 serviceWorkerRegistration.register();
 
