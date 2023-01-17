@@ -25,8 +25,10 @@ namespace TravelCompanionAPI.Data
     {
         const string TABLE = "pintags";
         private MySqlConnection _connection;
-        //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public PinTagTableModifier(IConfiguration config)
         {
             //Switch depending on mode
@@ -37,6 +39,12 @@ namespace TravelCompanionAPI.Data
             _connection = new MySqlConnection(connection);
         }
 
+        /// <summary>
+        /// Gets a pintag (pin id and user id)
+        /// </summary>
+        /// <returns>
+        /// A list of pintags
+        /// </returns>
         public List<PinTag> getByPinId(int pid)
         {
             List<PinTag> pintags = new List<PinTag>();
@@ -67,7 +75,13 @@ namespace TravelCompanionAPI.Data
             return pintags;
         }
 
-        public List<PinTag> getByTagId(int tid)
+        /// <summary>
+        /// Should be user id?
+        /// </summary>
+        /// <returns>
+        /// A list of all Pins
+        /// </returns>
+        /*public List<PinTag> getByTagId(int tid)
         {
             List<PinTag> pintags = new List<PinTag>();
 
@@ -95,8 +109,14 @@ namespace TravelCompanionAPI.Data
             _connection.Close();
 
             return pintags;
-        }
+        }*/
 
+        /// <summary>
+        /// Gets all PinTags
+        /// </summary>
+        /// <returns>
+        /// A list of all PinTags
+        /// </returns>
         public List<PinTag> getAll()
         {
             List<PinTag> pintags = new List<PinTag>();
@@ -126,6 +146,12 @@ namespace TravelCompanionAPI.Data
             return pintags;
         }
 
+        /// <summary>
+        /// Adds a PinTag
+        /// </summary>
+        /// <returns>
+        /// Returns a boolean, true if added to the database.
+        /// </returns>
         public bool add(PinTag pintag)
         {
             using (MySqlCommand command = new MySqlCommand())
@@ -146,7 +172,13 @@ namespace TravelCompanionAPI.Data
             return true; //Error handling later.
         }
 
-        private readonly object _lockObject = new object();
+        /// <summary>
+        /// ? Shouldn't be here.
+        /// </summary>
+        /// <returns>
+        /// A list of all Pins
+        /// </returns>
+        private readonly object _lockObject = new object(); //??
          public bool contains(Sticker sticker)
          {
             lock (_lockObject)

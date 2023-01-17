@@ -19,19 +19,26 @@ namespace TravelCompanionAPI.Data
     //
     // This class updates the User table, inheriting from IDataRepository.
     // No new methods added.
-    // Implements getById, getAll, and add.
     //
     //******************************************************************************
     public class UserTableModifier : IDataRepository<User>
     {
         const string TABLE = "users";
-        //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public UserTableModifier(IConfiguration config)
         {
     
         }
 
+        /// <summary>
+        /// Gets a user from their id
+        /// </summary>
+        /// <returns>
+        /// Returns the user with the specified id
+        /// </returns>
         public User getById(int id)
         {
                 MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
@@ -44,9 +51,7 @@ namespace TravelCompanionAPI.Data
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT * FROM " + TABLE + " WHERE id = @Id;";
                     command.Parameters.AddWithValue("@Id", id);
-
-                  
-                    
+ 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -62,9 +67,14 @@ namespace TravelCompanionAPI.Data
                 }
 
                 return user;
-            
         }
 
+        /// <summary>
+        /// Gets the id of a specified user
+        /// </summary>
+        /// <returns>
+        /// Returns the id of the specified user
+        /// </returns>
         public int getId(User user)
         {
             MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
@@ -91,6 +101,12 @@ namespace TravelCompanionAPI.Data
             return id;
         }
 
+        /// <summary>
+        /// Gets a list of all users
+        /// </summary>
+        /// <returns>
+        /// A list of all Users
+        /// </returns>
         public List<User> getAll()
         {
 
@@ -125,6 +141,12 @@ namespace TravelCompanionAPI.Data
         }
 
         //TODO: fix this function, this code needs some work.
+        /// <summary>
+        /// Checks if the user exists
+        /// </summary>
+        /// <returns>
+        /// Returns a boolean, true if the user exists, else false.
+        /// </returns>
         public bool contains(User user)
         {
 
@@ -156,6 +178,12 @@ namespace TravelCompanionAPI.Data
 
         }
 
+        /// <summary>
+        /// Adds a user to the database
+        /// </summary>
+        /// <returns>
+        /// Returns a boolean, true if added successfully, else false.
+        /// </returns>
         public bool add(User user)
         {
             MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
@@ -176,6 +204,7 @@ namespace TravelCompanionAPI.Data
             return true; //Error handling here.
         }
 
+        //Not sure what this does.
         public List<User> getAllByUser(int uid)
         {
             throw new System.NotImplementedException();

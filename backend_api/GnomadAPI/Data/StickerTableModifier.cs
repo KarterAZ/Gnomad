@@ -3,7 +3,7 @@
 * Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
 * Date: 12/28/2022
 *
-* Purpose: Holds the functions for table modifications and access.
+* Purpose: Not needed, but holds the functions for table modifications and access.
 *
 ************************************************************************************************/
 

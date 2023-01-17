@@ -16,7 +16,6 @@ namespace TravelCompanionAPI.Data
     {
         //******************************************************************************
         //This class defines the default functions for dependency injection
-        //Declares getById, getAll, add, and contains.
         //******************************************************************************
 
         public T getById(int id);

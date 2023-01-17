@@ -30,8 +30,10 @@ namespace TravelCompanionAPI.Data
     {
         const string TABLE = "tags";
         private MySqlConnection _connection;
-        //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public TagTableModifier(IConfiguration config)
         {
             //Switch depending on mode
@@ -42,6 +44,12 @@ namespace TravelCompanionAPI.Data
             _connection = new MySqlConnection(connection);
         }
 
+        /// <summary>
+        /// Gets a tag by its id
+        /// </summary>
+        /// <returns>
+        /// A tag with the specified id
+        /// </returns>
         public Tag getById(int id)
         {
             Tag tag = null;
@@ -70,6 +78,12 @@ namespace TravelCompanionAPI.Data
             return tag;
         }
 
+        /// <summary>
+        /// Gets all tags
+        /// </summary>
+        /// <returns>
+        /// A list of all Tags
+        /// </returns>
         public List<Tag> getAll()
         {
             List<Tag> tags = new List<Tag>();
@@ -99,6 +113,12 @@ namespace TravelCompanionAPI.Data
             return tags;
         }
 
+        /// <summary>
+        /// Adds a tag
+        /// </summary>
+        /// <returns>
+        /// Returns a boolean, true if added to database.
+        /// </returns>
         public bool add(Tag tag)
         {
             using (MySqlCommand command = new MySqlCommand())
@@ -119,6 +139,12 @@ namespace TravelCompanionAPI.Data
             return true; //Error handling here.
         }
 
+        /// <summary>
+        /// Checks if a tag is in the database
+        /// </summary>
+        /// <returns>
+        /// Returns true if the tag is in the database, else false.
+        /// </returns>
         public bool contains(Tag data)
         {
             throw new NotImplementedException();
@@ -129,6 +155,12 @@ namespace TravelCompanionAPI.Data
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Gets a tag's id based on the data
+        /// </summary>
+        /// <returns>
+        /// Returns the integer of the specified tag
+        /// </returns>
         public int getId(Tag data)
         {
             throw new NotImplementedException();
