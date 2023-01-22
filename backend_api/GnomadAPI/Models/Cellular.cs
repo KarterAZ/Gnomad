@@ -1,7 +1,7 @@
 ﻿/************************************************************************************************
 *
 * Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
-* Date: 11/28/2022
+* Date: 1/20/2023
 *
 * Purpose: Class definition for cellular data
 *
