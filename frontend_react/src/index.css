@@ -6,11 +6,13 @@
 
   --secondary-background: #fee9e1;
   --secondary-background-accent: #b09e99;
-  --secondary-foreground: #000000;
+  --secondary-foreground: #111;
 
   --gradient-background: linear-gradient(#64b6ac, #64b68a);
 
   background-color: var(--secondary-background);
+
+  user-select: none;
 }
 
 body {
@@ -29,4 +31,19 @@ code {
     monospace;
 
     background-color: var(--my-color);
+}
+
+.text-input
+{
+  border: none;
+
+  width: calc(100% - 20px);
+
+  padding: 5px 10px;
+
+  border-radius: 4px;
+  height: 2em;
+
+  background-color: var(--secondary-background);
+  color: var(--secondary-foreground);
 }
