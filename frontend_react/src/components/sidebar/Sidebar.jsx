@@ -9,6 +9,7 @@
 
 // external imports.
 import { Icon } from '@iconify/react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // intenral imports.
@@ -22,7 +23,9 @@ import './sidebar.css';
 export default function Sidebar()
 {
   const navigate = useNavigate();
-  let open = true;
+
+  let [open, setOpen] = useState(true);
+
   // show / hide the Sidebar
   const handleClick = () => 
   {
@@ -35,7 +38,7 @@ export default function Sidebar()
       document.getElementById('sidebar-container').style.width = '100%';
     }
 
-    open = !open;
+    setOpen(!open);
   }
 
   // this function is called when the search button is clicked.
@@ -46,7 +49,6 @@ export default function Sidebar()
 
   const create = () =>
   {
-
     let select = document.getElementById('pin-select');
 
     if (select.value === '4')
