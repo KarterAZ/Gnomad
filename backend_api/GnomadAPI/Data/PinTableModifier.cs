@@ -44,7 +44,7 @@ namespace TravelCompanionAPI.Data
         public Pin getById(int id)
         {
 
-            Pin pins = null;
+            Pin pin = null;
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
