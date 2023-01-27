@@ -53,6 +53,7 @@
 
 #handle:hover {
   color: var(--primary-foreground-hover);
+  background-color: var(--primary-background-accent);
 }
 
 #sidebar-content {

@@ -84,7 +84,7 @@ export default function Sidebar()
           <div id='pin-group'>
             <select defaultValue={0} id='pin-select'>
               <option value='0' disabled>
-                Select a Pin Type
+                Select a Tag
               </option>
               <option value='1'>All</option>
               <option value='2'>Bathrooms</option>

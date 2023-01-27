@@ -52,22 +52,23 @@ export function LoginButton()
   // render the actual button.
   return (
     <>
-    <div id="g_id_onload"
-      data-client_id="55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com"
-      data-context="signin"
-      data-ux_mode="popup"
-      data-callback="SaveAccessToken"
-      data-auto_prompt="false">
-    </div>
+      <div id="g_id_onload"
+        data-client_id="55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com"
+        data-context="signin"
+        data-ux_mode="popup"
+        data-callback="SaveAccessToken"
+        data-auto_prompt="false">
+      </div>
 
-    <div style={in_style} className="g_id_signin"
-      data-type="standard"
-      data-shape="rectangular"
-      data-theme="outline"
-      data-text="signin"
-      data-size="large"
-      data-logo_alignment="left">
-    </div>
+      <div style={in_style} 
+        className="g_id_signin"
+        data-type="standard"
+        data-shape="rectangular"
+        data-theme="outline"
+        data-text="signin"
+        data-size="large"
+        data-logo_alignment="left">
+      </div>
     </>
   );
 }
