@@ -32,18 +32,3 @@ code {
 
     background-color: var(--my-color);
 }
-
-.text-input
-{
-  border: none;
-
-  width: calc(100% - 20px);
-
-  padding: 5px 10px;
-
-  border-radius: 4px;
-  height: 2em;
-
-  background-color: var(--secondary-background);
-  color: var(--secondary-foreground);
-}

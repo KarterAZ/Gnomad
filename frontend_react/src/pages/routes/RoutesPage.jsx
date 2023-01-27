@@ -22,15 +22,14 @@ export default function RoutesPage()
                             <label>Route Name:</label>
                             <input className='text-input' type='text'></input>
                         </div>
-                        
                         <div className='input-section-wrapper'>
                             <label>Search for Pins:</label>
                             <div className='search-wrapper'>
                                 <input className='text-input' type='text'></input>
-                                <button className='search-button'><Icon icon={baselineSearch}/></button>
+                                <button className='search-button'><Icon icon={baselineSearch} width="20" height="20"/></button>
                             </div>
                         </div>
-                        <div className='input-section-wrapper'>
+                        <div className='input-section-wrapper max-height'>
                             <div className='multi-select'>
 
                             </div>
@@ -47,11 +46,11 @@ export default function RoutesPage()
                             <label>Search for Pins:</label>
                             <div className='search-wrapper'>
                                 <input className='text-input' type='text'></input>
-                                <button className='search-button'><Icon icon={baselineSearch}/></button>
+                                <button className='search-button'><Icon icon={baselineSearch} width="20" height="20"/></button>
                             </div>
                         </div>
 
-                        <div className='input-section-wrapper'>
+                        <div className='input-section-wrapper max-height'>
                             <div className='multi-select'>
 
                             </div>
