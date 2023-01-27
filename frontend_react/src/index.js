@@ -23,9 +23,10 @@ import App from './App';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 // render the App component to the root of the document.
-root.render(
+/*root.render(
     <App/>
-);
+);*/
+ReactDOM.render(<App />, document.getElementById('root'));
 
 // register the service worker to make the PWA cache correctly.
 serviceWorkerRegistration.register();
