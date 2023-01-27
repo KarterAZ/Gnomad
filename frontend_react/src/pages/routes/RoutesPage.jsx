@@ -38,6 +38,7 @@ export default function RoutesPage()
                         <div className='input-section-wrapper'>
                             <div id='add-remove-buttons'>
                                 <button className='small-button'><Icon icon={roundKeyboardArrowDown} width="30" height="30" /></button>
+                                <div id='small-button-spacer'></div>
                                 <button className='small-button'><Icon icon={roundKeyboardArrowUp} width="30" height="30" /></button>
                             </div>
                         </div>

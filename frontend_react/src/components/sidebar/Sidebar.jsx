@@ -11,9 +11,9 @@
 import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import baselineSearch from '@iconify/icons-ic/baseline-search';
 
 // intenral imports.
-import { sget } from '../../utilities/session_storage';
 import { LoginButton } from '../login_button/LoginButton';
 
 import './sidebar.css';
@@ -45,6 +45,7 @@ export default function Sidebar()
   const search = async () =>
   {
     const query = document.getElementById('search-bar').value;
+    console.log(query);
   }
 
   const create = () =>
@@ -72,11 +73,11 @@ export default function Sidebar()
         </section>
 
         <section className='section' id='search-section'>
-          <label>Search:</label>
-          <input id='search-bar' type='text'></input>
-          <button className='button' id='search-button' onClick={search}>
-            Submit
-          </button>
+          <label>Search</label>
+          <div className='search-wrapper'>
+              <input id='search-bar' className='text-input' type='text'></input>
+              <button onClick={search} className='search-button'><Icon icon={baselineSearch} width="20" height="20"/></button>
+          </div>
         </section>
 
         <section className='section' id='pins-section'>

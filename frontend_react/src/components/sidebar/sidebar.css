@@ -66,7 +66,7 @@
 }
 
 .section {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 #user-section {
@@ -109,25 +109,6 @@
   flex-direction: column;
 }
 
-#search-bar {
-  background-color: var(--secondary-background);
-  height: 2em;
-  border: none;
-
-  margin-bottom: 5px;
-
-  border-radius: 4px;
-
-  color: var(--secondary-foreground);
-}
-
-#search-button {
-  align-self: flex-end;
-  width: 48%;
-
-  border-radius: 4px;
-}
-
 #pins-section {
   display: flex;
   flex-direction: column;
@@ -141,6 +122,8 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+  margin-bottom: 10px;
 }
 
 #pin-select {
@@ -151,14 +134,11 @@
 
   cursor: pointer;
 
-  margin-bottom: 5px;
-
   border-radius: 4px;
 }
 
 #pin-button {
   width: 48%;
-  margin-bottom: 5px;
 
   border-radius: 4px;
 }
