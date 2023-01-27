@@ -17,27 +17,17 @@ using System.Data;
 namespace TravelCompanionAPI.Data
 {
     //******************************************************************************
-    //This class updates the PinTags table, inheriting from IDataRepository.
-    //No new methods added.
-    //Implements getByPinId, getByTagId, getAll, and add.
+    // This class updates the PinTags table, inheriting from IDataRepository.
+    // No new methods added.
+    // Implements getByPinId, getByTagId, getAll, and add.
     //******************************************************************************
     public class PinTagTableModifier : IDataRepository<PinTag>
     {
         const string TABLE = "pintags";
-        private MySqlConnection _connection;
+        //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public PinTagTableModifier(IConfiguration config)
-        {
-            //Switch depending on mode
-            string connection = null;
-            //connection = config.GetConnectionString("CodenomeDatabase");
-            connection = config.GetConnectionString("TestingDatabase");
-
-            _connection = new MySqlConnection(connection);
-        }
+        public PinTagTableModifier()
+        { }
 
         /// <summary>
         /// Gets a pintag (pin id and user id)
@@ -47,16 +37,15 @@ namespace TravelCompanionAPI.Data
         /// </returns>
         public List<PinTag> getByPinId(int pid)
         {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
             List<PinTag> pintags = new List<PinTag>();
 
             using (MySqlCommand command = new MySqlCommand())
             {
-                command.Connection = _connection;
+                command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`pin_id` = @Pid);";
                 command.Parameters.AddWithValue("@Pid", pid);
-
-                _connection.Open();
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -70,7 +59,7 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
-            _connection.Close();
+            connection.Close();
 
             return pintags;
         }
@@ -83,16 +72,15 @@ namespace TravelCompanionAPI.Data
         /// </returns>
         /*public List<PinTag> getByTagId(int tid)
         {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
             List<PinTag> pintags = new List<PinTag>();
 
             using (MySqlCommand command = new MySqlCommand())
             {
-                command.Connection = _connection;
+                command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`tag_id` = @Tid);";
                 command.Parameters.AddWithValue("@Tid", tid);
-
-                _connection.Open();
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -106,7 +94,7 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
-            _connection.Close();
+            connection.Close();
 
             return pintags;
         }*/
@@ -119,15 +107,14 @@ namespace TravelCompanionAPI.Data
         /// </returns>
         public List<PinTag> getAll()
         {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
             List<PinTag> pintags = new List<PinTag>();
 
             using (MySqlCommand command = new MySqlCommand())
             {
-                command.Connection = _connection;
+                command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT * FROM " + TABLE + ";";
-
-                _connection.Open();
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -141,7 +128,7 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
-            _connection.Close();
+            connection.Close();
 
             return pintags;
         }
@@ -154,20 +141,20 @@ namespace TravelCompanionAPI.Data
         /// </returns>
         public bool add(PinTag pintag)
         {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+
             using (MySqlCommand command = new MySqlCommand())
             {
-                command.Connection = _connection;
+                command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "INSERT INTO " + TABLE + " (pin_id, tag_id) VALUES (@PiD, @Tid);";
                 command.Parameters.AddWithValue("@Pid", pintag.PinId);
                 command.Parameters.AddWithValue("@Tid", pintag.TagId);
 
-                _connection.Open();
-
                 command.ExecuteNonQuery();
             }
 
-            _connection.Close();
+            connection.Close();
 
             return true; //Error handling later.
         }
@@ -179,19 +166,20 @@ namespace TravelCompanionAPI.Data
         /// A list of all Pins
         /// </returns>
         private readonly object _lockObject = new object(); //??
-         public bool contains(Sticker sticker)
-         {
+        public bool contains(Sticker sticker)
+        {
             lock (_lockObject)
             {
+                MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
                 bool exists = false;
+
                 using (MySqlCommand command = new MySqlCommand())
                 {
-                    command.Connection = _connection;
+                    command.Connection = connection;
                     command.CommandType = CommandType.Text;
                     command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
                     command.Parameters.AddWithValue("@Longitude", sticker.Longitude);
                     command.Parameters.AddWithValue("@Latitude", sticker.Latitude);
-                    _connection.Open();
 
                     using (MySqlDataReader reader = command.ExecuteReader())
                     {
@@ -205,7 +193,8 @@ namespace TravelCompanionAPI.Data
                         }
                     }
                 }
-                _connection.Close();
+
+                connection.Close();
 
                 return exists;
             }

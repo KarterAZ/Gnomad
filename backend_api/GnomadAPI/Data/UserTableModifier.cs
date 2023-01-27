@@ -25,12 +25,15 @@ namespace TravelCompanionAPI.Data
     {
         const string TABLE = "users";
 
+        public UserTableModifier()
+        { }
+
         /// <summary>
         /// Constructor
         /// </summary>
         public UserTableModifier(IConfiguration config)
         {
-    
+
         }
 
         /// <summary>
@@ -41,32 +44,32 @@ namespace TravelCompanionAPI.Data
         /// </returns>
         public User getById(int id)
         {
-                MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
-                User user = null;
-                using (MySqlCommand command = new MySqlCommand())
+            User user = null;
+            using (MySqlCommand command = new MySqlCommand())
+            {
+
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE id = @Id;";
+                command.Parameters.AddWithValue("@Id", id);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE id = @Id;";
-                    command.Parameters.AddWithValue("@Id", id);
- 
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            user = new User();
-                            user.Id = reader.GetInt32(0);
-                            user.Email = reader.GetString(1);
-                            user.ProfilePhotoURL = reader.GetString(2);
-                            user.FirstName = reader.GetString(3);
-                            user.LastName = reader.GetString(4);
-                        }
+                        user = new User();
+                        user.Id = reader.GetInt32(0);
+                        user.Email = reader.GetString(1);
+                        user.ProfilePhotoURL = reader.GetString(2);
+                        user.FirstName = reader.GetString(3);
+                        user.LastName = reader.GetString(4);
                     }
                 }
+            }
 
-                return user;
+            return user;
         }
 
         /// <summary>
@@ -77,7 +80,7 @@ namespace TravelCompanionAPI.Data
         /// </returns>
         public int getId(User user)
         {
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
             int id = -1;
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -85,7 +88,6 @@ namespace TravelCompanionAPI.Data
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email = @Email;";
                 command.Parameters.AddWithValue("@Email", user.Email);
-                connection.Open();
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -110,34 +112,34 @@ namespace TravelCompanionAPI.Data
         public List<User> getAll()
         {
 
-                MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
-                List<User> users = new List<User>();
+            List<User> users = new List<User>();
 
-                using (MySqlCommand command = new MySqlCommand())
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM " + TABLE + ";";
+
+
+                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = @"SELECT * FROM " + TABLE + ";";
-
-
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            User user = new User();
-                            user.Id = reader.GetInt32(0);
-                            user.Email = reader.GetString(1);
-                            user.ProfilePhotoURL = reader.GetString(2);
-                            user.FirstName = reader.GetString(3);
-                            user.LastName = reader.GetString(4);
-                            users.Add(user);
-                        }
+                        User user = new User();
+                        user.Id = reader.GetInt32(0);
+                        user.Email = reader.GetString(1);
+                        user.ProfilePhotoURL = reader.GetString(2);
+                        user.FirstName = reader.GetString(3);
+                        user.LastName = reader.GetString(4);
+                        users.Add(user);
                     }
                 }
+            }
 
-                 return users;
-            
+            return users;
+
         }
 
         //TODO: fix this function, this code needs some work.
@@ -150,31 +152,31 @@ namespace TravelCompanionAPI.Data
         public bool contains(User user)
         {
 
-                bool exists = false;
-                MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
+            bool exists = false;
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
-                using (MySqlCommand command = new MySqlCommand())
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT COUNT(*) FROM " + TABLE + " WHERE email = @Email;";
+
+                command.Parameters.AddWithValue("@Email", user.Email);
+
+
+                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = @"SELECT COUNT(*) FROM " + TABLE + " WHERE email = @Email;";
-
-                    command.Parameters.AddWithValue("@Email",user.Email);
-
-
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        if (reader.GetInt32(0) == 1)
                         {
-                            if (reader.GetInt32(0) == 1)
-                            {
-                                exists = true;
-                            }
+                            exists = true;
                         }
                     }
                 }
+            }
 
-                return exists;
+            return exists;
 
         }
 
@@ -186,7 +188,7 @@ namespace TravelCompanionAPI.Data
         /// </returns>
         public bool add(User user)
         {
-            MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {

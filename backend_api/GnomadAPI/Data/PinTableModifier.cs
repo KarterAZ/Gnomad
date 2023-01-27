@@ -44,8 +44,8 @@ namespace TravelCompanionAPI.Data
         public Pin getById(int id)
         {
 
-            Pin pin = null;
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            Pin pins = null;
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -83,7 +83,7 @@ namespace TravelCompanionAPI.Data
         public List<Pin> getAll()
         {
             List<Pin> pins = new List<Pin>();
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -120,7 +120,7 @@ namespace TravelCompanionAPI.Data
         public List<Pin> getAllByUser(int uid)
         {
             List<Pin> pins = new List<Pin>();
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -157,7 +157,7 @@ namespace TravelCompanionAPI.Data
         /// </returns>
         public bool add(Pin pin)
         {
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -186,7 +186,7 @@ namespace TravelCompanionAPI.Data
         public bool contains(Pin data)
         {
             bool exists = false;
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
