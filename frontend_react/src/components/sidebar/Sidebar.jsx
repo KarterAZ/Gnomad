@@ -12,12 +12,14 @@ import { Icon } from '@iconify/react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import baselineSearch from '@iconify/icons-ic/baseline-search';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 // intenral imports.
 import { LoginButton } from '../login_button/LoginButton';
 
 import './sidebar.css';
 
+const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com';
 
 // this class renders the Sidebar component.
 export default function Sidebar()
@@ -64,7 +66,9 @@ export default function Sidebar()
       <div id='sidebar-content'>
         <section className='section' id='header-section'>
           <div id='user-section'>
-            <LoginButton/>
+            <GoogleOAuthProvider clientId={client_id}>
+              <LoginButton/>
+            </GoogleOAuthProvider>
           </div>
 
           <div id='settings-button-wrapper'>
