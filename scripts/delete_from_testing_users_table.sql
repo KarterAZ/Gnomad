@@ -1,1 +1,0 @@
-DELETE FROM codenome_testing.users;
