@@ -28,18 +28,14 @@ namespace TravelCompanionAPI.Data
         const string TAG_TABLE = "pinTags";
         //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
-        public PinTableModifier(IConfiguration config)
-        {
-
-        }
-
-
+        public PinTableModifier()
+        { }
 
         public Pin getById(int id)
         {
 
             Pin pins = null;
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -71,7 +67,7 @@ namespace TravelCompanionAPI.Data
         public List<Pin> getAll()
         {
             List<Pin> pins = new List<Pin>();
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -102,7 +98,7 @@ namespace TravelCompanionAPI.Data
         public List<Pin> getAllByUser(int uid)
         {
             List<Pin> pins = new List<Pin>();
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -133,7 +129,7 @@ namespace TravelCompanionAPI.Data
 
         public void add(Pin pin)
         {
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -155,7 +151,7 @@ namespace TravelCompanionAPI.Data
         public bool contains(Pin data)
         {
             bool exists = false;
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {

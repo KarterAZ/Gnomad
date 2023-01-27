@@ -25,16 +25,13 @@ namespace TravelCompanionAPI.Data
     public class UserTableModifier : IDataRepository<User>
     {
         const string TABLE = "users";
-        //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
-        public UserTableModifier(IConfiguration config)
-        {
-    
-        }
+        public UserTableModifier()
+        { }
 
         public User getById(int id)
         {
-                MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
 
                 User user = null;
                 using (MySqlCommand command = new MySqlCommand())
@@ -67,7 +64,7 @@ namespace TravelCompanionAPI.Data
 
         public int getId(User user)
         {
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
             int id = -1;
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -75,8 +72,7 @@ namespace TravelCompanionAPI.Data
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email = @Email;";
                 command.Parameters.AddWithValue("@Email", user.Email);
-                connection.Open();
-
+                
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -94,7 +90,7 @@ namespace TravelCompanionAPI.Data
         public List<User> getAll()
         {
 
-                MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
 
                 List<User> users = new List<User>();
 
@@ -129,7 +125,7 @@ namespace TravelCompanionAPI.Data
         {
 
                 bool exists = false;
-                MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
+                MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
 
                 using (MySqlCommand command = new MySqlCommand())
                 {
@@ -158,7 +154,7 @@ namespace TravelCompanionAPI.Data
 
         public void add(User user)
         {
-            MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection =  DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {

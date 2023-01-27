@@ -24,18 +24,15 @@ namespace TravelCompanionAPI.Data
     public class StickerTableModifier : IDataRepository<Sticker>
     {
         const string TABLE = "stickers";
-        //private MySqlConnection _connection;
-        //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
-        public StickerTableModifier(IConfiguration config)
-        {
-
-        }
+        public StickerTableModifier()
+        { }
 
         public Sticker getById(int id)
         {
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
             Sticker stickers = null;
+
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = connection;
@@ -66,7 +63,7 @@ namespace TravelCompanionAPI.Data
         public List<Sticker> getAll()
         {
             List<Sticker> stickers = new List<Sticker>();
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -97,7 +94,7 @@ namespace TravelCompanionAPI.Data
         public List<Sticker> getAll(int uid)
         {
             List<Sticker> stickers = new List<Sticker>();
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -128,7 +125,7 @@ namespace TravelCompanionAPI.Data
 
         public void add(Sticker sticker)
         {
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -150,7 +147,7 @@ namespace TravelCompanionAPI.Data
         {
 
             bool exists = false;
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {

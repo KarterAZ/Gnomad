@@ -7,27 +7,30 @@
 *
 ************************************************************************************************/
 
-using GnomadAPI.Data;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
+using System;
 
 namespace TravelCompanionAPI.Data
 {
-    public class TestingDatabaseConnection : IDatabaseConnection<TestingDatabase>
+    public class DatabaseConnection
     {
-        private static TestingDatabaseConnection _instance;
-        private static string _connection_string;
+        private static DatabaseConnection _instance;
+        private string _connection_string;
 
-        private TestingDatabaseConnection()
+        private DatabaseConnection()
+        { }
+
+        public void setConnectionString(string connection_string)
         {
-            _connection_string = "";
+            _connection_string = connection_string;
         }
 
-        public static TestingDatabaseConnection getInstance()
+        public static DatabaseConnection getInstance()
         {
             if (_instance == null)
-            {;
-                _instance = new TestingDatabaseConnection();
+            {
+                _instance = new DatabaseConnection();
             }
 
             return _instance;
@@ -35,7 +38,10 @@ namespace TravelCompanionAPI.Data
 
         public MySqlConnection getConnection()
         {
-            if (_connection_string == null) return null;
+            if (_connection_string == null)
+            {
+                throw new Exception("DatabaseConnection does not have a connection string.");
+            }
 
             MySqlConnection connection = new MySqlConnection(_connection_string);
             connection.Open();

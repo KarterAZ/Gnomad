@@ -23,7 +23,6 @@ using System.IO;
 using System.Reflection;
 using TravelCompanionAPI.Data;
 using TravelCompanionAPI.Models;
-using GnomadAPI.Data;
 
 namespace TravelCompanionAPI
 {
@@ -33,10 +32,12 @@ namespace TravelCompanionAPI
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration; //What do we use this for?
+            Configuration = configuration;
+            string connection_string = configuration.GetConnectionString("TestingDatabase");
+            DatabaseConnection.getInstance().setConnectionString(connection_string);
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)

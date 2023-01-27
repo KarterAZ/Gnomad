@@ -29,30 +29,21 @@ namespace TravelCompanionAPI.Data
     public class TagTableModifier : IDataRepository<Tag>
     {
         const string TABLE = "tags";
-        private MySqlConnection _connection;
-        //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
-        public TagTableModifier(IConfiguration config)
-        {
-            //Switch depending on mode
-            string connection = null;
-            //connection = config.GetConnectionString("CodenomeDatabase");
-            connection = config.GetConnectionString("TestingDatabase");
-
-            _connection = new MySqlConnection(connection);
-        }
+        public TagTableModifier()
+        { }
 
         public Tag getById(int id)
         {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
             Tag tag = null;
+
             using (MySqlCommand command = new MySqlCommand())
             {
-                command.Connection = _connection;
+                command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = @Id);";
                 command.Parameters.AddWithValue("Id", id);
-
-                _connection.Open();
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -65,22 +56,21 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
-            _connection.Close();
+            connection.Close();
 
             return tag;
         }
 
         public List<Tag> getAll()
         {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
             List<Tag> tags = new List<Tag>();
 
             using (MySqlCommand command = new MySqlCommand())
             {
-                command.Connection = _connection;
+                command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT * FROM " + TABLE + ";";
-
-                _connection.Open();
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -94,27 +84,27 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
-            _connection.Close();
+            connection.Close();
 
             return tags;
         }
 
         public int add(Tag tag)
         {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+
             using (MySqlCommand command = new MySqlCommand())
             {
-                command.Connection = _connection;
+                command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "INSERT INTO " + TABLE + " (id, type) VALUES (@ID, @Type);";
                 command.Parameters.AddWithValue("@Id", tag.Id);
                 command.Parameters.AddWithValue("@Type", tag.Type);
 
-                _connection.Open();
-
                 command.ExecuteNonQuery();
             }
 
-            _connection.Close();
+            connection.Close();
 
             return 0;
         }
