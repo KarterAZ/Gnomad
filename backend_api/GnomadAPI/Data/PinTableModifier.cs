@@ -14,7 +14,7 @@ using TravelCompanionAPI.Models;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using CommunityToolkit.Mvvm.DependencyInjection;
+//using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace TravelCompanionAPI.Data
 {
