@@ -19,7 +19,9 @@ namespace TravelCompanionAPI.Models
     public class Pin : IDataEntity
     {
         public Pin()
-        { }
+        { 
+            Tags = new List<int>();
+        }
 
         public Pin(int longitude, int latitude, string title)
         {
@@ -27,6 +29,7 @@ namespace TravelCompanionAPI.Models
             Longitude = longitude;
             Latitude = latitude;
             Title = title;
+            Tags = new List<int>();
         }
         [BindNever] //User shouldn't be able to change Id
         public int Id { get; set; }
