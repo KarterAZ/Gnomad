@@ -23,7 +23,7 @@ namespace TravelCompanionAPI.Data
     //******************************************************************************
     public class PinTagTableModifier : IDataRepository<PinTag>
     {
-        const string TABLE = "pintags";
+        const string TABLE = "pin_tags";
         //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
         public PinTagTableModifier()
