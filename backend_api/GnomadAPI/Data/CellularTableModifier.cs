@@ -26,7 +26,7 @@ namespace TravelCompanionAPI.Data
     //No new methods added.
     //Implements getById, getAll
     //******************************************************************************
-    public class CellularTableModifier : IDataRepository<Cellular>
+    public class CellularTableModifier : ICellDataRepository<Cellular>
     {
         const string TABLE = "h3_oregon_data";
         private MySqlConnection _connection;
@@ -40,11 +40,6 @@ namespace TravelCompanionAPI.Data
             connection = config.GetConnectionString("TestingDatabase");
 
             _connection = new MySqlConnection(connection);
-        }
-
-        public Cellular getById(int id)
-        {
-            throw new NotImplementedException();
         }
 
         public Cellular getByH3Id(string id)
@@ -108,21 +103,6 @@ namespace TravelCompanionAPI.Data
             _connection.Close();
 
             return h3_oregon_data;
-        }
-
-        public bool add(Cellular cellular)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool contains(Cellular data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Cellular> getAllByUser(int uid)
-        {
-            throw new NotImplementedException();
         }
     }
 }
