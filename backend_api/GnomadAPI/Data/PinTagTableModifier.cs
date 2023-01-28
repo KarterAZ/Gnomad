@@ -165,7 +165,7 @@ namespace TravelCompanionAPI.Data
         /// <returns>
         /// A list of all Pins
         /// </returns>
-        private readonly object _lockObject = new object(); //??
+        /*private readonly object _lockObject = new object(); //??
         public bool contains(Sticker sticker)
         {
             lock (_lockObject)
@@ -198,7 +198,7 @@ namespace TravelCompanionAPI.Data
 
                 return exists;
             }
-        }
+        }*/
 
         public PinTag getById(int id)
         {
