@@ -27,7 +27,7 @@ namespace TravelCompanionAPI.Data
     {
         //Defines tables for sql
         const string PIN_TABLE = "pins";
-        const string TAG_TABLE = "pinTags";
+        const string TAG_TABLE = "pin_tags";
         /// <summary>
         /// Constructor
         /// </summary>
@@ -223,10 +223,15 @@ namespace TravelCompanionAPI.Data
                 command.CommandText = "INSERT INTO " + TAG_TABLE + " (pin_id, tag_id) VALUES (@pin_id, @tag_id);";
                 command.Parameters.AddWithValue("@pin_id", pin.Id);
 
-                foreach(int myTag in pin.Tags)
+                MySqlParameter tagIdParamaeter;
+
+                foreach (int myTag in pin.Tags)
                 {
-                    command.Parameters.AddWithValue("@tag_id", myTag);
+                    tagIdParamaeter = new MySqlParameter("@tag_id", myTag);
+
+                    command.Parameters.Add(tagIdParamaeter);
                     command.ExecuteNonQuery();
+                    command.Parameters.Remove(tagIdParamaeter);
                 }
             }
 
