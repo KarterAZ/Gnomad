@@ -122,6 +122,8 @@ namespace TravelCompanionAPI
             services.AddTransient<IDataRepository<User>, UserTableModifier>();
             //Adds dependency injection so that PinTableModifier gets called wherever IDataRepository gets called
             services.AddTransient<IDataRepository<Pin>, PinTableModifier>();
+            //Adds dependency injection so that CellularTableModifier gets called wherever ICellDataRepository gets called
+            services.AddTransient<ICellDataRepository<Cellular>, CellularTableModifier>();
             //Adds a singleton to UserTableModifier
             services.AddSingleton<UserTableModifier>();
             //Adds a singleton to PinTableModifier
