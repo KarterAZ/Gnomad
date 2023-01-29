@@ -15,7 +15,7 @@ namespace TravelCompanionAPI.Fuel
         {
             //Get connection string and set up database done in pin_repo (of type PinTableModifier)
             //File I/O
-            string path = Path.Join(Directory.GetCurrentDirectory(), "\\Fuel\\AddGasPins\\GasData.txt");
+            string path = Path.Join(Directory.GetCurrentDirectory(), "\\Fuel\\AddGasPins\\AllGasStations.txt");
 
             if (File.Exists(path)) //Only run if file is found (should be found)
             {
@@ -25,8 +25,8 @@ namespace TravelCompanionAPI.Fuel
                     {
                         Pin pin = new Pin();
                         pin.UserId = 0;
-                        pin.Longitude = data.geometry.coordinates.Last();
-                        pin.Latitude = data.geometry.coordinates.First();
+                        pin.Longitude = data.geometry.coordinates.First();
+                        pin.Latitude = data.geometry.coordinates.Last();
                         pin.Title = data.properties.name;
                         pin.Street = data.properties.addr_housenumber + " " + data.properties.addr_street;
 

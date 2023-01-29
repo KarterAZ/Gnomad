@@ -10,13 +10,19 @@ public class GasData
     public Geometry geometry { get; set; } //Useful, lat and long
     public string? id { get; set; }
 }
-//Layout of gps data member in JSON
+//Layout of geometry data member in JSON
 public class Geometry
 {
     public string? type { get; set; }
-    public List<int> coordinates { get; set; } //Stored latitude, longitude
+    public List<double> coordinates { get; set; } //Stored latitude, longitude
 }
-//Layout of address data member in JSON
+//Layout of coordinates for geometry
+/*public class Coordinates
+{
+    public double? latitude { get; set; }
+    public double? longitude { get; set; }
+}*/
+//Layout of properties data member in JSON
 public class Properties
 {
     public string? pid { get; set;}
