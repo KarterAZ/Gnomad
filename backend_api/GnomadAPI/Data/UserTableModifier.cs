@@ -19,55 +19,68 @@ namespace TravelCompanionAPI.Data
     //
     // This class updates the User table, inheriting from IDataRepository.
     // No new methods added.
-    // Implements getById, getAll, and add.
     //
     //******************************************************************************
     public class UserTableModifier : IDataRepository<User>
     {
         const string TABLE = "users";
-        //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
+        public UserTableModifier()
+        { }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public UserTableModifier(IConfiguration config)
         {
-    
+
         }
 
+        /// <summary>
+        /// Gets a user from their id
+        /// </summary>
+        /// <returns>
+        /// Returns the user with the specified id
+        /// </returns>
         public User getById(int id)
         {
-                MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
-                User user = null;
-                using (MySqlCommand command = new MySqlCommand())
+            User user = null;
+            using (MySqlCommand command = new MySqlCommand())
+            {
+
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE id = @Id;";
+                command.Parameters.AddWithValue("@Id", id);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE id = @Id;";
-                    command.Parameters.AddWithValue("@Id", id);
-
-                  
-                    
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            user = new User();
-                            user.Id = reader.GetInt32(0);
-                            user.Email = reader.GetString(1);
-                            user.ProfilePhotoURL = reader.GetString(2);
-                            user.FirstName = reader.GetString(3);
-                            user.LastName = reader.GetString(4);
-                        }
+                        user = new User();
+                        user.Id = reader.GetInt32(0);
+                        user.Email = reader.GetString(1);
+                        user.ProfilePhotoURL = reader.GetString(2);
+                        user.FirstName = reader.GetString(3);
+                        user.LastName = reader.GetString(4);
                     }
                 }
+            }
 
-                return user;
-            
+            return user;
         }
 
+        /// <summary>
+        /// Gets the id of a specified user
+        /// </summary>
+        /// <returns>
+        /// Returns the id of the specified user
+        /// </returns>
         public int getId(User user)
         {
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
             int id = -1;
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -75,7 +88,6 @@ namespace TravelCompanionAPI.Data
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email = @Email;";
                 command.Parameters.AddWithValue("@Email", user.Email);
-                connection.Open();
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -91,74 +103,92 @@ namespace TravelCompanionAPI.Data
             return id;
         }
 
+        /// <summary>
+        /// Gets a list of all users
+        /// </summary>
+        /// <returns>
+        /// A list of all Users
+        /// </returns>
         public List<User> getAll()
         {
 
-                MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
-                List<User> users = new List<User>();
+            List<User> users = new List<User>();
 
-                using (MySqlCommand command = new MySqlCommand())
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM " + TABLE + ";";
+
+
+                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = @"SELECT * FROM " + TABLE + ";";
-
-
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
-                        {
-                            User user = new User();
-                            user.Id = reader.GetInt32(0);
-                            user.Email = reader.GetString(1);
-                            user.ProfilePhotoURL = reader.GetString(2);
-                            user.FirstName = reader.GetString(3);
-                            user.LastName = reader.GetString(4);
-                            users.Add(user);
-                        }
+                        User user = new User();
+                        user.Id = reader.GetInt32(0);
+                        user.Email = reader.GetString(1);
+                        user.ProfilePhotoURL = reader.GetString(2);
+                        user.FirstName = reader.GetString(3);
+                        user.LastName = reader.GetString(4);
+                        users.Add(user);
                     }
                 }
+            }
 
-                 return users;
-            
+            return users;
+
         }
 
         //TODO: fix this function, this code needs some work.
+        /// <summary>
+        /// Checks if the user exists
+        /// </summary>
+        /// <returns>
+        /// Returns a boolean, true if the user exists, else false.
+        /// </returns>
         public bool contains(User user)
         {
 
-                bool exists = false;
-                MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
+            bool exists = false;
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
-                using (MySqlCommand command = new MySqlCommand())
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT COUNT(*) FROM " + TABLE + " WHERE email = @Email;";
+
+                command.Parameters.AddWithValue("@Email", user.Email);
+
+
+                using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = @"SELECT COUNT(*) FROM " + TABLE + " WHERE email = @Email;";
-
-                    command.Parameters.AddWithValue("@Email",user.Email);
-
-
-                    using (MySqlDataReader reader = command.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        if (reader.GetInt32(0) == 1)
                         {
-                            if (reader.GetInt32(0) == 1)
-                            {
-                                exists = true;
-                            }
+                            exists = true;
                         }
                     }
                 }
+            }
 
-                return exists;
+            return exists;
 
         }
 
+        /// <summary>
+        /// Adds a user to the database
+        /// </summary>
+        /// <returns>
+        /// Returns a boolean, true if added successfully, else false.
+        /// </returns>
         public bool add(User user)
         {
-            MySqlConnection connection =  TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -176,6 +206,7 @@ namespace TravelCompanionAPI.Data
             return true; //Error handling here.
         }
 
+        //Not sure what this does.
         public List<User> getAllByUser(int uid)
         {
             throw new System.NotImplementedException();

@@ -3,7 +3,7 @@
 * Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
 * Date: 12/28/2022
 *
-* Purpose: Holds the functions for table modifications and access.
+* Purpose: Not needed, but holds the functions for table modifications and access.
 *
 ************************************************************************************************/
 
@@ -24,18 +24,15 @@ namespace TravelCompanionAPI.Data
     public class StickerTableModifier : IDataRepository<Sticker>
     {
         const string TABLE = "stickers";
-        //private MySqlConnection _connection;
-        //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
-        public StickerTableModifier(IConfiguration config)
-        {
-
-        }
+        public StickerTableModifier()
+        { }
 
         public Sticker getById(int id)
         {
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
             Sticker stickers = null;
+
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = connection;
@@ -66,7 +63,7 @@ namespace TravelCompanionAPI.Data
         public List<Sticker> getAll()
         {
             List<Sticker> stickers = new List<Sticker>();
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -97,7 +94,7 @@ namespace TravelCompanionAPI.Data
         public List<Sticker> getAll(int uid)
         {
             List<Sticker> stickers = new List<Sticker>();
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -128,7 +125,7 @@ namespace TravelCompanionAPI.Data
 
         public bool add(Sticker sticker)
         {
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -150,7 +147,7 @@ namespace TravelCompanionAPI.Data
         {
 
             bool exists = false;
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -178,6 +175,11 @@ namespace TravelCompanionAPI.Data
         }
 
         public List<Sticker> getAllByUser(int uid)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int getId(Sticker data)
         {
             throw new NotImplementedException();
         }

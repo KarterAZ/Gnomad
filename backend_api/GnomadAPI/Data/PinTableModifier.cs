@@ -24,20 +24,28 @@ namespace TravelCompanionAPI.Data
     //******************************************************************************
     public class PinTableModifier : IDataRepository<Pin>
     {
+        //Defines tables for sql
         const string PIN_TABLE = "pins";
         const string TAG_TABLE = "pinTags";
-        //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public PinTableModifier(IConfiguration config)
         {
 
         }
 
+        /// <summary>
+        /// Gets a pin from its id
+        /// </summary>
+        /// <returns>
+        /// Returns a Pin with all of its dara.
+        ///</returns>
         public Pin getById(int id)
         {
 
-            Pin pins = null;
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            Pin pin = null;
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -50,26 +58,32 @@ namespace TravelCompanionAPI.Data
                 {
                     while (reader.Read())
                     {
-                        pins = new Pin();
-                        pins.Id = reader.GetInt32(0);
-                        pins.UserId = reader.GetInt32(1);
-                        pins.Longitude = reader.GetInt32(2);
-                        pins.Latitude = reader.GetInt32(3);
-                        pins.Title = reader.GetString(4);
-                        pins.Street = reader.GetString(5);
+                        pin = new Pin();
+                        pin.Id = reader.GetInt32(0);
+                        pin.UserId = reader.GetInt32(1);
+                        pin.Longitude = reader.GetInt32(2);
+                        pin.Latitude = reader.GetInt32(3);
+                        pin.Title = reader.GetString(4);
+                        pin.Street = reader.GetString(5);
                     }
                 }
                 //TODO: get pinTags data, add to pin (should just be one since pin id, not user id.
             }
 
-            return pins;
+            return pin;
 
         }
 
+        /// <summary>
+        /// Gets all pins
+        /// </summary>
+        /// <returns>
+        /// A list of all Pins
+        /// </returns>
         public List<Pin> getAll()
         {
             List<Pin> pins = new List<Pin>();
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -97,10 +111,16 @@ namespace TravelCompanionAPI.Data
             return pins;
         }
 
+        /// <summary>
+        /// Gets all pins from a specified user
+        /// </summary>
+        /// <returns>
+        /// A list of all Pins from that user
+        /// </returns>
         public List<Pin> getAllByUser(int uid)
         {
             List<Pin> pins = new List<Pin>();
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -129,9 +149,15 @@ namespace TravelCompanionAPI.Data
             return pins;
         }
 
+        /// <summary>
+        /// Adds a pin to the database
+        /// </summary>
+        /// <returns>
+        /// A boolean value, true if entered successfully.
+        /// </returns>
         public bool add(Pin pin)
         {
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -151,11 +177,16 @@ namespace TravelCompanionAPI.Data
             return true; //Error handling here later.
         }
 
-
+        /// <summary>
+        /// Checks if a pin already exists
+        /// </summary>
+        /// <returns>
+        /// Returns a boolean, true if in the database, else false.
+        /// </returns>
         public bool contains(Pin data)
         {
             bool exists = false;
-            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -179,6 +210,17 @@ namespace TravelCompanionAPI.Data
             }
 
             return exists;
+        }
+
+        /// <summary>
+        /// Gets the id of a pin based on its data.
+        /// </summary>
+        /// <returns>
+        /// An int (the id) of the specified pin
+        /// </returns>
+        public int getId(Pin data)
+        {
+            throw new NotImplementedException();
         }
     }
 }

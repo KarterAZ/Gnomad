@@ -29,30 +29,28 @@ namespace TravelCompanionAPI.Data
     public class TagTableModifier : IDataRepository<Tag>
     {
         const string TABLE = "tags";
-        private MySqlConnection _connection;
         //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
-        public TagTableModifier(IConfiguration config)
-        {
-            //Switch depending on mode
-            string connection = null;
-            //connection = config.GetConnectionString("CodenomeDatabase");
-            connection = config.GetConnectionString("TestingDatabase");
+        public TagTableModifier()
+        { }
 
-            _connection = new MySqlConnection(connection);
-        }
-
+        /// <summary>
+        /// Gets a tag by its id
+        /// </summary>
+        /// <returns>
+        /// A tag with the specified id
+        /// </returns>
         public Tag getById(int id)
         {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
             Tag tag = null;
+
             using (MySqlCommand command = new MySqlCommand())
             {
-                command.Connection = _connection;
+                command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = @Id);";
                 command.Parameters.AddWithValue("Id", id);
-
-                _connection.Open();
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -65,22 +63,27 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
-            _connection.Close();
+            connection.Close();
 
             return tag;
         }
 
+        /// <summary>
+        /// Gets all tags
+        /// </summary>
+        /// <returns>
+        /// A list of all Tags
+        /// </returns>
         public List<Tag> getAll()
         {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
             List<Tag> tags = new List<Tag>();
 
             using (MySqlCommand command = new MySqlCommand())
             {
-                command.Connection = _connection;
+                command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT * FROM " + TABLE + ";";
-
-                _connection.Open();
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -94,37 +97,60 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
-            _connection.Close();
+            connection.Close();
 
             return tags;
         }
 
+        /// <summary>
+        /// Adds a tag
+        /// </summary>
+        /// <returns>
+        /// Returns a boolean, true if added to database.
+        /// </returns>
         public bool add(Tag tag)
         {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+
             using (MySqlCommand command = new MySqlCommand())
             {
-                command.Connection = _connection;
+                command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "INSERT INTO " + TABLE + " (id, type) VALUES (@ID, @Type);";
                 command.Parameters.AddWithValue("@Id", tag.Id);
                 command.Parameters.AddWithValue("@Type", tag.Type);
 
-                _connection.Open();
-
                 command.ExecuteNonQuery();
             }
 
-            _connection.Close();
+            connection.Close();
 
             return true; //Error handling here.
         }
 
+        /// <summary>
+        /// Checks if a tag is in the database
+        /// </summary>
+        /// <returns>
+        /// Returns true if the tag is in the database, else false.
+        /// </returns>
         public bool contains(Tag data)
         {
             throw new NotImplementedException();
         }
 
         public List<Tag> getAllByUser(int uid)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets a tag's id based on the data
+        /// </summary>
+        /// <returns>
+        /// Returns the integer of the specified tag
+        /// </returns>
+        public int getId(Tag data)
         {
             throw new NotImplementedException();
         }
