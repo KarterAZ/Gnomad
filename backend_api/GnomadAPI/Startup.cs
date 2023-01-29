@@ -137,10 +137,14 @@ namespace TravelCompanionAPI
             services.AddTransient<IDataRepository<PinTag>, PinTagTableModifier>();
             //Adds dependency injection so that PinTableModifier gets called wherever IDataRepository gets called
             services.AddTransient<IDataRepository<Pin>, PinTableModifier>();
+            //Adds dependency injection so that CellularTableModifier gets called wherever ICellDataRepository gets called
+            services.AddTransient<ICellDataRepository<Cellular>, CellularTableModifier>();
             //Adds a singleton to UserTableModifier
             services.AddSingleton<UserTableModifier>();
             //Adds a singleton to PinTableModifier
             services.AddSingleton<PinTableModifier>();
+            //Adds a singleton to CellularTableModifier
+            services.AddSingleton<CellularTableModifier>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
