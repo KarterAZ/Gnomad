@@ -24,7 +24,7 @@ namespace TravelCompanionAPI.Data
     //******************************************************************************
     //This class updates the h3_oregon_data table, inheriting from IDataRepository.
     //No new methods added.
-    //Implements getById, getAll
+    //Implements getByH3Id, getAll
     //******************************************************************************
     public class CellularTableModifier : ICellDataRepository<Cellular>
     {
@@ -81,7 +81,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = _connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + ";";
+                command.CommandText = @"SELECT * FROM " + TABLE + " Limit 25 ;";
 
                 _connection.Open();
 

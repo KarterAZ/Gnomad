@@ -3,7 +3,7 @@
 * Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
 * Date: 1/27/2023
 *
-* Purpose: Defines the default functions for dependency injection. Declares getById, getAll, and add.
+* Purpose: Defines the default functions for dependency injection. Declares getByH3Id, getAll
 *
 ************************************************************************************************/
 
