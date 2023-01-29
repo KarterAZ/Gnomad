@@ -29,30 +29,22 @@ namespace TravelCompanionAPI.Data
     public class CellularTableModifier : ICellDataRepository<Cellular>
     {
         const string TABLE = "h3_oregon_data";
-        private MySqlConnection _connection;
-        //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
         public CellularTableModifier(IConfiguration config)
         {
-            //Switch depending on mode
-            string connection = null;
-            //connection = config.GetConnectionString("CodenomeDatabase");
-            connection = config.GetConnectionString("TestingDatabase");
 
-            _connection = new MySqlConnection(connection);
         }
 
         public Cellular getByH3Id(string id)
         {
             Cellular cellular = null;
+
             using (MySqlCommand command = new MySqlCommand())
             {
-                command.Connection = _connection;
+                command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
                 command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`h3_res9_id` = @Id);";
                 command.Parameters.AddWithValue("Id", id);
-
-                _connection.Open();
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -68,7 +60,7 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
-            _connection.Close();
+            //command.Connection.Close();
 
             return cellular;
         }
@@ -79,11 +71,9 @@ namespace TravelCompanionAPI.Data
 
             using (MySqlCommand command = new MySqlCommand())
             {
-                command.Connection = _connection;
+                command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT * FROM " + TABLE + " Limit 25 ;";
-
-                _connection.Open();
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -100,7 +90,7 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
-            _connection.Close();
+            //connection.Close();
 
             return h3_oregon_data;
         }

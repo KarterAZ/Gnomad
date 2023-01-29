@@ -104,7 +104,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + PIN_TABLE + ";";
+                command.CommandText = @"SELECT * FROM " + PIN_TABLE + " LIMIT 50;";
 
 
                 using (MySqlDataReader reader = command.ExecuteReader())
