@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Data;
+using TravelCompanionAPI.Fuel;
 
 namespace TravelCompanionAPI.Controllers
 {
@@ -106,6 +107,14 @@ namespace TravelCompanionAPI.Controllers
             _pin_repo.add(pin);
 
             return new JsonResult(Ok(pin));
+        }
+
+        [HttpPost("initializeSuperchargers")]
+        public JsonResult addSuperchargerPins()
+        {
+            AddingSuperchargerData.AddSuperchargers(_pin_repo);
+
+            return new JsonResult(Ok(0));
         }
     }
 }
