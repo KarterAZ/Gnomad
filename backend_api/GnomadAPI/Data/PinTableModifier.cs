@@ -14,6 +14,8 @@ using TravelCompanionAPI.Models;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+//using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace TravelCompanionAPI.Data
 {
@@ -26,7 +28,7 @@ namespace TravelCompanionAPI.Data
     {
         //Defines tables for sql
         const string PIN_TABLE = "pins";
-        const string TAG_TABLE = "pinTags";
+        const string TAG_TABLE = "pin_tags";
         /// <summary>
         /// Constructor
         /// </summary>
@@ -43,10 +45,8 @@ namespace TravelCompanionAPI.Data
         ///</returns>
         public Pin getById(int id)
         {
-
             Pin pin = null;
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
-
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = connection;
@@ -67,7 +67,22 @@ namespace TravelCompanionAPI.Data
                         pin.Street = reader.GetString(5);
                     }
                 }
-                //TODO: get pinTags data, add to pin (should just be one since pin id, not user id.
+            }
+
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT * FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+                command.Parameters.AddWithValue("Id", id);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        pin.Tags.Add(reader.GetInt32(0));
+                    }
+                }
             }
 
             return pin;
@@ -103,11 +118,36 @@ namespace TravelCompanionAPI.Data
                         pin.Latitude = reader.GetInt32(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
+
                         pins.Add(pin);
                     }
                 }
-                //TODO: get pinTags data, add to pin
             }
+
+            using (MySqlCommand command2 = new MySqlCommand())
+            {
+                command2.Connection = connection;
+                command2.CommandType = CommandType.Text;
+                command2.CommandText = "SELECT * FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+
+                MySqlParameter idParameter;
+
+                foreach (Pin pin in pins)
+                {
+                    idParameter = new MySqlParameter("Id", pin.Id);
+                    command2.Parameters.Add(idParameter);
+
+                    using (MySqlDataReader reader2 = command2.ExecuteReader())
+                    {
+                        while (reader2.Read())
+                        {
+                            pin.Tags.Add(reader2.GetInt32(0));
+                        }
+                    }
+                    command2.Parameters.Remove(idParameter);
+                }
+            }
+
             return pins;
         }
 
@@ -121,7 +161,6 @@ namespace TravelCompanionAPI.Data
         {
             List<Pin> pins = new List<Pin>();
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
-
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = connection;
@@ -140,10 +179,33 @@ namespace TravelCompanionAPI.Data
                         pin.Latitude = reader.GetInt32(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
+
                         pins.Add(pin);
                     }
                 }
-                //TODO: get pinTags data, add to pin
+            }
+            using (MySqlCommand command2 = new MySqlCommand())
+            {
+                command2.Connection = connection;
+                command2.CommandType = CommandType.Text;
+                command2.CommandText = "SELECT * FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+
+                MySqlParameter idParameter;
+
+                foreach (Pin pin in pins)
+                {
+                    idParameter = new MySqlParameter("Id", pin.Id);
+                    command2.Parameters.Add(idParameter);
+
+                    using (MySqlDataReader reader2 = command2.ExecuteReader())
+                    {
+                        while (reader2.Read())
+                        {
+                            pin.Tags.Add(reader2.GetInt32(0));
+                        }
+                    }
+                    command2.Parameters.Remove(idParameter);
+                }
             }
 
             return pins;
@@ -172,7 +234,25 @@ namespace TravelCompanionAPI.Data
 
                 command.ExecuteNonQuery();
             }
-            //TODO: add Tag to pins
+            
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "INSERT INTO " + TAG_TABLE + " (pin_id, tag_id) VALUES (@pin_id, @tag_id);";
+                command.Parameters.AddWithValue("@pin_id", pin.Id);
+
+                MySqlParameter tagIdParameter;
+
+                foreach (int myTag in pin.Tags)
+                {
+                    tagIdParameter = new MySqlParameter("@tag_id", myTag);
+
+                    command.Parameters.Add(tagIdParameter);
+                    command.ExecuteNonQuery();
+                    command.Parameters.Remove(tagIdParameter);
+                }
+            }
 
             return true; //Error handling here later.
         }
@@ -187,7 +267,7 @@ namespace TravelCompanionAPI.Data
         {
             bool exists = false;
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
-
+            
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = connection;
