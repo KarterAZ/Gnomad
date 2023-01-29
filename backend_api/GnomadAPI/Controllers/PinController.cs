@@ -116,5 +116,13 @@ namespace TravelCompanionAPI.Controllers
 
             return new JsonResult(Ok(0));
         }
+
+        [HttpPost("initializeGas")]
+        public JsonResult addGasPins()
+        {
+            AddingGasData.AddGas(_pin_repo);
+
+            return new JsonResult(Ok(0));
+        }
     }
 }

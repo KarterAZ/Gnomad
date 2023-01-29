@@ -21,6 +21,8 @@ namespace TravelCompanionAPI.Fuel
             {
                 foreach (GasData data in JsonSerializer.Deserialize<List<GasData>>(File.ReadAllText(path)))
                 {
+                    if (data.properties.addr_state == "OR")
+                    {
                         Pin pin = new Pin();
                         pin.UserId = 0;
                         pin.Longitude = data.geometry.coordinates.Last();
@@ -34,6 +36,7 @@ namespace TravelCompanionAPI.Fuel
                             pin.Tags.Add((int)TagValues.tags.Diesel);
 
                         pin_repo.add(pin);
+                    }
                 }
             }
         }
