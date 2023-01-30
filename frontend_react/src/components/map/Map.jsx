@@ -27,25 +27,46 @@ const defaultProps =
     zoom: 17,
 };
 
+function getH3Index() {
+    const dataList = getAll();
+
+    for (let cell of dataList) {
+        // get h3 resolution
+        const h3Res = h3.getResolution(cell.H3id);
+
+        // Get the center of the hexagon
+        const hexCenterCoordinates = h3.cellToLatLng(cell.H3id);
+
+        // Get the vertices of the hexagon
+        const hexBoundary = h3.cellToBoundary(cell.H3id);
+    }
+    // get geo to h3
+    //const geoToH3(this.state.lat, this.state.lng, this.state.resolution);
+}
+
+/*function initMap() {
+    // Define the LatLng coordinates for the polygon's path.
+    const triangleCoords = [
+        { lat: 25.774, lng: -80.19 },
+        { lat: 18.466, lng: -66.118 },
+        { lat: 32.321, lng: -64.757 },
+        { lat: 25.774, lng: -80.19 },
+    ];
+    // Construct the polygon.
+    const bermudaTriangle = new GoogleMapReact.maps.Polygon({
+        paths: triangleCoords,
+        strokeColor: "#FF0000",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#FF0000",
+        fillOpacity: 0.35,
+    });
+
+    bermudaTriangle.setMap(map);
+}*/
+
 // this class renders the map component.
 export default class Map extends Component {
-    /*getH3Index() {
-        const dataList = getAll();
-
-        for (let cell of dataList) {
-            // get h3 resolution
-            const h3Res = h3.getResolution(cell.H3id);
-
-            // Get the center of the hexagon
-            const hexCenterCoordinates = h3.cellToLatLng(cell.H3id);
-
-            // Get the vertices of the hexagon
-            const hexBoundary = h3.cellToBoundary(cell.H3id);
-        }
-        // get geo to h3
-        //const geoToH3(this.state.lat, this.state.lng, this.state.resolution);
-    }*/
-
     //returns all hexagons in a radius around a specified point
     //could be used to load only visible hexagons
     //h3.gridDisk(h3index, ring(num));
