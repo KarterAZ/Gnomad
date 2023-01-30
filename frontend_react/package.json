@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@react-oauth/google": "^0.6.1",
     "@iconify/react": "^4.0.1",
     "@react-oauth/google": "^0.5.0",
     "@testing-library/jest-dom": "^5.16.5",
@@ -19,6 +20,7 @@
     "react-bootstrap": "^2.6.0",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
+    "react-navigation": "^4.4.4",
     "react-router-dom": "^6.4.4",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4",
@@ -59,6 +61,9 @@
     ]
   },
   "devDependencies": {
+    "@iconify/icons-ic": "^1.2.13",
+    "@iconify/icons-material-symbols": "^1.2.25",
+    "@iconify/react": "^4.0.1",
     "http-server": "^14.1.1"
   }
 }
