@@ -16,3 +16,16 @@
 
   background-color: aqua;
 }
+
+.lat-lng {
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+.lat-lng input {
+  margin: 0px 0.5rem;
+  padding: 0.5rem;
+}
