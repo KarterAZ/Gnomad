@@ -15,6 +15,8 @@ import GoogleMapReact from 'google-map-react';
 import './map.css';
 import './markers.css';
 import pin from './pin.png';
+import bathroom from './restroom.svg';
+import fuel from './fuelstation.svg';
 
 export default function Map() {
 
@@ -27,7 +29,12 @@ export default function Map() {
     
   };
 
-  const Marker = ({ lat, lng }) => (
+  const markers = [
+    ["Oregon Tech", 42.255, -121.7855]
+
+  ];
+
+  const CustomMarker = ({ lat, lng }) => (
     <img src={pin} alt="pin" style={{
       position: 'absolute',
       transform: `translate(${-20 / 2}px,${-40}px)`,
@@ -40,6 +47,32 @@ export default function Map() {
       />
    );
    
+   const FuelMarker = ({ lat, lng }) => (
+    <img src={fuel} alt="fuel" style={{
+      position: 'absolute',
+      transform: `translate(${-20 / 2}px,${-40}px)`,
+      width: '80px',
+      height: '70px',
+      text: "Sample Text",
+    }}
+      lat={lat}
+      lng={lng}
+      />
+   );
+
+   const BathRoomMarker = ({ lat, lng }) => (
+    <img src={bathroom} alt="bathroom" style={{
+      position: 'absolute',
+      transform: `translate(${-20 / 2}px,${-40}px)`,
+      width: '80px',
+      height: '70px',
+      text: "Sample Text",
+    }}
+      lat={lat}
+      lng={lng}
+      />
+   );
+
     /*
     const[markers,setMarkers]=React.useState([]);
     React.useEffect(() => {
@@ -52,6 +85,8 @@ export default function Map() {
       });
     }, []);
     **/
+   
+
     return (
     <div id='map'>
     <div id='wrapper'>
@@ -59,8 +94,9 @@ export default function Map() {
         bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
         defaultCenter={defaultProps.center}
         defaultZoom={defaultProps.zoom}
+        //onClick?
       >
-        <Marker
+        <CustomMarker
               lat={42.255}
               lng={-121.7855}
               text="Oregon Tech"
@@ -71,6 +107,8 @@ export default function Map() {
   </div>
   );
 }
+
+
 
 //Rough mockup of what we can do for varying pin images, modified from an example 
 

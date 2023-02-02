@@ -60,10 +60,10 @@
     ]
   },
   "devDependencies": {
-    "@ubilabs/google-maps-react-hooks": "^2.0.2",
     "@iconify/icons-ic": "^1.2.13",
     "@iconify/icons-material-symbols": "^1.2.25",
     "@iconify/react": "^4.0.1",
+    "@ubilabs/google-maps-react-hooks": "^2.0.2",
     "http-server": "^14.1.1"
   }
 }
