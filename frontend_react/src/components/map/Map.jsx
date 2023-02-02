@@ -44,7 +44,7 @@ function getH3Index() {
     //const geoToH3(this.state.lat, this.state.lng, this.state.resolution);
 }
 
-/*function initMap() {
+function initMap() {
     // Define the LatLng coordinates for the polygon's path.
     const triangleCoords = [
         { lat: 25.774, lng: -80.19 },
@@ -63,7 +63,7 @@ function getH3Index() {
     });
 
     bermudaTriangle.setMap(map);
-}*/
+}
 
 // this class renders the map component.
 export default class Map extends Component {
@@ -72,7 +72,7 @@ export default class Map extends Component {
     //h3.gridDisk(h3index, ring(num));
 
     render() {
-        //let h3idx = this.getH3Index()
+        let h3idx = this.getH3Index()
 
         return (
             <div id='map'>
