@@ -8,37 +8,30 @@
 //################################################################
 
 // external imports.
-import React, { Component } from 'react';
 import { Icon } from '@iconify/react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import baselineSearch from '@iconify/icons-ic/baseline-search';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 // intenral imports.
-import { sget } from '../../utilities/session_storage';
 import { LoginButton } from '../login_button/LoginButton';
 
 import './sidebar.css';
 
+const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com';
 
 // this class renders the Sidebar component.
-export default class Sidebar extends Component 
+export default function Sidebar()
 {
-  constructor(props) 
-  {
-    super(props);
+  const navigate = useNavigate();
 
-    this.handleClick = this.handleClick.bind(this);
-    this.open = true;
-
-    this.state = 
-    {
-      user_id: -1,
-      user: ''
-    };
-  }
+  let [open, setOpen] = useState(true);
 
   // show / hide the Sidebar
-  handleClick = () => 
+  const handleClick = () => 
   {
-    if (this.open) 
+    if (open) 
     {
       document.getElementById('sidebar-container').style.width = '0%';
     } 
@@ -47,74 +40,72 @@ export default class Sidebar extends Component
       document.getElementById('sidebar-container').style.width = '100%';
     }
 
-    this.open = !this.open;
+    setOpen(!open);
   }
 
   // this function is called when the search button is clicked.
-  search = async () =>
+  const search = async () =>
   {
     const query = document.getElementById('search-bar').value;
+    console.log(query);
   }
 
-  // display a welcome message to the user when they login.
-  WelcomeMessage = () =>
+  const create = () =>
   {
-    let user = sget('user');
-    if (user !== null || user === undefined)
-    return (
-      <div>
-        Welcome, { user.firstName }
-      </div>
-    );
+    let select = document.getElementById('pin-select');
+
+    if (select.value === '4')
+    { 
+      navigate('routes');
+    }
   }
 
   // render the actual component.
-  render() 
-  {
-    return (
-      <div id='sidebar-container'>
-        <div id='sidebar-content'>
-          <section className='section' id='header-section'>
-            <div id='user-section'>
+  return (
+    <div id='sidebar-container'>
+      <div id='sidebar-content'>
+        <section className='section' id='header-section'>
+          <div id='user-section'>
+            <GoogleOAuthProvider clientId={client_id}>
               <LoginButton/>
-              <this.WelcomeMessage/>
-            </div>
+            </GoogleOAuthProvider>
+          </div>
 
-            <div id='settings-button-wrapper'>
-              <Icon id='settings-button' icon='ph:gear-six-duotone'/>
-            </div>
-          </section>
+          <div id='settings-button-wrapper'>
+            <Icon id='settings-button' icon='ph:gear-six-duotone'/>
+          </div>
+        </section>
 
-          <section className='section' id='search-section'>
-            <label>Search:</label>
-            <input id='search-bar' type='text'></input>
-            <button className='button' id='search-button' onClick={this.search}>
-              Submit
+        <section className='section' id='search-section'>
+          <label>Search</label>
+          <div className='search-wrapper'>
+              <input id='search-bar' className='text-input' type='text'></input>
+              <button onClick={search} className='search-button'><Icon icon={baselineSearch} width="20" height="20"/></button>
+          </div>
+        </section>
+
+        <section className='section' id='pins-section'>
+          <div id='pin-group'>
+            <select defaultValue={0} id='pin-select'>
+              <option value='0' disabled>
+                Select a Tag
+              </option>
+              <option value='1'>All</option>
+              <option value='2'>Bathrooms</option>
+              <option value='3'>Wi-Fi</option>
+              <option value='4'>Routes</option>
+            </select>
+            <button className='button' id='pin-button' onClick={create}>
+              Create
             </button>
-          </section>
+          </div>
 
-          <section className='section' id='pins-section'>
-            <div id='pin-group'>
-              <select defaultValue={0} id='pin-select'>
-                <option value='0' disabled>
-                  Select a Pin Type
-                </option>
-                <option value='1'>All</option>
-                <option value='2'>Bathrooms</option>
-                <option value='3'>Wi-Fi</option>
-              </select>
-              <button className='button' id='pin-button'>
-                Create
-              </button>
-            </div>
-
-            <div id='pins-list'></div>
-          </section>
-        </div>
-        <div onClick={this.handleClick} id='handle'>
-          <Icon icon='charm:menu-hamburger'/>
-        </div>
+          <div id='pins-list'></div>
+        </section>
       </div>
-    );
-  }
+      <div onClick={handleClick} id='handle'>
+        <Icon icon='charm:menu-hamburger'/>
+      </div>
+    </div>
+  );
 }
