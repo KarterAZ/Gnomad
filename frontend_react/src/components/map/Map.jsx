@@ -27,7 +27,14 @@ const defaultProps =
     zoom: 17,
 };
 
-function getH3Index() {
+class SimpleMap extends React.Component {
+    static defaultProp = {
+        zoom: 5,
+        center: { lat: 24.886, lng: -70.268 },
+        mapTypeId: "terrain"
+    };
+}
+/*function getH3Index() {
     const dataList = getAll();
 
     for (let cell of dataList) {
@@ -42,28 +49,27 @@ function getH3Index() {
     }
     // get geo to h3
     //const geoToH3(this.state.lat, this.state.lng, this.state.resolution);
-}
+}*/
 
-function initMap() {
-    // Define the LatLng coordinates for the polygon's path.
+const handleApiLoaded = (map, maps) => {
     const triangleCoords = [
         { lat: 25.774, lng: -80.19 },
         { lat: 18.466, lng: -66.118 },
         { lat: 32.321, lng: -64.757 },
-        { lat: 25.774, lng: -80.19 },
+        { lat: 25.774, lng: -80.19 }
     ];
-    // Construct the polygon.
-    const bermudaTriangle = new GoogleMapReact.maps.Polygon({
+
+    var bermudaTriangle = new maps.Polygon({
         paths: triangleCoords,
         strokeColor: "#FF0000",
         strokeOpacity: 0.8,
         strokeWeight: 2,
         fillColor: "#FF0000",
-        fillOpacity: 0.35,
+        fillOpacity: 0.35
     });
-
     bermudaTriangle.setMap(map);
 }
+
 
 // this class renders the map component.
 export default class Map extends Component {
@@ -72,6 +78,30 @@ export default class Map extends Component {
     //h3.gridDisk(h3index, ring(num));
 
     render() {
+        return (
+            <div id='map'>
+                <div id='wrapper'>
+                    <GoogleMapReact
+                        bootstrapURLKeys=
+                        {
+                            {
+                                key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o',
+                            }
+                        }
+
+                        defaultCenter={defaultProps.center}
+                        defaultZoom={defaultProps.zoom}
+                        yesIWantToUseGoogleMapApiInternals //this is important!
+                        onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
+                    >
+                    
+                    </GoogleMapReact>
+                </div>
+            </div>
+        );
+    }
+
+    /*render() {
         let h3idx = this.getH3Index()
 
         return (
@@ -89,15 +119,15 @@ export default class Map extends Component {
                         defaultZoom={defaultProps.zoom}
                     />
                 </div>
-                {/*<div style={{ height: `95%` }} className='d-flex'>
+                {*//*<div style={{ height: `95%` }} className='d-flex'>
                     <div style={{ height: `100%`, width: `100%` }} className='p-2'>
                         <MyMapComponent
                             googleMapURL={map}
                             hexagons={h3KRing(h3idx, this.state.kringSize)}
                         />
                     </div>
-                </div>*/}
+                </div>*//*}
             </div>
         );
-    }
+    }*/
 }
