@@ -4,12 +4,18 @@
   "private": true,
   "dependencies": {
     "@react-oauth/google": "^0.6.1",
+<<<<<<< HEAD
+=======
+    "@iconify/react": "^4.0.1",
+    "@react-oauth/google": "^0.5.0",
+>>>>>>> 0bc1a1e83188c34afcbc1b0cb015dd79dbc93a79
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.2.3",
     "gapi-script": "^1.2.0",
     "google-map-react": "^2.2.0",
+    "h3-js": "^4.1.0",
     "jquery": "^3.6.1",
     "loader-utils": ">=3.2.1",
     "nth-check": ">=2.0.1",
