@@ -235,6 +235,7 @@ namespace TravelCompanionAPI.Data
                 command.ExecuteNonQuery();
             }
             
+            //TODO: get pin's id, pin.id isn't valid.
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = connection;
