@@ -53,6 +53,7 @@
 
 #handle:hover {
   color: var(--primary-foreground-hover);
+  background-color: var(--primary-background-accent);
 }
 
 #sidebar-content {
@@ -66,7 +67,7 @@
 }
 
 .section {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 #user-section {
@@ -109,21 +110,6 @@
   flex-direction: column;
 }
 
-#search-bar {
-  background-color: var(--secondary-background);
-  height: 2em;
-  border: none;
-
-  margin-bottom: 5px;
-
-  color: var(--secondary-foreground);
-}
-
-#search-button {
-  align-self: flex-end;
-  width: 48%;
-}
-
 #pins-section {
   display: flex;
   flex-direction: column;
@@ -137,6 +123,8 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+  margin-bottom: 10px;
 }
 
 #pin-select {
@@ -147,12 +135,13 @@
 
   cursor: pointer;
 
-  margin-bottom: 5px;
+  border-radius: 4px;
 }
 
 #pin-button {
   width: 48%;
-  margin-bottom: 5px;
+
+  border-radius: 4px;
 }
 
 #pins-list {
@@ -161,11 +150,15 @@
 
   flex-grow: 1;
 
+  max-height: 600px;
+
   width: 100%;
 
   overflow-y: scroll;
 
   background-color: var(--secondary-background);
+
+  border-radius: 4px;
 }
 
 #pins-list::-webkit-scrollbar {
@@ -174,6 +167,8 @@
 
 #pins-list::-webkit-scrollbar-track {
   box-shadow: inset 0 0 5px grey;
+
+  border-radius: 4px;
 }
 
 #pins-list::-webkit-scrollbar-thumb {
