@@ -37,7 +37,11 @@ namespace TravelCompanionAPI
 
             // Get the connection string from the configuration
             // and set the DatabaseConnection singleton to use it.
+#if DEBUG
             string connection_string = configuration.GetConnectionString("TestingDatabase");
+#else
+            string connection_string = configuration.GetConnectionString("CodenomeDatabase");
+#endif
             DatabaseConnection.getInstance().setConnectionString(connection_string);
         }
 
