@@ -29,6 +29,15 @@ routes passing through specific points of interest.
  - Node.js
  - npm
  - .NET 6
+ 
+### Run for Testing
+To start for testing run:
+
+```sh
+cd frontend_react
+npm install
+npm start
+```
 
 ### Build
 To setup a production build run:
