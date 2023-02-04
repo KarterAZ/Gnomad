@@ -34,6 +34,9 @@ class SimpleMap extends React.Component {
         mapTypeId: "terrain"
     };
 }
+
+const dataList = getAll();
+
 /*function getH3Index() {
     const dataList = getAll();
 
@@ -52,7 +55,34 @@ class SimpleMap extends React.Component {
 }*/
 
 const handleApiLoaded = (map, maps) => {
-    const triangleCoords = [
+
+    //const datalist = null;
+
+    //if(dataList == null)
+    
+
+    for (let cell of dataList) {
+        // get h3 resolution
+        const h3Res = h3.getResolution(cell.H3id);
+
+        // Get the center of the hexagon
+        const hexCenterCoordinates = h3.cellToLatLng(cell.H3id);
+
+        // Get the vertices of the hexagon
+        const hexBoundary = h3.cellToBoundary(cell.H3id);
+
+        var bermudaTriangle = new maps.Polygon({
+            paths: hexBoundary,
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#FF0000",
+            fillOpacity: 0.35
+        });
+        bermudaTriangle.setMap(map);
+    }
+
+    /*const triangleCoords = [
         { lat: 25.774, lng: -80.19 },
         { lat: 18.466, lng: -66.118 },
         { lat: 32.321, lng: -64.757 },
@@ -67,7 +97,7 @@ const handleApiLoaded = (map, maps) => {
         fillColor: "#FF0000",
         fillOpacity: 0.35
     });
-    bermudaTriangle.setMap(map);
+    bermudaTriangle.setMap(map);*/
 }
 
 
