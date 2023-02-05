@@ -4,8 +4,11 @@
   "private": true,
   "dependencies": {
     "@react-oauth/google": "^0.6.1",
+<<<<<<< HEAD
+=======
     "@iconify/react": "^4.0.1",
     "@react-oauth/google": "^0.5.0",
+>>>>>>> 0bc1a1e83188c34afcbc1b0cb015dd79dbc93a79
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

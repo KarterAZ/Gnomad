@@ -1,11 +1,8 @@
-CREATE TABLE `pins` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int NOT NULL,
-  `longitude` int NOT NULL,
-  `latitude` int NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `street` varchar(255) DEFAULT NULL,
-  `tag_bathroom` int DEFAULT '0',
-  `tag_wifi` int DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE IF NOT EXISTS `codenome_db`.`pins` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `user_id` INT NOT NULL,
+  `longitude` INT NOT NULL,
+  `latitude` INT NOT NULL,
+  `title` VARCHAR(45) NULL,
+  `street` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));
