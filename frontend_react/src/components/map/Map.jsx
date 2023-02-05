@@ -24,18 +24,18 @@ const defaultProps =
         lat: 42.2565,
         lng: -121.7855,
     },
-    zoom: 17,
+    zoom: 8,
 };
 
-class SimpleMap extends React.Component {
+/*class SimpleMap extends React.Component {
     static defaultProp = {
         zoom: 5,
         center: { lat: 24.886, lng: -70.268 },
         mapTypeId: "terrain"
     };
-}
+}*/
 
-const dataList = getAll();
+var dataList = getAll();
 
 /*function getH3Index() {
     const dataList = getAll();
@@ -59,28 +59,37 @@ const handleApiLoaded = (map, maps) => {
     //const datalist = null;
 
     //if(dataList == null)
-    
 
-    for (let cell of dataList) {
+    var hexBoundary = new Array(dataList.length);
+    var hexCenterCoordinates;
+    var i = 0;
+
+    for (const cell of dataList) {
         // get h3 resolution
         const h3Res = h3.getResolution(cell.H3id);
 
         // Get the center of the hexagon
-        const hexCenterCoordinates = h3.cellToLatLng(cell.H3id);
+        if(i == 0)
+            hexCenterCoordinates = h3.cellToLatLng(cell.H3id);
 
         // Get the vertices of the hexagon
-        const hexBoundary = h3.cellToBoundary(cell.H3id);
+        hexBoundary[i] = h3.cellToLatLng(cell.H3id);;//h3.cellToBoundary(cell.H3id);
 
-        var bermudaTriangle = new maps.Polygon({
-            paths: hexBoundary,
-            strokeColor: "#FF0000",
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: "#FF0000",
-            fillOpacity: 0.35
-        });
-        bermudaTriangle.setMap(map);
+        defaultProps.center = hexCenterCoordinates;
+        i++;
     }
+
+    hexBoundary[-1] = hexCenterCoordinates
+
+    var bermudaTriangle = new maps.Polygon({
+        paths: hexBoundary,
+        strokeColor: "#FF0000",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#FF0000",
+        fillOpacity: 0.35
+    });
+    bermudaTriangle.setMap(map);
 
     /*const triangleCoords = [
         { lat: 25.774, lng: -80.19 },
@@ -123,6 +132,7 @@ export default class Map extends Component {
                         defaultZoom={defaultProps.zoom}
                         yesIWantToUseGoogleMapApiInternals //this is important!
                         onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
+                        defaultCenter={defaultProps.center}
                     >
                     
                     </GoogleMapReact>
