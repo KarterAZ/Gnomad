@@ -220,6 +220,7 @@ namespace TravelCompanionAPI.Data
         public bool add(Pin pin)
         {
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+            object DatabasePinId;
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -232,19 +233,21 @@ namespace TravelCompanionAPI.Data
                 command.Parameters.AddWithValue("@Title", pin.Title);
                 command.Parameters.AddWithValue("@Street", pin.Street);
 
+                DatabasePinId = command.ExecuteScalar();
+
                 command.ExecuteNonQuery();
             }
             
-            //TODO: get pin's id, pin.id isn't valid.
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "INSERT INTO " + TAG_TABLE + " (pin_id, tag_id) VALUES (@pin_id, @tag_id);";
-                command.Parameters.AddWithValue("@pin_id", pin.Id);
+                command.Parameters.AddWithValue("@pin_id", int.Parse(DatabasePinId.ToString()));
 
                 MySqlParameter tagIdParameter;
 
+                //Adds each tag as a parameter and sends a new query for each.
                 foreach (int myTag in pin.Tags)
                 {
                     tagIdParameter = new MySqlParameter("@tag_id", myTag);
