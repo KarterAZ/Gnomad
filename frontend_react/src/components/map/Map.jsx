@@ -28,40 +28,22 @@ const defaultProps = {
 
 };
 
-const CustomMarker = ({ lat, lng }) => (
-  <img src={pin} alt="pin" style={{
-    position: 'absolute',
-    width: '50px',
-    height: '50px',
+const presetMarkers = [
+  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom },
+  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel },
+  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin },
+];
 
-  }}
-    lat={lat}
-    lng={lng}
-  />
-);
 
-const FuelMarker = ({ lat, lng }) => (
-  <img src={fuel} alt="fuel" style={{
-    position: 'relative',
-    transform: `translate(${-20 / 2}px,${-40}px)`,
-    width: '80px',
-    height: '70px',
-
-  }}
-    lat={lat}
-    lng={lng}
-  />
-);
-
-const BathroomMarker = ({ lat, lng }) => (
-  <img src={bathroom} alt="bathroom" style={{
-    position: 'fixed',
-    //transform: `translate(${-20 / 2}px,${-40}px)`,
-    width: '80px',
-    height: '70px',
-    text: "Sample Text",
-    position: 'relative',
-  }}
+const CustomMarker = ({ lat, lng, image }) => (
+  <img
+    src={image}
+    alt="marker"
+    style={{
+      position: 'absolute',
+      width: '50px',
+      height: '50px',
+    }}
     lat={lat}
     lng={lng}
   />
@@ -70,17 +52,14 @@ const BathroomMarker = ({ lat, lng }) => (
 
 
 export default function Map() {
-
-  const [markers, setMarkers] = useState([
-    {
-      lat: 42.255,
-      lng: -121.7855,
-      icon: './pin.png',
-    },
-  ]);
+  const [markers, setMarkers] = useState(presetMarkers);
 
   const handleMapClick = (event) => {
-    setMarkers([...markers, { lat: event.lat, lng: event.lng }]);
+    setMarkers([...markers, {
+      lat: event.lat,
+      lng: event.lng,
+      image: pin,
+    }]);
   };
 
 
@@ -98,8 +77,10 @@ export default function Map() {
               key={index}
               lat={marker.lat}
               lng={marker.lng}
+              image={marker.image}
             />
           ))}
+          
 
         </GoogleMapReact>
       </div>
