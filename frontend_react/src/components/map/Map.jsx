@@ -30,6 +30,8 @@ const defaultProps = {
 
 };
 
+
+//Array of markers that gets used to populate map, eventually will be filled with pin data from database
 const presetMarkers = [
   { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom },
   { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel },
@@ -40,6 +42,8 @@ const presetMarkers = [
 // top left     42.26395149771135, -121.84449621695097
 // bottom right 42.21184409530869, -121.75111242724213
 
+
+//General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separte versions 
 const CustomMarker = ({ lat, lng, image }) => (
   <img
     src={image}
@@ -55,14 +59,20 @@ const CustomMarker = ({ lat, lng, image }) => (
 );
 
 export default function Map() {
+  //State declared for storing markers
   const [markers, setMarkers] = useState(presetMarkers);
+
+  //State declared for enabling/disabling marker creation on click with sidebar
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
+  //Function that toggles the sidebar's create pin option
    const toggleMarkerCreation = () => {
      setMarkerCreationEnabled(!markerCreationEnabled);
    };
 
+  //Function handling onclick events on the map that will result in marker creation
   const handleMapClick = (event) => {
+    //Adds marker to array that gets rendered (Eventually will have to add a pin to the database)
     setMarkers([...markers, {
       lat: event.lat,
       lng: event.lng,
@@ -70,7 +80,7 @@ export default function Map() {
     }]);
   };  
 
-  //Populating presetMarkers with data from database
+  //Populating presetMarkers with data from array/database
   useEffect(() => {
     fetch('') // api endpoint will go here (having trouble running backend at the moment)
       .then(response => response.json())
@@ -87,8 +97,8 @@ export default function Map() {
           defaultZoom={defaultProps.zoom}
           onClick={handleMapClick}
         >
-
-          {markers.map((marker, index) => (
+          
+          {markers.map((marker, index) => ( //Renders markers on the map
             <CustomMarker
               key={index}
               lat={marker.lat}
