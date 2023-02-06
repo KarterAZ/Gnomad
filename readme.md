@@ -16,7 +16,7 @@ routes passing through specific points of interest.
 
 ### Features
 - Mobile Hotspot Locator
-- Build in pins
+- Built-in pins
 - User added pins called stickers
 - More to come!
 
