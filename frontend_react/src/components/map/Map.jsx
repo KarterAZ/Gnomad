@@ -1,6 +1,6 @@
 //################################################################
 //
-// Authors: Bryce Schultz
+// Authors: Bryce Schultz, Andrew Ramirez
 // Date: 12/19/2022
 // 
 // Purpose: The google map component.
@@ -17,6 +17,8 @@ import './markers.css';
 import pin from './pin.png';
 import bathroom from './restroom.svg';
 import fuel from './gas-station-svgrepo-com.svg';
+import Sidebar from '../sidebar/Sidebar.jsx';
+
 
 //can later make the default lat/lng be user's location?
 const defaultProps = {
@@ -34,13 +36,16 @@ const presetMarkers = [
   { lat: 42.25644490904306, lng: -121.7859578463942, image: pin },
 ];
 
+//for testing marker clustering
+// top left     42.26395149771135, -121.84449621695097
+// bottom right 42.21184409530869, -121.75111242724213
 
 const CustomMarker = ({ lat, lng, image }) => (
   <img
     src={image}
     alt="marker"
     style={{
-      position: 'absolute',
+      position: 'absolute', // absolute/fixed/static/sticky/relative
       width: '50px',
       height: '50px',
     }}
@@ -49,10 +54,13 @@ const CustomMarker = ({ lat, lng, image }) => (
   />
 );
 
-
-
 export default function Map() {
   const [markers, setMarkers] = useState(presetMarkers);
+  const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
+
+   const toggleMarkerCreation = () => {
+     setMarkerCreationEnabled(!markerCreationEnabled);
+   };
 
   const handleMapClick = (event) => {
     setMarkers([...markers, {
@@ -60,8 +68,15 @@ export default function Map() {
       lng: event.lng,
       image: pin,
     }]);
-  };
+  };  
 
+  //Populating presetMarkers with data from database
+  useEffect(() => {
+    fetch('') // api endpoint will go here (having trouble running backend at the moment)
+      .then(response => response.json())
+      .then(data => setMarkers(data))
+      .catch(error => console.error(error));
+  }, []);
 
   return (
     <div id='map'>
@@ -72,6 +87,7 @@ export default function Map() {
           defaultZoom={defaultProps.zoom}
           onClick={handleMapClick}
         >
+
           {markers.map((marker, index) => (
             <CustomMarker
               key={index}
@@ -80,7 +96,7 @@ export default function Map() {
               image={marker.image}
             />
           ))}
-          
+
 
         </GoogleMapReact>
       </div>
