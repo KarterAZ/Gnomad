@@ -6,6 +6,12 @@ using System.Text.Json;
 using TravelCompanionAPI.Data;
 using TravelCompanionAPI.Models;
 
+/// <summary>
+/// Puts the gas and diesel pins into the database
+/// </summary>
+/// <returns>
+/// Adds all of the gas and diesel pins to the database
+///</returns>
 namespace TravelCompanionAPI.Fuel
 {
     static class AddingGasData

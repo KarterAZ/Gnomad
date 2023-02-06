@@ -5,9 +5,14 @@ using System.Text.Json;
 using TravelCompanionAPI.Data;
 using TravelCompanionAPI.Models;
 
+/// <summary>
+/// Puts the supercharger pins into the database
+/// </summary>
+/// <returns>
+/// Adds all of the supercharger pins to the database
+///</returns>
 namespace TravelCompanionAPI.Fuel
 {
-
     static class AddingSuperchargerData
     {
         //Adds the relevent data to the database.
