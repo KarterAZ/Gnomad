@@ -16,117 +16,114 @@ import './map.css';
 import './markers.css';
 import pin from './pin.png';
 import bathroom from './restroom.svg';
-import fuel from './fuelstation.svg';
+import fuel from './gas-station-svgrepo-com.svg';
+
+//can later make the default lat/lng be user's location?
+const defaultProps = {
+  zoom: 12,
+  center: {
+    lat: 42.2565,
+    lng: -121.78,
+  },
+
+};
+
+const CustomMarker = ({ lat, lng }) => (
+  <img src={pin} alt="pin" style={{
+    position: 'absolute',
+    width: '50px',
+    height: '50px',
+
+  }}
+    lat={lat}
+    lng={lng}
+  />
+);
+
+const FuelMarker = ({ lat, lng }) => (
+  <img src={fuel} alt="fuel" style={{
+    position: 'relative',
+    transform: `translate(${-20 / 2}px,${-40}px)`,
+    width: '80px',
+    height: '70px',
+
+  }}
+    lat={lat}
+    lng={lng}
+  />
+);
+
+const BathroomMarker = ({ lat, lng }) => (
+  <img src={bathroom} alt="bathroom" style={{
+    position: 'fixed',
+    //transform: `translate(${-20 / 2}px,${-40}px)`,
+    width: '80px',
+    height: '70px',
+    text: "Sample Text",
+    position: 'relative',
+  }}
+    lat={lat}
+    lng={lng}
+  />
+);
+
+
 
 export default function Map() {
 
-  const defaultProps = {
-    zoom: 12,
-    center: {
-      lat: 42.2565,
-      lng: -121.78,
+  const [markers, setMarkers] = useState([
+    {
+      lat: 42.255,
+      lng: -121.7855,
+      icon: './pin.png',
     },
-    
+  ]);
+
+  const handleMapClick = (event) => {
+    setMarkers([...markers, { lat: event.lat, lng: event.lng }]);
   };
 
-  const markers = [
-    ["Oregon Tech", 42.255, -121.7855]
 
-  ];
-
-  const CustomMarker = ({ lat, lng }) => (
-    <img src={pin} alt="pin" style={{
-      position: 'absolute',
-      transform: `translate(${-20 / 2}px,${-40}px)`,
-      width: '80px',
-      height: '70px',
-      text: "Sample Text",
-    }}
-      lat={lat}
-      lng={lng}
-      />
-   );
-   
-   const FuelMarker = ({ lat, lng }) => (
-    <img src={fuel} alt="fuel" style={{
-      position: 'absolute',
-      transform: `translate(${-20 / 2}px,${-40}px)`,
-      width: '80px',
-      height: '70px',
-      text: "Sample Text",
-    }}
-      lat={lat}
-      lng={lng}
-      />
-   );
-
-   const BathRoomMarker = ({ lat, lng }) => (
-    <img src={bathroom} alt="bathroom" style={{
-      position: 'absolute',
-      transform: `translate(${-20 / 2}px,${-40}px)`,
-      width: '80px',
-      height: '70px',
-      text: "Sample Text",
-    }}
-      lat={lat}
-      lng={lng}
-      />
-   );
-
-    /*
-    const[markers,setMarkers]=React.useState([]);
-    React.useEffect(() => {
-      const map = document.getElementById('map').childNodes[0].childNodes[0]._googleMapComponent.map;
-      GoogleMapReact.maps.event.addListener(map, 'click', (event) => {
-        setMarkers(current => [...current, {
-          lat: event.latLng.lat(),
-          lng: event.latLng.lng(),
-        }]);
-      });
-    }, []);
-    **/
-   
-
-    return (
+  return (
     <div id='map'>
-    <div id='wrapper'>
-      <GoogleMapReact
-        bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
-        defaultCenter={defaultProps.center}
-        defaultZoom={defaultProps.zoom}
-        //onClick?
-      >
-        <CustomMarker
-              lat={42.255}
-              lng={-121.7855}
-              text="Oregon Tech"
+      <div id='wrapper'>
+        <GoogleMapReact
+          bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
+          defaultCenter={defaultProps.center}
+          defaultZoom={defaultProps.zoom}
+          onClick={handleMapClick}
+        >
+          {markers.map((marker, index) => (
+            <CustomMarker
+              key={index}
+              lat={marker.lat}
+              lng={marker.lng}
             />
-        
-      </GoogleMapReact>
+          ))}
+
+        </GoogleMapReact>
+      </div>
     </div>
-  </div>
   );
 }
 
+/** Fixed testing markers
+ * 
+ * 
+          <CustomMarker
+            lat={42.255}
+            lng={-121.7855}
+            text="Oregon Tech"
+          />
+          <BathroomMarker
+            lat={42.922}
+            lng={-121.7855}
+            text="Oregon Tech"
+          />
+          <FuelMarker
+            lat={42.255}
+            lng={-12.7855}
+            text="Oregon Tech"
+          />
 
-
-//Rough mockup of what we can do for varying pin images, modified from an example 
-
-/** const Pin = ({  pin }) => {
-    const pinName = pin.NAME;
-    const pinType = pinMap[pinName];
-
-    function handleMarkerClick(){
-       console.log('marker clicked');
-    }
-
-    const pinImage = pinImageMap[pinType];
-    return (
-        <div onClick={handleMarkerClick}>
-            {
-              // Render pinImage image 
-            }
-            <img src={pinImage} alt="Logo" />
-        </div>
-    );
-};*/
+ */
