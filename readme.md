@@ -1,7 +1,7 @@
 # Gnomad
 ### What is it?
 Gnomad is a travel companion application.
-It's goal is to allows users to create custom 
+Its goal is to allows users to create custom 
 routes passing through specific points of interest. 
 
 ### Team Developers
