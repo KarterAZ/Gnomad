@@ -90,7 +90,28 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
-            //connection.Close();
+            return h3_oregon_data;
+        }
+
+        public List<string> getAllH3()
+        {
+            List<string> h3_oregon_data = new List<string>();
+
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = DatabaseConnection.getInstance().getConnection();
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM " + TABLE + " Limit 25 ;";
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        String cellular = reader.GetString(4);
+                        h3_oregon_data.Add(cellular);
+                    }
+                }
+            }
 
             return h3_oregon_data;
         }

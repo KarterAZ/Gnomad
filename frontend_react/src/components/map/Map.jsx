@@ -11,7 +11,7 @@
 import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
 //import { withScriptjs, withGoogleMap, GoogleMap, Polyline, Marker } from "react-google-maps"
-import h3 from 'h3-js/legacy';//CoordPair, { H3Index }, geoToH3, getResolution, cellToLatLng, cellToBoundary from 'h3-js';
+import h3, { cellToLatLng } from 'h3-js/legacy';//CoordPair, { H3Index }, geoToH3, getResolution, cellToLatLng, cellToBoundary from 'h3-js';
 
 // internal imports.
 import './map.css';
@@ -35,7 +35,7 @@ const defaultProps =
     };
 }*/
 
-var dataList = getAll();
+//var dataList = getAll();
 
 /*function getH3Index() {
     const dataList = getAll();
@@ -60,26 +60,74 @@ const handleApiLoaded = (map, maps) => {
 
     //if(dataList == null)
 
-    var hexBoundary = new Array(dataList.length);
-    var hexCenterCoordinates;
+    //var  = new Array(20);//dataList.length);
+    const hexBoundary = [
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 },
+        { lat: 0, lng: 0 }
+    ];
+    const hexNums = [
+        { hex:"8928116c923ffff" },
+        { hex: "8928116c937ffff"},
+        { hex: "8928116c93bffff"},
+        { hex: "8928116c947ffff"},
+        { hex: "8928116c94bffff"},
+        { hex: "8928116c94fffff"},
+        { hex: "8928116ca03ffff"},
+        { hex: "8928116ca07ffff"},
+        { hex: "8928116ca0bffff"},
+        { hex: "8928116ca0fffff"},
+        { hex: "8928116ca17ffff"},
+        { hex: "8928116ca27ffff"},
+        { hex: "8928116ca2bffff"},
+        { hex: "8928116ca2fffff"},
+        { hex: "8928116ca33ffff"},
+        { hex: "8928116ca3bffff"},
+        { hex: "8928116ca43ffff"},
+        { hex: "8928116ca47ffff"},
+        { hex: "8928116ca4bffff"},
+        { hex: "8928116c923ffff"}
+    ];
+
     var i = 0;
 
-    for (const cell of dataList) {
+    for (const hex of hexNums) {
         // get h3 resolution
-        const h3Res = h3.getResolution(cell.H3id);
+        //const h3Res = h3.getResolution(cell.H3id);
 
         // Get the center of the hexagon
-        if(i == 0)
-            hexCenterCoordinates = h3.cellToLatLng(cell.H3id);
+        if (i === 0) {
+            var cent = cellToLatLng(hex);
+            defaultProps.center.lat = cent[0];
+            defaultProps.center.lng = cent[1];
+        }
 
         // Get the vertices of the hexagon
-        hexBoundary[i] = h3.cellToLatLng(cell.H3id);;//h3.cellToBoundary(cell.H3id);
-
-        defaultProps.center = hexCenterCoordinates;
+        var hexlatlng = cellToLatLng(hex);//h3.cellToBoundary(cell.H3id);
+        hexBoundary[i].lat = hexlatlng[0];
+        hexBoundary[i].lng = hexlatlng[1];
+        
         i++;
     }
 
-    hexBoundary[-1] = hexCenterCoordinates
+    //hexBoundary[25] = hexCenterCoordinates
 
     var bermudaTriangle = new maps.Polygon({
         paths: hexBoundary,
@@ -128,7 +176,6 @@ export default class Map extends Component {
                             }
                         }
 
-                        defaultCenter={defaultProps.center}
                         defaultZoom={defaultProps.zoom}
                         yesIWantToUseGoogleMapApiInternals //this is important!
                         onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
@@ -140,34 +187,4 @@ export default class Map extends Component {
             </div>
         );
     }
-
-    /*render() {
-        let h3idx = this.getH3Index()
-
-        return (
-            <div id='map'>
-                <div id='wrapper'>
-                    <GoogleMapReact
-                        bootstrapURLKeys=
-                        {
-                            {
-                                key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o',
-                            }
-                        }
-
-                        defaultCenter={defaultProps.center}
-                        defaultZoom={defaultProps.zoom}
-                    />
-                </div>
-                {*//*<div style={{ height: `95%` }} className='d-flex'>
-                    <div style={{ height: `100%`, width: `100%` }} className='p-2'>
-                        <MyMapComponent
-                            googleMapURL={map}
-                            hexagons={h3KRing(h3idx, this.state.kringSize)}
-                        />
-                    </div>
-                </div>*//*}
-            </div>
-        );
-    }*/
 }
