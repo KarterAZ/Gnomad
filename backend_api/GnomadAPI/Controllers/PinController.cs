@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Data;
+using TravelCompanionAPI.Fuel;
 
 namespace TravelCompanionAPI.Controllers
 {
@@ -24,7 +25,8 @@ namespace TravelCompanionAPI.Controllers
     public class PinController : ControllerBase
     {
         //The repository obtained through dependency injection.
-        private IDataRepository<Pin> _repo;
+        private IDataRepository<Pin> _pin_repo;
+        private IDataRepository<PinTag> _tag_repo;
 
         /// <summary>
         /// Constructor that takes in repo through dependecy injection
@@ -32,9 +34,10 @@ namespace TravelCompanionAPI.Controllers
         /// <returns>
         /// Sets repository to PinTableModifier (defined in setup.cs)
         ///</returns>
-        public PinController(IDataRepository<Pin> repo)
+        public PinController(IDataRepository<Pin> pin_repo,IDataRepository<PinTag> tag_repo)
         {
-            _repo = repo;
+            _pin_repo = pin_repo;
+            _tag_repo = tag_repo;
         }
 
         /// <summary>
@@ -48,7 +51,7 @@ namespace TravelCompanionAPI.Controllers
         public JsonResult get(int id)
         {
 
-            Pin pin = _repo.getById(id);
+            Pin pin = _pin_repo.getById(id);
 
             if (pin == null)
             {
@@ -67,7 +70,7 @@ namespace TravelCompanionAPI.Controllers
         [HttpGet("all")]
         public JsonResult getAll()
         {
-            List<Pin> pins = _repo.getAll();
+            List<Pin> pins = _pin_repo.getAll();
 
             return new JsonResult(Ok(pins));
         }
@@ -82,7 +85,7 @@ namespace TravelCompanionAPI.Controllers
         public JsonResult getPins(int uid)
         {
 
-            List<Pin> pins = _repo.getAllByUser(uid);
+            List<Pin> pins = _pin_repo.getAllByUser(uid);
 
             if (pins == null)
             {
@@ -101,9 +104,37 @@ namespace TravelCompanionAPI.Controllers
         [HttpPost("create")]
         public JsonResult create(Pin pin)
         {
-            _repo.add(pin);
+            _pin_repo.add(pin);
 
             return new JsonResult(Ok(pin));
+        }
+
+        /// <summary>
+        /// Puts the supercharger pins into the database
+        /// </summary>
+        /// <returns>
+        /// A JsonResult of Ok(0), and adds all of the supercharger pins to the database
+        ///</returns>
+        [HttpPost("initializeSuperchargers")]
+        public JsonResult addSuperchargerPins()
+        {
+            AddingSuperchargerData.AddSuperchargers(_pin_repo);
+
+            return new JsonResult(Ok(0));
+        }
+
+        /// <summary>
+        /// Puts the gas and diesel pins into the database
+        /// </summary>
+        /// <returns>
+        /// A JsonResult of Ok(0), and adds all of the gas and diesel pins to the database
+        ///</returns>
+        [HttpPost("initializeGas")]
+        public JsonResult addGasPins()
+        {
+            AddingGasData.AddGas(_pin_repo);
+
+            return new JsonResult(Ok(0));
         }
     }
 }
