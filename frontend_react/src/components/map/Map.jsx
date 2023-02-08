@@ -11,7 +11,7 @@
 import React, { Component } from 'react';
 import GoogleMapReact from 'google-map-react';
 //import { withScriptjs, withGoogleMap, GoogleMap, Polyline, Marker } from "react-google-maps"
-import h3, { cellToLatLng } from 'h3-js/legacy';//CoordPair, { H3Index }, geoToH3, getResolution, cellToLatLng, cellToBoundary from 'h3-js';
+import h3, { CoordPair, H3Index, geoToH3, getResolution, cellToLatLng, cellToBoundary } from 'h3-js/legacy';//CoordPair, { H3Index }, geoToH3, getResolution, cellToLatLng, cellToBoundary from 'h3-js';
 
 // internal imports.
 import './map.css';
