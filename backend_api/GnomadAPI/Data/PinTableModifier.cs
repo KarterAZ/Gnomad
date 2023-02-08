@@ -201,7 +201,7 @@ namespace TravelCompanionAPI.Data
                     {
                         while (reader2.Read())
                         {
-                            pin.Tags.Add(reader2.GetInt32(0));
+                            pin.Tags.Add(reader2.GetInt32(1)); // 1 gets the tag, 0 gets the id -- not needed currently.
                         }
                     }
                     command2.Parameters.Remove(idParameter);
@@ -220,6 +220,7 @@ namespace TravelCompanionAPI.Data
         public bool add(Pin pin)
         {
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+            int DatabasePinId;
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -233,6 +234,8 @@ namespace TravelCompanionAPI.Data
                 command.Parameters.AddWithValue("@Street", pin.Street);
 
                 command.ExecuteNonQuery();
+
+                DatabasePinId = (int)command.LastInsertedId;
             }
             
             using (MySqlCommand command = new MySqlCommand())
@@ -240,10 +243,11 @@ namespace TravelCompanionAPI.Data
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "INSERT INTO " + TAG_TABLE + " (pin_id, tag_id) VALUES (@pin_id, @tag_id);";
-                command.Parameters.AddWithValue("@pin_id", pin.Id);
+                command.Parameters.AddWithValue("@pin_id", DatabasePinId);
 
                 MySqlParameter tagIdParameter;
-
+                
+                //Adds each tag as a parameter and sends a new query for each.
                 foreach (int myTag in pin.Tags)
                 {
                     tagIdParameter = new MySqlParameter("@tag_id", myTag);
