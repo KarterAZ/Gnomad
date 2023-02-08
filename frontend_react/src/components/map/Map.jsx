@@ -10,6 +10,8 @@
 import React, { Component, useState, useRef, useEffect } from 'react';
 
 import GoogleMapReact from 'google-map-react';
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
+
 
 // internal imports.
 import './map.css';
@@ -18,7 +20,6 @@ import pin from './pin.png';
 import bathroom from './restroom.svg';
 import fuel from './gas-station-svgrepo-com.svg';
 import Sidebar from '../sidebar/Sidebar.jsx';
-
 
 //can later make the default lat/lng be user's location?
 const defaultProps = {
@@ -30,7 +31,6 @@ const defaultProps = {
 
 };
 
-
 //Array of markers that gets used to populate map, eventually will be filled with pin data from database
 const presetMarkers = [
   { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom },
@@ -41,7 +41,6 @@ const presetMarkers = [
 //for testing marker clustering
 // top left     42.26395149771135, -121.84449621695097
 // bottom right 42.21184409530869, -121.75111242724213
-
 
 //General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separte versions 
 const CustomMarker = ({ lat, lng, image }) => (
@@ -66,9 +65,9 @@ export default function Map() {
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
   //Function that toggles the sidebar's create pin option
-   const toggleMarkerCreation = () => {
-     setMarkerCreationEnabled(!markerCreationEnabled);
-   };
+  const toggleMarkerCreation = () => {
+    setMarkerCreationEnabled(!markerCreationEnabled);
+  };
 
   //Function handling onclick events on the map that will result in marker creation
   const handleMapClick = (event) => {
@@ -78,7 +77,7 @@ export default function Map() {
       lng: event.lng,
       image: pin,
     }]);
-  };  
+  };
 
   //Populating presetMarkers with data from array/database
   useEffect(() => {
@@ -97,8 +96,8 @@ export default function Map() {
           defaultZoom={defaultProps.zoom}
           onClick={handleMapClick}
         >
-          
-          {markers.map((marker, index) => ( //Renders markers on the map
+
+          {markers.map((marker, index) => ( //Renders presetMarkers on the map
             <CustomMarker
               key={index}
               lat={marker.lat}
@@ -107,30 +106,8 @@ export default function Map() {
             />
           ))}
 
-
         </GoogleMapReact>
       </div>
     </div>
   );
 }
-
-/** Fixed testing markers
- * 
- * 
-          <CustomMarker
-            lat={42.255}
-            lng={-121.7855}
-            text="Oregon Tech"
-          />
-          <BathroomMarker
-            lat={42.922}
-            lng={-121.7855}
-            text="Oregon Tech"
-          />
-          <FuelMarker
-            lat={42.255}
-            lng={-12.7855}
-            text="Oregon Tech"
-          />
-
- */
