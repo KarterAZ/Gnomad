@@ -17,7 +17,6 @@ import './markers.css';
 import pin from './pin.png';
 import bathroom from './restroom.svg';
 import fuel from './gas-station-svgrepo-com.svg';
-import Sidebar from '../sidebar/Sidebar.jsx';
 
 //can later make the default lat/lng be user's location?
 const defaultProps = {
