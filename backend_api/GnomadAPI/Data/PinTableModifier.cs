@@ -85,6 +85,22 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT * FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+                command.Parameters.AddWithValue("Id", id);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        pin.Tags.Add(reader.GetInt32(0));
+                    }
+                }
+            }
+
             return pin;
 
         }
@@ -123,6 +139,7 @@ namespace TravelCompanionAPI.Data
                     }
                 }
             }
+
 
             using (MySqlCommand command2 = new MySqlCommand())
             {
@@ -236,6 +253,9 @@ namespace TravelCompanionAPI.Data
                 command.ExecuteNonQuery();
 
                 DatabasePinId = (int)command.LastInsertedId;
+                command.ExecuteNonQuery();
+
+                DatabasePinId = (int)command.LastInsertedId;
             }
             
             using (MySqlCommand command = new MySqlCommand())
@@ -257,8 +277,7 @@ namespace TravelCompanionAPI.Data
                     command.Parameters.Remove(tagIdParameter);
                 }
             }
-
-            return true; //Error handling here later.
+            return true;
         }
 
         /// <summary>
