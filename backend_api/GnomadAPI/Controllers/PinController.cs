@@ -109,12 +109,6 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(pin));
         }
 
-        /// <summary>
-        /// Puts the supercharger pins into the database
-        /// </summary>
-        /// <returns>
-        /// A JsonResult of Ok(0), and adds all of the supercharger pins to the database
-        ///</returns>
         [HttpPost("initializeSuperchargers")]
         public JsonResult addSuperchargerPins()
         {
@@ -123,12 +117,6 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(0));
         }
 
-        /// <summary>
-        /// Puts the gas and diesel pins into the database
-        /// </summary>
-        /// <returns>
-        /// A JsonResult of Ok(0), and adds all of the gas and diesel pins to the database
-        ///</returns>
         [HttpPost("initializeGas")]
         public JsonResult addGasPins()
         {

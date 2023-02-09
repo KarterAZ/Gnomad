@@ -183,29 +183,7 @@ namespace TravelCompanionAPI.Data
                         pins.Add(pin);
                     }
                 }
-            }
-            using (MySqlCommand command2 = new MySqlCommand())
-            {
-                command2.Connection = connection;
-                command2.CommandType = CommandType.Text;
-                command2.CommandText = "SELECT * FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
-
-                MySqlParameter idParameter;
-
-                foreach (Pin pin in pins)
-                {
-                    idParameter = new MySqlParameter("Id", pin.Id);
-                    command2.Parameters.Add(idParameter);
-
-                    using (MySqlDataReader reader2 = command2.ExecuteReader())
-                    {
-                        while (reader2.Read())
-                        {
-                            pin.Tags.Add(reader2.GetInt32(1)); // 1 gets the tag, 0 gets the id -- not needed currently.
-                        }
-                    }
-                    command2.Parameters.Remove(idParameter);
-                }
+                //TODO: get pinTags data, add to pin
             }
 
             return pins;
@@ -219,8 +197,7 @@ namespace TravelCompanionAPI.Data
         /// </returns>
         public bool add(Pin pin)
         {
-            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
-            int DatabasePinId;
+            MySqlConnection connection = TestingDatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -257,8 +234,7 @@ namespace TravelCompanionAPI.Data
                     command.Parameters.Remove(tagIdParameter);
                 }
             }
-
-            return true; //Error handling here later.
+            //TODO: add Tag to pins
         }
 
         /// <summary>
