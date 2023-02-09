@@ -10,8 +10,6 @@
 import React, { Component, useState, useRef, useEffect } from 'react';
 
 import GoogleMapReact from 'google-map-react';
-import { MarkerClusterer } from "@googlemaps/markerclusterer";
-
 
 // internal imports.
 import './map.css';
