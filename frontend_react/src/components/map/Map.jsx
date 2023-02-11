@@ -24,7 +24,7 @@ const defaultProps =
         lat: 42.2565,
         lng: -121.7855,
     },
-    zoom: 8,
+    zoom: 6,
 };
 
 /*class SimpleMap extends React.Component {
