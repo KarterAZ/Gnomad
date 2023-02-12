@@ -22,5 +22,7 @@ namespace TravelCompanionAPI.Data
         public T getByH3Id(string id);
 
         public List<T> getAll();
+
+        public List<string> getAllH3();
     }
 }
