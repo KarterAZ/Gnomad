@@ -1,7 +1,7 @@
 # Gnomad
 ### What is it?
 Gnomad is a travel companion application.
-It's goal is to allows users to create custom 
+Its goal is to allows users to create custom 
 routes passing through specific points of interest. 
 
 ### Team Developers
@@ -16,7 +16,7 @@ routes passing through specific points of interest.
 
 ### Features
 - Mobile Hotspot Locator
-- Build in pins
+- Built-in pins
 - User added pins called stickers
 - More to come!
 
@@ -29,6 +29,15 @@ routes passing through specific points of interest.
  - Node.js
  - npm
  - .NET 6
+ 
+### Run for Testing
+To start for testing run:
+
+```sh
+cd frontend_react
+npm install
+npm start
+```
 
 ### Build
 To setup a production build run:
