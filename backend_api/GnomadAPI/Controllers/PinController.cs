@@ -136,5 +136,19 @@ namespace TravelCompanionAPI.Controllers
 
             return new JsonResult(Ok(0));
         }
+
+        /// <summary>
+        /// Puts the alternative fuel pins (electric) into the database
+        /// </summary>
+        /// <returns>
+        /// A JsonResult of Ok(0), and adds all of the alternative fuel pins to the database
+        ///</returns>
+        [HttpPost("initializeAltFuel")]
+        public JsonResult addAltFuelPins()
+        {
+            AddingAltFuelData.AddAltFuel(_pin_repo);
+
+            return new JsonResult(Ok(0));
+        }
     }
 }

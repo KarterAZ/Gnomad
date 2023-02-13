@@ -24,7 +24,8 @@ namespace TravelCompanionAPI.Data
             Regular = 4,
             Diesel = 5,
             FreeWiFi = 6,
-            CustomerOnlyWiFi = 7
+            CustomerOnlyWiFi = 7,
+            Electric = 8
         }
     }
 
