@@ -60,6 +60,15 @@ export default function Sidebar()
     }
   }
 
+  const createPin  = () =>
+  {
+  }
+
+  const createRoute = () =>
+  {
+    navigate('routes');
+  }
+
   // render the actual component.
   return (
     <div id='sidebar-container'>
@@ -85,22 +94,15 @@ export default function Sidebar()
         </section>
 
         <section className='section' id='pins-section'>
-          <div id='pin-group'>
-            <select defaultValue={0} id='pin-select'>
-              <option value='0' disabled>
-                Select a Tag
-              </option>
-              <option value='1'>All</option>
-              <option value='2'>Bathrooms</option>
-              <option value='3'>Wi-Fi</option>
-              <option value='4'>Routes</option>
-            </select>
-            <button className='button' id='pin-button' onClick={create}>
-              Create
-            </button>
-          </div>
-
           <div id='pins-list'></div>
+        </section>
+        <section className='section' id='create-buttons-section'>
+          <button className='button' id='pin-add-button' onClick={createPin}>
+            Create Pin
+          </button>
+          <button className='button' id='route-add-button' onClick={createRoute}>
+            Create Route
+          </button>
         </section>
       </div>
       <div onClick={handleClick} id='handle'>
