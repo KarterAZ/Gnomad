@@ -10,11 +10,16 @@
 import React, { Component, useState, useRef, useEffect } from 'react';
 
 import GoogleMapReact from 'google-map-react';
-import h3 from 'h3-js/legacy';
+
+
+//import h3 from 'h3-js/legacy';
 
 // internal imports.
+import {get} from '../../utilities/api/api.js';
+
 import './map.css';
 import './markers.css';
+
 import pin from './pin.png';
 import bathroom from './restroom.svg';
 import fuel from './gas-station-svgrepo-com.svg';
@@ -79,10 +84,28 @@ export default function Map() {
 
   //Populating presetMarkers with data from array/database
   useEffect(() => {
-    fetch('') // api endpoint will go here (having trouble running backend at the moment)
-      .then(response => response.json())
-      .then(data => setMarkers(data))
-      .catch(error => console.error(error));
+    async function fetchData() {
+      try {
+        /*If getting the following erros:
+        //-----------------------------------------------------------------------
+        // getting error "Failed to load resource: net::ERR_CONNECTION_REFUSED" 
+        // also getting "TypeError: Failed to fetch"
+        //-----------------------------------------------------------------------
+        // Make sure to run backend TravelCompanionApi to fix
+        //
+        // Currently returns 401 unauthorized access, need to figure out how to get authorization? api.js? 
+        */
+        const response = await get('pins/all');
+        setMarkers(response.map(marker => ({
+          lat: marker.latitude,
+          lng: marker.longitude,
+          image: pin,
+        })));
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchData();
   }, []);
 
   return (
