@@ -10,7 +10,8 @@
 import React, { Component, useState, useRef, useEffect } from 'react';
 
 import GoogleMapReact from 'google-map-react';
-import h3, { CoordPair, H3Index, geoToH3, getResolution, cellToLatLng, cellToBoundary } from 'h3-js/legacy';
+//import h3, { CoordPair, H3Index, geoToH3, getResolution, cellToLatLng, cellToBoundary } from 'h3-js/legacy';
+import { h3ToGeo, h3ToGeoBoundry } from "h3-reactnative";
 
 // internal imports.
 import './map.css';
@@ -25,12 +26,11 @@ import fuel from './gas-station-svgrepo-com.svg';
 
 //can later make the default lat/lng be user's location?
 const defaultProps = {
-  zoom: 12,
+  zoom: 6,
   center: {
     lat: 42.2565,
     lng: -121.78,
   },
-
 };
 
 //var dataList = getAll();
@@ -106,19 +106,19 @@ const handleApiLoaded = (map, maps) => {
 
     var i = 0;
 
-    for (const hex of hexNums) {
+    for (const hex in hexNums) {
         // get h3 resolution
         //const h3Res = h3.getResolution(cell.H3id);
 
         // Get the center of the hexagon
         if (i === 0) {
-            var cent = cellToLatLng(hex);
+            var cent = h3ToGeo(hex);
             defaultProps.center.lat = cent[0];
             defaultProps.center.lng = cent[1];
         }
 
         // Get the vertices of the hexagon
-        var hexlatlng = cellToLatLng(hex);//h3.cellToBoundary(cell.H3id);
+        var hexlatlng = h3ToGeo(hex);//h3.cellToBoundary(cell.H3id);
         hexBoundary[i].lat = hexlatlng[0];
         hexBoundary[i].lng = hexlatlng[1];
 
