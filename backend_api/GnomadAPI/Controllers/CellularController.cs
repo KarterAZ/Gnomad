@@ -60,7 +60,7 @@ namespace TravelCompanionAPI.Controllers
         [HttpGet("allH3Id")]
         public JsonResult getAllH3()
         {
-            Array<string> h3List = _repo.getAllH3();
+            List<string> h3List = _repo.getAllH3();
 
             return new JsonResult(Ok(h3List));
         }
