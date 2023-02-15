@@ -18,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using System.Data.Common;
 using System.Data;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TravelCompanionAPI.Data
 {
@@ -43,7 +44,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`h3_res9_id` = @Id);";
+                command.CommandText = "SELECT * FROM " + TABLE + " WHERE h3_res9_id = @Id";
                 command.Parameters.AddWithValue("Id", id);
 
                 using (MySqlDataReader reader = command.ExecuteReader())

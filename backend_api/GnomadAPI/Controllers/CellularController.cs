@@ -35,7 +35,7 @@ namespace TravelCompanionAPI.Controllers
             _repo = repo;
         }
 
-        [HttpGet("get/{h3id}")]
+        [HttpGet("getById")]
         public JsonResult get(string id)
         {
 
