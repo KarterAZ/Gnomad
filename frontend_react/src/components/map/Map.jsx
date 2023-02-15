@@ -10,8 +10,8 @@
 import React, { Component, useState, useRef, useEffect } from 'react';
 
 import GoogleMapReact from 'google-map-react';
-//import h3, { CoordPair, H3Index, geoToH3, getResolution, cellToLatLng, cellToBoundary } from 'h3-js/legacy';
-import { h3ToGeo, h3ToGeoBoundry } from "h3-reactnative";
+import h3, { CoordPair, H3Index, geoToH3, getResolution, cellToLatLng, cellToBoundary } from 'h3-js/legacy';
+//import { h3ToGeo, h3ToGeoBoundry } from "h3-reactnative";
 
 // internal imports.
 import './map.css';
@@ -112,13 +112,13 @@ const handleApiLoaded = (map, maps) => {
 
         // Get the center of the hexagon
         if (i === 0) {
-            var cent = h3ToGeo(hex);
+            var cent = cellToLatLng(hex);
             defaultProps.center.lat = cent[0];
             defaultProps.center.lng = cent[1];
         }
 
         // Get the vertices of the hexagon
-        var hexlatlng = h3ToGeo(hex);//h3.cellToBoundary(cell.H3id);
+        var hexlatlng = cellToLatLng(hex);//h3.cellToBoundary(cell.H3id);
         hexBoundary[i].lat = hexlatlng[0];
         hexBoundary[i].lng = hexlatlng[1];
 
