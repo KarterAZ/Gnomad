@@ -15,7 +15,8 @@ import GoogleMapReact from 'google-map-react';
 //import h3 from 'h3-js/legacy';
 
 // internal imports.
-import {get} from '../../utilities/api/api.js';
+import { get } from '../../utilities/api/api.js';
+import Sidebar from '../sidebar/Sidebar'
 
 import './map.css';
 import './markers.css';
@@ -23,6 +24,7 @@ import './markers.css';
 import pin from './pin.png';
 import bathroom from './restroom.svg';
 import fuel from './gas-station-svgrepo-com.svg';
+
 
 //can later make the default lat/lng be user's location?
 const defaultProps = {
@@ -115,7 +117,8 @@ export default function Map() {
           bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
           defaultCenter={defaultProps.center}
           defaultZoom={defaultProps.zoom}
-          onClick={handleMapClick}
+          onClick={markerCreationEnabled ? handleMapClick : undefined}
+          //onClick={handleMapClick}
         >
 
           {markers.map((marker, index) => ( //Renders presetMarkers on the map
@@ -129,6 +132,7 @@ export default function Map() {
 
         </GoogleMapReact>
       </div>
+      <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
     </div>
   );
 }
