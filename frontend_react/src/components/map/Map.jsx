@@ -19,7 +19,6 @@ import { get } from '../../utilities/api/api.js';
 import Sidebar from '../sidebar/Sidebar'
 
 import './map.css';
-import './markers.css';
 
 import pin from './pin.png';
 import bathroom from './restroom.svg';
@@ -69,20 +68,38 @@ export default function Map() {
   //State declared for enabling/disabling marker creation on click with sidebar
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
+  const [cursorStyle, setCursorStyle] = useState('');
+
   //Function that toggles the sidebar's create pin option
   const toggleMarkerCreation = () => {
     setMarkerCreationEnabled(!markerCreationEnabled);
   };
 
   //Function handling onclick events on the map that will result in marker creation
-  const handleMapClick = (event) => {
-    //Adds marker to array that gets rendered (Eventually will have to add a pin to the database)
-    setMarkers([...markers, {
-      lat: event.lat,
-      lng: event.lng,
-      image: pin,
-    }]);
+  const handleCreatePin = (event) => {
+    if (markerCreationEnabled) {
+      setCursorStyle('./pin.png');
+
+      //Adds marker to array that gets rendered (Eventually will have to add a pin to the database)
+      setMarkers([...markers, {
+        lat: event.lat,
+        lng: event.lng,
+        image: pin,
+      }]);
+    }
   };
+
+  useEffect(() => {
+    const mapElement = document.getElementById('map');
+    const updateCursorStyle = () => {
+      mapElement.classList.remove(cursorStyle);
+      mapElement.classList.add(cursorStyle);
+    };
+    mapElement.addEventListener('mousemove', updateCursorStyle);
+    return () => {
+      mapElement.removeEventListener('mousemove', updateCursorStyle);
+    };
+  }, [cursorStyle]);
 
   //Populating presetMarkers with data from array/database
   useEffect(() => {
@@ -113,26 +130,30 @@ export default function Map() {
   return (
     <div id='map'>
       <div id='wrapper'>
-        <GoogleMapReact
-          bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
-          defaultCenter={defaultProps.center}
-          defaultZoom={defaultProps.zoom}
-          onClick={markerCreationEnabled ? handleMapClick : undefined}
+        <div id='map' className={cursorStyle}>
+
+          <GoogleMapReact
+            bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
+            defaultCenter={defaultProps.center}
+            defaultZoom={defaultProps.zoom}
+            onClick={markerCreationEnabled ? handleCreatePin : undefined}
+          //className={markerCreationEnabled ? 'creating-pin' : ''}
           //onClick={handleMapClick}
-        >
+          >
 
-          {markers.map((marker, index) => ( //Renders presetMarkers on the map
-            <CustomMarker
-              key={index}
-              lat={marker.lat}
-              lng={marker.lng}
-              image={marker.image}
-            />
-          ))}
+            {markers.map((marker, index) => ( //Renders presetMarkers on the map
+              <CustomMarker
+                key={index}
+                lat={marker.lat}
+                lng={marker.lng}
+                image={marker.image}
+              />
+            ))}
 
-        </GoogleMapReact>
+          </GoogleMapReact>
+        </div>
+        <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
       </div>
-      <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
     </div>
   );
 }
