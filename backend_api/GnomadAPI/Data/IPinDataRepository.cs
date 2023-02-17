@@ -12,7 +12,7 @@ using TravelCompanionAPI.Models;
 
 namespace TravelCompanionAPI.Data
 {
-    public interface IDataRepository<T> where T : IDataEntity
+    public interface IPinDataRepository<T> where T : IDataEntity
     {
         //******************************************************************************
         //This class defines the default functions for dependency injection

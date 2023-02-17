@@ -24,7 +24,7 @@ namespace TravelCompanionAPI.Data
     //No new methods added.
     //Implements getById, getAll, and add.
     //******************************************************************************
-    public class PinTableModifier : IDataRepository<Pin>
+    public class PinTableModifier : IPinDataRepository<Pin>
     {
         //Defines tables for sql
         const string PIN_TABLE = "pins";
