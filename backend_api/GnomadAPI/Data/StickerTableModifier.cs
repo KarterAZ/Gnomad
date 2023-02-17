@@ -21,7 +21,7 @@ namespace TravelCompanionAPI.Data
     //No new methods added.
     //Implements getById, getByTagId, getAll, and add.
     //******************************************************************************
-    public class StickerTableModifier : IDataRepository<Sticker>
+    public class StickerTableModifier : IPinDataRepository<Sticker>
     {
         const string TABLE = "stickers";
 

@@ -135,18 +135,22 @@ namespace TravelCompanionAPI
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
 
-            //Adds dependency injection so that UserTableModifier gets called wherever IDataRepository gets called
-            services.AddTransient<IDataRepository<User>, UserTableModifier>();
+            //Adds dependency injection so that UserTableModifier gets called wherever IUserDataRepository gets called
+            services.AddTransient<IUserDataRepository<User>, UserTableModifier>();
             //Adds dependency injection so that PinTagTableModifier gets called wherever IDataRepository gets called
-            services.AddTransient<IDataRepository<PinTag>, PinTagTableModifier>();
-            //Adds dependency injection so that PinTableModifier gets called wherever IDataRepository gets called
-            services.AddTransient<IDataRepository<Pin>, PinTableModifier>();
+            services.AddTransient<IPinTagDataRepository<PinTag>, PinTagTableModifier>();
+            //Adds dependency injection so that PinTableModifier gets called wherever IPinTagDataRepository gets called
+            services.AddTransient<IPinDataRepository<Pin>, PinTableModifier>();
+            //Adds dependency injection so that TagTableModifier gets called wherever ITagDataRepository gets called
+            services.AddTransient<ITagDataRepository<Tag>, TagTableModifier>();
             //Adds dependency injection so that CellularTableModifier gets called wherever ICellDataRepository gets called
             services.AddTransient<ICellDataRepository<Cellular>, CellularTableModifier>();
             //Adds a singleton to UserTableModifier
             services.AddSingleton<UserTableModifier>();
             //Adds a singleton to PinTableModifier
             services.AddSingleton<PinTableModifier>();
+            //Adds a singleton to TagTableModifier
+            services.AddSingleton<TagTableModifier>();
             //Adds a singleton to CellularTableModifier
             services.AddSingleton<CellularTableModifier>();
         }

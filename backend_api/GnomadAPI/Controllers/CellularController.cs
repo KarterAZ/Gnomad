@@ -35,7 +35,7 @@ namespace TravelCompanionAPI.Controllers
             _repo = repo;
         }
 
-        [HttpGet("get/{h3id}")]
+        [HttpGet("getById")]
         public JsonResult get(string id)
         {
 
@@ -55,6 +55,14 @@ namespace TravelCompanionAPI.Controllers
             List<Cellular> cellularList = _repo.getAll();
 
             return new JsonResult(Ok(cellularList));
+        }
+
+        [HttpGet("allH3Id")]
+        public JsonResult getAllH3()
+        {
+            List<string> h3List = _repo.getAllH3();
+
+            return new JsonResult(Ok(h3List));
         }
     }
 }

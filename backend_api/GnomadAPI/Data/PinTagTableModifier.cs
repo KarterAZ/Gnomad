@@ -21,7 +21,7 @@ namespace TravelCompanionAPI.Data
     // No new methods added.
     // Implements getByPinId, getByTagId, getAll, and add.
     //******************************************************************************
-    public class PinTagTableModifier : IDataRepository<PinTag>
+    public class PinTagTableModifier : IPinTagDataRepository<PinTag>
     {
         const string TABLE = "pin_tags";
         //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
@@ -35,6 +35,8 @@ namespace TravelCompanionAPI.Data
         /// <returns>
         /// A list of pintags
         /// </returns>
+        /// 
+
         public List<PinTag> getByPinId(int pid)
         {
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
@@ -199,25 +201,5 @@ namespace TravelCompanionAPI.Data
                 return exists;
             }
         }*/
-
-        public PinTag getById(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool contains(PinTag data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<PinTag> getAllByUser(int uid)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int getId(PinTag data)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

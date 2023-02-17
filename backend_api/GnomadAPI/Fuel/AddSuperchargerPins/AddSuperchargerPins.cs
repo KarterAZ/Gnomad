@@ -16,7 +16,7 @@ namespace TravelCompanionAPI.Fuel
     static class AddingSuperchargerData
     {
         //Adds the relevent data to the database.
-        public static void AddSuperchargers(IDataRepository<Pin> pin_repo)
+        public static void AddSuperchargers(IPinDataRepository<Pin> pin_repo)
         {
             //Get connection string and set up database done in pin_repo (of type PinTableModifier)
             //File I/O

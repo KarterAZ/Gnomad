@@ -26,7 +26,7 @@ namespace TravelCompanionAPI.Data
     //No new methods added.
     //Implements getById, getAll, and add.
     //******************************************************************************
-    public class TagTableModifier : IDataRepository<Tag>
+    public class TagTableModifier : ITagDataRepository<Tag>
     {
         const string TABLE = "tags";
         //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
@@ -134,25 +134,5 @@ namespace TravelCompanionAPI.Data
         /// <returns>
         /// Returns true if the tag is in the database, else false.
         /// </returns>
-        public bool contains(Tag data)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Tag> getAllByUser(int uid)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Gets a tag's id based on the data
-        /// </summary>
-        /// <returns>
-        /// Returns the integer of the specified tag
-        /// </returns>
-        public int getId(Tag data)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
