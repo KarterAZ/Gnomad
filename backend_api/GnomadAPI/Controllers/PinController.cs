@@ -76,6 +76,30 @@ namespace TravelCompanionAPI.Controllers
         }
 
         /// <summary>
+        /// Gets all of the pins in the specified area, defaulting to OIT
+        /// </summary>
+        /// <returns>
+        /// Returns a JsonResult of NotFound() if no pins, or Ok(pins) if there are pins.
+        ///</returns>
+        [HttpGet("getAllInArea")]
+        public JsonResult getAllInArea(double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0)
+        {
+            List<Pin> pins;
+
+            if (latStart != 0 && longStart != 0 && latRange != 0 && longRange != 0)
+                pins = _pin_repo.getAllInArea(latStart, longStart, latRange, longRange);
+            else
+                pins = _pin_repo.getAllInArea();
+
+            if (pins == null)
+            {
+                return new JsonResult(NotFound());
+            }
+
+            return new JsonResult(Ok(pins));
+        }
+
+        /// <summary>
         /// Gets all of the pins that a specific user has placed.
         /// </summary>
         /// <returns>

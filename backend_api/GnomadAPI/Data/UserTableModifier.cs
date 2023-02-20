@@ -69,6 +69,7 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
+            connection.Close();
             return user;
         }
 
@@ -137,7 +138,7 @@ namespace TravelCompanionAPI.Data
                     }
                 }
             }
-
+            connection.Close();
             return users;
 
         }
@@ -175,9 +176,8 @@ namespace TravelCompanionAPI.Data
                     }
                 }
             }
-
+            connection.Close();
             return exists;
-
         }
 
         /// <summary>
@@ -203,6 +203,7 @@ namespace TravelCompanionAPI.Data
                 command.ExecuteNonQuery();
             }
 
+            connection.Close();
             return true; //Error handling here.
         }
     }

@@ -137,10 +137,12 @@ namespace TravelCompanionAPI
 
             //Adds dependency injection so that UserTableModifier gets called wherever IUserDataRepository gets called
             services.AddTransient<IUserDataRepository<User>, UserTableModifier>();
-            //Adds dependency injection so that PinTagTableModifier gets called wherever IDataRepository gets called
+            //Adds dependency injection so that PinTagTableModifier gets called wherever IPinTagDataRepository gets called
             services.AddTransient<IPinTagDataRepository<PinTag>, PinTagTableModifier>();
-            //Adds dependency injection so that PinTableModifier gets called wherever IPinTagDataRepository gets called
+            //Adds dependency injection so that PinTableModifier gets called wherever IPinDataRepository gets called
             services.AddTransient<IPinDataRepository<Pin>, PinTableModifier>();
+            //Adds dependency injection so that StickerTableModifier gets called wherever IStickerDataRepository gets called
+            services.AddTransient<IPinDataRepository<Sticker>, StickerTableModifier>();
             //Adds dependency injection so that TagTableModifier gets called wherever ITagDataRepository gets called
             services.AddTransient<ITagDataRepository<Tag>, TagTableModifier>();
             //Adds dependency injection so that CellularTableModifier gets called wherever ICellDataRepository gets called
