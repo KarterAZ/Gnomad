@@ -122,6 +122,8 @@ export default function Map() {
         lat: event.lat,
         lng: event.lng,
         image: pinImage,
+        name: selectedPinType,
+        description: 'placeholder text',
       }]);
       setMarkerCreationEnabled(false);
       setSelectedPinType('Select Pin');
