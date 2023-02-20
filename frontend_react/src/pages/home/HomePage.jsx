@@ -21,7 +21,6 @@ export default function HomePage()
   return (
     <>
       <div id='content'>
-        <Sidebar/>
         <Map/>
       </div>
       <Routing/>
