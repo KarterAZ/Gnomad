@@ -24,7 +24,7 @@ import pin from './pin.png';
 import bathroom from './restroom.svg';
 import fuel from './gas-station-svgrepo-com.svg';
 import diesel from './gas-station-fuel-svgrepo-com.svg';
-import wifi from  './free-wifi-svgrepo-com.svg';
+import wifi from './free-wifi-svgrepo-com.svg';
 import electric from './tesla-svgrepo-com.svg';
 
 //can later make the default lat/lng be user's location?
@@ -39,17 +39,21 @@ const defaultProps = {
 
 //Array of markers that gets used to populate map, eventually will be filled with pin data from database
 const presetMarkers = [
-  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom },
-  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel },
-  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin },
+  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, name: "Restroom", description: " Brevada" },
+  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, name: "Gas Station",  description: "Pilot" },
+  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, name: "Pin",  description: "Oregon Tech" },
+  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, name: "Supercharger",  description: "Oregon Tech Parking Lot F" },
+  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, name: "Free Wifi",  description: "College Union Guest Wifi" },
 ];
 
+
+// 42.25609775858464, -121.78464735517863
 //for testing marker clustering
 // top left     42.26395149771135, -121.84449621695097
 // bottom right 42.21184409530869, -121.75111242724213
 
 //General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separte versions 
-const CustomMarker = ({ lat, lng, image }) => (
+const CustomMarker = ({ lat, lng, image,name,description, onClick }) => (
   <img
     src={image}
     alt="marker"
@@ -58,9 +62,13 @@ const CustomMarker = ({ lat, lng, image }) => (
       width: '50px',
       height: '50px',
     }}
+
+    title={`${name} - ${description}`}
     lat={lat}
     lng={lng}
+    onClick={onClick}
   />
+  
 );
 
 export default function Map() {
@@ -105,6 +113,10 @@ export default function Map() {
           pinImage = diesel;
           break;
       }
+
+      //const mapElement = document.getElementById('map');
+      // mapElement.style.cursor = `url(${pinImage}), auto`;
+
       //Adds marker to array that gets rendered (Eventually will have to add a pin to the database)
       setMarkers([...markers, {
         lat: event.lat,
@@ -113,6 +125,8 @@ export default function Map() {
       }]);
       setMarkerCreationEnabled(false);
       setSelectedPinType('Select Pin');
+      // mapElement.style.cursor = 'auto';
+
     }
   };
 
@@ -151,8 +165,7 @@ export default function Map() {
             defaultCenter={defaultProps.center}
             defaultZoom={defaultProps.zoom}
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
-          //className={markerCreationEnabled ? 'creating-pin' : ''}
-          //onClick={handleMapClick}
+
           >
 
             {markers.map((marker, index) => ( //Renders presetMarkers on the map
@@ -160,7 +173,11 @@ export default function Map() {
                 key={index}
                 lat={marker.lat}
                 lng={marker.lng}
+                name={marker.name}
+                description={marker.description}
                 image={marker.image}
+                //onClick={() => handleMarkerClick(marker)}
+
               />
             ))}
 
@@ -171,6 +188,30 @@ export default function Map() {
     </div>
   );
 }
+
+
+/** TODO: have a googlemaps infowindow display upon click of a pin
+ //usestate that will be used to keep track of infowindows
+ 
+ const [selectedMarker, setSelectedMarker] = useState(null);
+ 
+ const InfoWindow = ({ marker, onClose }) => (
+  <div style={{ position: 'absolute', zIndex: 100, backgroundColor: 'white', padding: 10 }}>
+    <h3>{marker.name}</h3>
+    <p>{marker.description}</p>
+    <button onClick={onClose}>Close</button>
+  </div>
+);
+//Some usestate handlers to use
+  const handleMarkerClick = (marker) => {
+    setSelectedMarker(marker);
+  };
+
+  const handleInfoWindowClose = () => {
+    setSelectedMarker(null);
+  };
+
+ */
 
 
 /** TODO: Change cursor image upon selection of sidebar pin
