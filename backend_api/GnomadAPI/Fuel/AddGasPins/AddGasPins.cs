@@ -17,7 +17,7 @@ namespace TravelCompanionAPI.Fuel
     static class AddingGasData
     {
         //Adds the relevent data to the database.
-        public static void AddGas(IDataRepository<Pin> pin_repo)
+        public static void AddGas(IPinDataRepository<Pin> pin_repo)
         {
             //Get connection string and set up database done in pin_repo (of type PinTableModifier)
             //File I/O

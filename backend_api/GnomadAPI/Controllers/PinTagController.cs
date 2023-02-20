@@ -31,8 +31,8 @@ namespace TravelCompanionAPI.Controllers
     [Authorize]
     public class PinTagController : ControllerBase
     {
-        private IDataRepository<PinTag> _repo;
-        public PinTagController(IDataRepository<PinTag> repo)
+        private IPinTagDataRepository<PinTag> _repo;
+        public PinTagController(IPinTagDataRepository<PinTag> repo)
         {
             _repo = repo;
         }

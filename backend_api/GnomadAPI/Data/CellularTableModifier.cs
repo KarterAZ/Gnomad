@@ -18,6 +18,14 @@ using Microsoft.Extensions.Configuration;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using System.Data.Common;
 using System.Data;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using H3Lib;
+using H3Lib.Extensions;
+//using NUnit.Framework;
+//using H3;
+//using H3.Algorithms;
+//using H3.Extensions;
+//using H3Lib.Extensions;
 
 namespace TravelCompanionAPI.Data
 {
@@ -43,7 +51,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`h3_res9_id` = @Id);";
+                command.CommandText = "SELECT * FROM " + TABLE + " WHERE h3_res9_id = @Id";
                 command.Parameters.AddWithValue("Id", id);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -90,9 +98,49 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
-            //connection.Close();
+            return h3_oregon_data;
+        }
+
+        public List<string> getAllH3()
+        {
+            List<string> h3_oregon_data = new List<string>();
+
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = DatabaseConnection.getInstance().getConnection();
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT * FROM " + TABLE + " Limit 25 ;";
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        String cellular = reader.GetString(4);
+                        h3_oregon_data.Add(cellular);
+                    }
+                }
+            }
 
             return h3_oregon_data;
+        }
+
+        public List<Tuple<decimal, decimal>> getCoords()
+        {
+            List<string> h3ids = getAllH3();
+            List<Tuple<decimal, decimal>> coords = new List<Tuple<decimal, decimal>>();
+            Tuple<decimal, decimal> tup;
+            H3Index h3;
+            GeoCoord geo = new GeoCoord();
+            
+            foreach(string id in h3ids)
+            {
+                h3 = id.ToH3Index();
+                geo = h3.ToGeoCoord();
+                tup = new Tuple<decimal, decimal>(geo.Latitude, geo.Longitude);
+                coords.Add(tup);
+            }
+
+            return coords;
         }
     }
 }

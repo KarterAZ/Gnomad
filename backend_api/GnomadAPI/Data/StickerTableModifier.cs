@@ -21,7 +21,7 @@ namespace TravelCompanionAPI.Data
     //No new methods added.
     //Implements getById, getByTagId, getAll, and add.
     //******************************************************************************
-    public class StickerTableModifier : IDataRepository<Sticker>
+    public class StickerTableModifier : IPinDataRepository<Sticker>
     {
         const string TABLE = "stickers";
 
@@ -55,9 +55,10 @@ namespace TravelCompanionAPI.Data
                         stickers.Street = reader.GetString(5);
                     }
                 }
-
-                return stickers;
             }
+
+            connection.Close();
+            return stickers;
         }
 
         public List<Sticker> getAll()
@@ -88,6 +89,7 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
+            connection.Close();
             return stickers;
         }
 
@@ -120,6 +122,7 @@ namespace TravelCompanionAPI.Data
                     }
                 }
             }
+            connection.Close();
             return stickers;
         }
 
@@ -139,7 +142,7 @@ namespace TravelCompanionAPI.Data
 
                 command.ExecuteNonQuery();
             }
-
+            connection.Close();
             return true; //Error handling here.
         }
 
@@ -171,15 +174,24 @@ namespace TravelCompanionAPI.Data
                     }
                 }
             }
+            connection.Close();
             return exists;
         }
 
+        //TODO: Implement these functions
+        //TODO: Comment this doc
+        //TODO: Make sure this doc is up to date.
         public List<Sticker> getAllByUser(int uid)
         {
             throw new NotImplementedException();
         }
 
         public int getId(Sticker data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Pin> getAllInArea(double latStart, double longStart, double latRange, double longRange)
         {
             throw new NotImplementedException();
         }

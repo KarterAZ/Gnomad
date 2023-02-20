@@ -25,8 +25,8 @@ namespace TravelCompanionAPI.Controllers
     public class PinController : ControllerBase
     {
         //The repository obtained through dependency injection.
-        private IDataRepository<Pin> _pin_repo;
-        private IDataRepository<PinTag> _tag_repo;
+        private IPinDataRepository<Pin> _pin_repo;
+        private IPinTagDataRepository<PinTag> _tag_repo;
 
         /// <summary>
         /// Constructor that takes in repo through dependecy injection
@@ -34,7 +34,7 @@ namespace TravelCompanionAPI.Controllers
         /// <returns>
         /// Sets repository to PinTableModifier (defined in setup.cs)
         ///</returns>
-        public PinController(IDataRepository<Pin> pin_repo,IDataRepository<PinTag> tag_repo)
+        public PinController(IPinDataRepository<Pin> pin_repo,IPinTagDataRepository<PinTag> tag_repo)
         {
             _pin_repo = pin_repo;
             _tag_repo = tag_repo;
@@ -71,6 +71,30 @@ namespace TravelCompanionAPI.Controllers
         public JsonResult getAll()
         {
             List<Pin> pins = _pin_repo.getAll();
+
+            return new JsonResult(Ok(pins));
+        }
+
+        /// <summary>
+        /// Gets all of the pins in the specified area, defaulting to OIT
+        /// </summary>
+        /// <returns>
+        /// Returns a JsonResult of NotFound() if no pins, or Ok(pins) if there are pins.
+        ///</returns>
+        [HttpGet("getAllInArea")]
+        public JsonResult getAllInArea(double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0)
+        {
+            List<Pin> pins;
+
+            if (latStart != 0 && longStart != 0 && latRange != 0 && longRange != 0)
+                pins = _pin_repo.getAllInArea(latStart, longStart, latRange, longRange);
+            else
+                pins = _pin_repo.getAllInArea();
+
+            if (pins == null)
+            {
+                return new JsonResult(NotFound());
+            }
 
             return new JsonResult(Ok(pins));
         }

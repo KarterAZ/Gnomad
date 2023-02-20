@@ -11,31 +11,61 @@ import React, { Component, useState, useRef, useEffect } from 'react';
 
 import GoogleMapReact from 'google-map-react';
 
-
 //import h3 from 'h3-js/legacy';
+
+//import h3, { CoordPair, H3Index, geoToH3, getResolution, cellToLatLng, cellToBoundary } from 'h3-js/legacy';
+//import { h3ToGeo, h3ToGeoBoundry } from "h3-reactnative";
+
+// internal imports.
+import './map.css';
+//import getAll from '../../utilities/api/get_cell_data';
+
 
 // internal imports.
 import { get } from '../../utilities/api/api.js';
 import Sidebar from '../sidebar/Sidebar'
 
-import './map.css';
 
 import pin from './pin.png';
 import bathroom from './restroom.svg';
 import fuel from './gas-station-svgrepo-com.svg';
+
 import diesel from './gas-station-fuel-svgrepo-com.svg';
 import wifi from './free-wifi-svgrepo-com.svg';
 import electric from './tesla-svgrepo-com.svg';
 
+import getH3All from '../../utilities/api/get_cell_data';
+
+
 //can later make the default lat/lng be user's location?
 const defaultProps = {
-  zoom: 12,
+  zoom: 6,
   center: {
     lat: 42.2565,
     lng: -121.78,
   },
-
 };
+
+const handleApiLoaded = (map, maps) => {
+    /*const triangleCoords = [
+        { lat: 25.774, lng: -80.19 },
+        { lat: 18.466, lng: -66.118 },
+        { lat: 32.321, lng: -64.757 },
+        { lat: 25.774, lng: -80.19 }
+    ];*/
+
+    const triangleCoords = getH3All();
+
+    var bermudaTriangle = new maps.Polygon({
+        paths: triangleCoords,
+        strokeColor: "#FF0000",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#FF0000",
+        fillOpacity: 0.35
+    });
+    bermudaTriangle.setMap(map);
+}
 
 //Array of markers that gets used to populate map, eventually will be filled with pin data from database
 const presetMarkers = [
@@ -176,10 +206,12 @@ export default function Map() {
 
           </GoogleMapReact>
         </div >
+
       </div>
     </div>
   );
 }
+
 
 
 /** TODO: have a googlemaps infowindow display upon click of a pin
@@ -220,3 +252,4 @@ export default function Map() {
     }, [cursorStyle]);
   */
   //Populating presetMarkers with data from array/database
+

@@ -91,6 +91,7 @@ export default function Sidebar({ toggleMarkerCreation}) {
 
         <section className='section' id='pins-section'>
           <div id='pins-list'></div>
+
         </section>
         <section className='section' id='create-buttons-section'>
           <button className='button' id='pin-add-button' onClick={createPin}>
@@ -110,6 +111,15 @@ export default function Sidebar({ toggleMarkerCreation}) {
             </div>
           </div>
 
+          <button className='button' id='route-add-button' onClick={createRoute}>
+            Create Route
+          </button>
+
+        </section>
+        <section className='section' id='create-buttons-section'>
+          <button className='button' id='pin-add-button' onClick={createPin}>
+            Create Pin
+          </button>
           <button className='button' id='route-add-button' onClick={createRoute}>
             Create Route
           </button>
