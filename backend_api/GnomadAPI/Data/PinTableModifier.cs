@@ -1,4 +1,4 @@
-﻿/************************************************************************************************
+/************************************************************************************************
 *
 * Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
 * Date: 12/28/2022
@@ -100,7 +100,9 @@ namespace TravelCompanionAPI.Data
                     }
                 }
             }
+
             connection.Close();
+            
             return pin;
         }
 
@@ -222,6 +224,7 @@ namespace TravelCompanionAPI.Data
                         pins.Add(pin);
                     }
                 }
+
             }
             using (MySqlCommand command2 = new MySqlCommand())
             {
@@ -299,6 +302,7 @@ namespace TravelCompanionAPI.Data
                     command.Parameters.Remove(tagIdParameter);
                 }
             }
+
             connection.Close();
             return true;
         }
