@@ -116,14 +116,6 @@ export default function Sidebar({ toggleMarkerCreation}) {
           </button>
 
         </section>
-        <section className='section' id='create-buttons-section'>
-          <button className='button' id='pin-add-button' onClick={createPin}>
-            Create Pin
-          </button>
-          <button className='button' id='route-add-button' onClick={createRoute}>
-            Create Route
-          </button>
-        </section>
       </div>
       <div onClick={handleClick} id='handle'>
         <Icon icon='charm:menu-hamburger' />
