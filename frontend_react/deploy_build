@@ -7,6 +7,8 @@
 ##
 ##################################################################
 
+# In your ssh config be sure to have the aws target with ssh keys.
+
 #!/usr/bin/bash
 
 # Build the react app.
