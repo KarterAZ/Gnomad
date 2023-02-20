@@ -23,7 +23,9 @@ import './map.css';
 import pin from './pin.png';
 import bathroom from './restroom.svg';
 import fuel from './gas-station-svgrepo-com.svg';
-
+import diesel from './gas-station-fuel-svgrepo-com.svg';
+import wifi from  './free-wifi-svgrepo-com.svg';
+import electric from './tesla-svgrepo-com.svg';
 
 //can later make the default lat/lng be user's location?
 const defaultProps = {
@@ -68,40 +70,52 @@ export default function Map() {
   //State declared for enabling/disabling marker creation on click with sidebar
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
-  const [cursorStyle, setCursorStyle] = useState('');
+  const [selectedPinType, setSelectedPinType] = useState('Select Pin');
+
+  // const [cursorStyle, setCursorStyle] = useState('');
 
   //Function that toggles the sidebar's create pin option
-  const toggleMarkerCreation = () => {
+  const toggleMarkerCreation = (pinType) => {
     setMarkerCreationEnabled(!markerCreationEnabled);
+    setSelectedPinType(pinType);
   };
 
   //Function handling onclick events on the map that will result in marker creation
   const handleCreatePin = (event) => {
-    if (markerCreationEnabled) {
-      setCursorStyle('./pin.png');
 
+    if (markerCreationEnabled && selectedPinType) {
+      let pinImage = '';
+      switch (selectedPinType) {
+        case 'pin':
+          pinImage = pin;
+          break;
+        case 'bathroom':
+          pinImage = bathroom;
+          break;
+        case 'fuel':
+          pinImage = fuel;
+          break;
+        case 'wifi':
+          pinImage = wifi;
+          break;
+        case 'electric':
+          pinImage = electric;
+          break;
+        case 'diesel':
+          pinImage = diesel;
+          break;
+      }
       //Adds marker to array that gets rendered (Eventually will have to add a pin to the database)
       setMarkers([...markers, {
         lat: event.lat,
         lng: event.lng,
-        image: pin,
+        image: pinImage,
       }]);
+      setMarkerCreationEnabled(false);
+      setSelectedPinType('Select Pin');
     }
   };
 
-  useEffect(() => {
-    const mapElement = document.getElementById('map');
-    const updateCursorStyle = () => {
-      mapElement.classList.remove(cursorStyle);
-      mapElement.classList.add(cursorStyle);
-    };
-    mapElement.addEventListener('mousemove', updateCursorStyle);
-    return () => {
-      mapElement.removeEventListener('mousemove', updateCursorStyle);
-    };
-  }, [cursorStyle]);
-
-  //Populating presetMarkers with data from array/database
   useEffect(() => {
     async function fetchData() {
       try {
@@ -126,11 +140,11 @@ export default function Map() {
     }
     fetchData();
   }, []);
-
+  //className={cursorStyle} inside map div
   return (
     <div id='map'>
       <div id='wrapper'>
-        <div id='map' className={cursorStyle}>
+        <div id='map' >
 
           <GoogleMapReact
             bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
@@ -151,9 +165,25 @@ export default function Map() {
             ))}
 
           </GoogleMapReact>
-        </div>
+        </div >
         <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
       </div>
     </div>
   );
 }
+
+
+/** TODO: Change cursor image upon selection of sidebar pin
+    useEffect(() => {
+      const mapElement = document.getElementById('map');
+      const updateCursorStyle = () => {
+        mapElement.classList.remove(cursorStyle);
+        mapElement.classList.add(cursorStyle);
+      };
+      mapElement.addEventListener('mousemove', updateCursorStyle);
+      return () => {
+        mapElement.removeEventListener('mousemove', updateCursorStyle);
+      };
+    }, [cursorStyle]);
+  */
+  //Populating presetMarkers with data from array/database
