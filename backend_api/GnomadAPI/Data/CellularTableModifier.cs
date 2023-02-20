@@ -19,6 +19,13 @@ using static Org.BouncyCastle.Math.EC.ECCurve;
 using System.Data.Common;
 using System.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using H3Lib;
+using H3Lib.Extensions;
+//using NUnit.Framework;
+//using H3;
+//using H3.Algorithms;
+//using H3.Extensions;
+//using H3Lib.Extensions;
 
 namespace TravelCompanionAPI.Data
 {
@@ -115,6 +122,25 @@ namespace TravelCompanionAPI.Data
             }
 
             return h3_oregon_data;
+        }
+
+        public List<Tuple<decimal, decimal>> getCoords()
+        {
+            List<string> h3ids = getAllH3();
+            List<Tuple<decimal, decimal>> coords = new List<Tuple<decimal, decimal>>();
+            Tuple<decimal, decimal> tup;
+            H3Index h3;
+            GeoCoord geo = new GeoCoord();
+            
+            foreach(string id in h3ids)
+            {
+                h3 = id.ToH3Index();
+                geo = h3.ToGeoCoord();
+                tup = new Tuple<decimal, decimal>(geo.Latitude, geo.Longitude);
+                coords.Add(tup);
+            }
+
+            return coords;
         }
     }
 }

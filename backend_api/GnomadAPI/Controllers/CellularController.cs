@@ -64,5 +64,13 @@ namespace TravelCompanionAPI.Controllers
 
             return new JsonResult(Ok(h3List));
         }
+
+        [HttpGet("allCoords")]
+        public JsonResult getCoords()
+        {
+            List<Tuple<decimal, decimal>> h3List = _repo.getCoords();
+
+            return new JsonResult(Ok(h3List));
+        }
     }
 }

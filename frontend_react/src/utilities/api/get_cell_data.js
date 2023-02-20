@@ -15,7 +15,7 @@ export default async function getH3All()
 {
     if (!isAuthenticated()) return null;
 
-    const response = await get('h3_oregon_data/allH3Id');
+    const response = await get('h3_oregon_data/allCoords');
 
     return response;
 }

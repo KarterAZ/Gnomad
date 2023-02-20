@@ -7,6 +7,7 @@
 *
 ************************************************************************************************/
 
+using System;
 using System.Collections.Generic;
 using TravelCompanionAPI.Models;
 
@@ -24,5 +25,7 @@ namespace TravelCompanionAPI.Data
         public List<T> getAll();
 
         public List<string> getAllH3();
+
+        public List<Tuple<decimal, decimal>> getCoords();
     }
 }
