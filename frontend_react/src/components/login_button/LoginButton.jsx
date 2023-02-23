@@ -8,13 +8,11 @@
 //################################################################
 
 // external imports.
-import { useGoogleLogin } from '@react-oauth/google';
 import { useState } from 'react';
 
 // internal imports.
 import login from '../../utilities/api/login';
 import { setCookie } from '../../utilities/cookies';
-import { sstore } from '../../utilities/session_storage';
 
 import './login_button.css';
 
@@ -23,8 +21,22 @@ export function LoginButton()
 {
 
   const [logged_in, setLoggedIn] = useState(false);
+
+  window.googleLogin = async (response) =>
+  {
+    setCookie('id_token', 'Bearer ' + response.credential);
+    const user = await login();
+    setLoggedIn(true);
+
+    console.log('user:', user);
+  }
+
+  const logout = () =>
+  {
+    setLoggedIn(false);
+  }
   
-  const signin = useGoogleLogin({
+  /*const signin = useGoogleLogin({
     onSuccess: res => onSuccess(res),
     onError: res => onError(res),
   });
@@ -53,19 +65,37 @@ export function LoginButton()
   const onError = async (res) =>
   {
   }
+  */
 
   if (!logged_in)
   {
     // render the actual button.
     return (
-      <button className='user-button' onClick={signin}>Login</button>
+      <>
+        <div id="g_id_onload"
+          data-client_id="55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com"
+          data-context="signin"
+          data-ux_mode="popup"
+          data-callback="googleLogin"
+          data-auto_select="true"
+          data-itp_support="true">
+        </div>
+
+        <div className="g_id_signin"
+            data-type="standard"
+            data-shape="pill"
+            data-theme="filled_black"
+            data-text="signin"
+            data-size="medium"
+            data-logo_alignment="left">
+        </div>
+      </>
     );
   }
   else
   {
     return(
-      <>
-      </>
+      <button onClick={logout}>Logout</button>
     );
   }
 }
