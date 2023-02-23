@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Data;
+using H3Lib;
 
 namespace TravelCompanionAPI.Controllers
 {
@@ -69,6 +70,7 @@ namespace TravelCompanionAPI.Controllers
         public JsonResult getCoords()
         {
             List<Tuple<decimal, decimal>> h3List = _repo.getCoords();
+            //List<GeoCoord> h3List = _repo.getCoords();
 
             return new JsonResult(Ok(h3List));
         }
