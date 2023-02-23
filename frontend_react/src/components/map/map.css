@@ -29,3 +29,7 @@
   margin: 0px 0.5rem;
   padding: 0.5rem;
 }
+
+.creating-pin { 
+  cursor: url('./pin.png') 12 38, auto !important;
+}
