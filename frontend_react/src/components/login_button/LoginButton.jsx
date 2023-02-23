@@ -94,8 +94,27 @@ export function LoginButton()
   }
   else
   {
-    return(
+    <>
+        <div id="g_id_onload"
+          data-client_id="55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com"
+          data-context="signout"
+          data-ux_mode="popup"
+          data-callback="googleLogin"
+          data-auto_select="true"
+          data-itp_support="true">
+        </div>
+
+        <div className="g_id_signout"
+            data-type="standard"
+            data-shape="pill"
+            data-theme="filled_black"
+            data-text="signout"
+            data-size="medium"
+            data-logo_alignment="left">
+        </div>
+      </>
+    /*return(
       <button onClick={logout}>Logout</button>
-    );
+    );*/
   }
 }
