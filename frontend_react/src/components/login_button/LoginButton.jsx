@@ -21,6 +21,7 @@ export function LoginButton()
 {
 
   const [logged_in, setLoggedIn] = useState(false);
+  //const [elementVisible, setElementVisible] = useState(logged_in);
 
   window.googleLogin = async (response) =>
   {
@@ -36,6 +37,31 @@ export function LoginButton()
     setLoggedIn(false);
   }
   
+
+  /*function showLogin() {
+    return(
+      <>
+        <div id="g_id_onload"
+          data-client_id="55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com"
+          data-context="signin"
+          data-ux_mode="popup"
+          data-callback="googleLogin"
+          data-auto_select="true"
+          data-itp_support="true">
+        </div>
+
+        <div className="g_id_signin"
+            data-type="standard"
+            data-shape="pill"
+            data-theme="filled_black"
+            data-text="signin"
+            data-size="medium"
+            data-logo_alignment="left">
+        </div>
+      </>
+    );
+  }
+
   /*const signin = useGoogleLogin({
     onSuccess: res => onSuccess(res),
     onError: res => onError(res),
@@ -66,8 +92,10 @@ export function LoginButton()
   {
   }
   */
+  
+  
 
-  if (!logged_in)
+  if (logged_in === false)
   {
     // render the actual button.
     return (
@@ -94,27 +122,8 @@ export function LoginButton()
   }
   else
   {
-    <>
-        <div id="g_id_onload"
-          data-client_id="55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com"
-          data-context="signout"
-          data-ux_mode="popup"
-          data-callback="googleLogin"
-          data-auto_select="true"
-          data-itp_support="true">
-        </div>
-
-        <div className="g_id_signout"
-            data-type="standard"
-            data-shape="pill"
-            data-theme="filled_black"
-            data-text="signout"
-            data-size="medium"
-            data-logo_alignment="left">
-        </div>
-      </>
-    /*return(
-      <button onClick={logout}>Logout</button>
-    );*/
+    return(
+        <button onClick={logout}>Logout</button>
+    );
   }
 }
