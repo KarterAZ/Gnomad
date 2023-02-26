@@ -30,12 +30,13 @@ export function LoginButton()
     console.log(response.credential);
     setCookie('id_token', 'Bearer ' + response.credential);
     const user = await login();
-    if(logged_in === 0)
-      setLoggedIn(1);
-    else 
-      setLoggedIn(1)
-
+    setLoggedIn(1);
     console.log('user:', user);
+  }
+
+  const login = () =>
+  {
+    setLoggedIn(1);
   }
 
   const logout = () =>
@@ -79,10 +80,10 @@ export function LoginButton()
   else
   {
     console.log("(2)logged_in = " + logged_in);
-    window.location.reload(false); //Only way to get button to load is to reload page.
+    //window.location.reload(false); //Only way to get button to load is to reload page.
     //Requires double refresh
-    /*return(
-        <button className='user-button' onClick={window.googleLogin}>Login</button>
-        );*/ 
+    return(
+        <button className='user-button' onClick={login}>Login</button>
+        );
   }
 }
