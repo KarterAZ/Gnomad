@@ -79,9 +79,10 @@ export function LoginButton()
   else
   {
     console.log("(2)logged_in = " + logged_in);
-    window.location.reload(false);
+    window.location.reload(false); //Only way to get button to load is to reload page.
+    //Requires double refresh
     /*return(
         <button className='user-button' onClick={window.googleLogin}>Login</button>
-        );*/
+        );*/ 
   }
 }
