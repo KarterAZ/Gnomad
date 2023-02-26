@@ -81,8 +81,20 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
   //State declared for InfoWindow displaying
   const [showInfoWindow, setShowInfoWindow] = useState(false);
 
+  const [reputation, setReputation] = useState(0);
+
+  // Function for incrementing reputation
+  const incrementReputation = () => {
+    setReputation(reputation + 1);
+  };
+
+  // Function for decrementing reputation
+  const decrementReputation = () => {
+    setReputation(reputation - 1);
+  };
+
   return (
-    <div>
+    <div> 
       <img //area responsible for marker image
         src={image}
         alt="marker"
@@ -95,7 +107,7 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
         lng={lng}
         onClick={() => setShowInfoWindow(!showInfoWindow)}//toggles useState
       />
-      {showInfoWindow && (//customized info window, was having too much trouble using google map's 
+      {showInfoWindow && (//Customized InfoWindow, was having too much trouble using google map's 
         <div
           style={{
             position: 'absolute',
@@ -109,9 +121,16 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
             maxWidth: '200px',
             textAlign: 'center',
           }}
+
+          //InfoWindow Display Code Below:
         >
           <div>{name}</div>
           <div>{description}</div>
+          <div>
+            Reputation: {reputation}
+            <button onClick={incrementReputation}>👍</button>
+            <button onClick={decrementReputation}>👎</button>
+          </div>
         </div>
       )}
     </div>
