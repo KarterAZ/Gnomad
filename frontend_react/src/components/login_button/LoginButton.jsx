@@ -26,6 +26,7 @@ export function LoginButton()
 
   window.googleLogin = async (response) =>
   {
+    console.log(response.credential);
     setCookie('id_token', 'Bearer ' + response.credential);
     const user = await login();
     setLoggedIn(true);
@@ -44,11 +45,7 @@ export function LoginButton()
     // render the actual button.
     return (
       <>
-        <button class='user-button' onClick={window.googleLogin}>Login</button>
-      </>
-    );
-    /*
-      <div id="g_id_onload"
+        <div id="g_id_onload"
           data-client_id="55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com"
           data-context="signin"
           data-ux_mode="popup"
@@ -65,7 +62,8 @@ export function LoginButton()
             data-size="medium"
             data-logo_alignment="left">
         </div>
-    */
+      </>
+    );
   }
   else
   {
