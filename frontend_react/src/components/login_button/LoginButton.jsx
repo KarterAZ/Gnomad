@@ -21,27 +21,31 @@ export function LoginButton()
 {
   console.log("Calling LoginButton()");
 
-  const [logged_in, setLoggedIn] = useState(false);
+  const [logged_in, setLoggedIn] = useState(0);
   //const [elementVisible, setElementVisible] = useState(logged_in);
 
   window.googleLogin = async (response) =>
   {
+    console.log(response);
     console.log(response.credential);
     setCookie('id_token', 'Bearer ' + response.credential);
     const user = await login();
-    setLoggedIn(true);
+    if(logged_in === 0)
+      setLoggedIn(1);
+    else 
+      setLoggedIn(1)
 
     console.log('user:', user);
   }
 
   const logout = () =>
   {
-    setLoggedIn(false);
+    setLoggedIn(2);
   }
 
-  if (logged_in === false)
+  if (logged_in === 0)
   {
-    console.log("logged_in = false");
+    console.log("(0)logged_in = " + logged_in);
     // render the actual button.
     return (
       <>
@@ -65,11 +69,19 @@ export function LoginButton()
       </>
     );
   }
+  else if(logged_in === 1)
+  {
+    console.log("(1)logged_in = " + logged_in);
+    return(
+        <button className='user-button' onClick={logout}>Logout</button>
+        );
+  }
   else
   {
-    console.log("logged_in = true");
-    return(
-        <button class='user-button' onClick={logout}>Logout</button>
-        );
+    console.log("(2)logged_in = " + logged_in);
+    window.location.reload(false);
+    /*return(
+        <button className='user-button' onClick={window.googleLogin}>Login</button>
+        );*/
   }
 }
