@@ -47,24 +47,24 @@ const defaultProps = {
 };
 
 const handleApiLoaded = (map, maps) => {
-    /*const triangleCoords = [
-        { lat: 25.774, lng: -80.19 },
-        { lat: 18.466, lng: -66.118 },
-        { lat: 32.321, lng: -64.757 },
-        { lat: 25.774, lng: -80.19 }
-    ];*/
+  /*const triangleCoords = [
+      { lat: 25.774, lng: -80.19 },
+      { lat: 18.466, lng: -66.118 },
+      { lat: 32.321, lng: -64.757 },
+      { lat: 25.774, lng: -80.19 }
+  ];*/
 
-    const triangleCoords = getH3All();
+  const triangleCoords = getH3All();
 
-    var bermudaTriangle = new maps.Polygon({
-        paths: triangleCoords,
-        strokeColor: "#FF0000",
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: "#FF0000",
-        fillOpacity: 0.35
-    });
-    bermudaTriangle.setMap(map);
+  var bermudaTriangle = new maps.Polygon({
+    paths: triangleCoords,
+    strokeColor: "#FF0000",
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: "#FF0000",
+    fillOpacity: 0.35
+  });
+  bermudaTriangle.setMap(map);
 }
 
 //Array of markers that gets used to populate map, eventually will be filled with pin data from database
@@ -77,23 +77,46 @@ const presetMarkers = [
 ];
 
 //General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separte versions 
-const CustomMarker = ({ lat, lng, image, name, description, onClick }) => (
-  <img
-    src={image}
-    alt="marker"
-    style={{
-      position: 'absolute', // absolute/fixed/static/sticky/relative
-      width: '50px',
-      height: '50px',
-    }}
+const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
+  //State declared for InfoWindow displaying
+  const [showInfoWindow, setShowInfoWindow] = useState(false);
 
-    title={`${name} - ${description}`}
-    lat={lat}
-    lng={lng}
-    onClick={onClick}
-  />
-
-);
+  return (
+    <div>
+      <img //area responsible for marker image
+        src={image}
+        alt="marker"
+        style={{
+          position: 'absolute', //absolute/fixed/static/sticky/relative
+          width: '50px',
+          height: '50px',
+        }}
+        lat={lat}
+        lng={lng}
+        onClick={() => setShowInfoWindow(!showInfoWindow)}//toggles useState
+      />
+      {showInfoWindow && (//customized info window, was having too much trouble using google map's 
+        <div
+          style={{
+            position: 'absolute',
+            top: '-70px',
+            left: '-70px',
+            backgroundColor: 'white',
+            padding: '10px',
+            border: '1px solid black',
+            borderRadius: '10px',
+            width: '140px',
+            maxWidth: '200px',
+            textAlign: 'center',
+          }}
+        >
+          <div>{name}</div>
+          <div>{description}</div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function Map() {
   //State declared for storing markers
@@ -103,8 +126,6 @@ export default function Map() {
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
   const [selectedPinType, setSelectedPinType] = useState('Select Pin');
-
-  // const [cursorStyle, setCursorStyle] = useState('');
 
   //Function that toggles the sidebar's create pin option
   const toggleMarkerCreation = (pinType) => {
@@ -181,7 +202,7 @@ export default function Map() {
     <div id='map'>
       <div id='wrapper'>
         <div id='map' >
-        <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
+          <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
 
           <GoogleMapReact
             bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
@@ -211,31 +232,6 @@ export default function Map() {
     </div>
   );
 }
-
-
-
-/** TODO: have a googlemaps infowindow display upon click of a pin
- //usestate that will be used to keep track of infowindows
-
- const [selectedMarker, setSelectedMarker] = useState(null);
-
- const InfoWindow = ({ marker, onClose }) => (
-  <div style={{ position: 'absolute', zIndex: 100, backgroundColor: 'white', padding: 10 }}>
-    <h3>{marker.name}</h3>
-    <p>{marker.description}</p>
-    <button onClick={onClose}>Close</button>
-  </div>
-);
-//Some usestate handlers to use
-  const handleMarkerClick = (marker) => {
-    setSelectedMarker(marker);
-  };
-
-  const handleInfoWindowClose = () => {
-    setSelectedMarker(null);
-  };
-
- */
 
 
 /** TODO: Change cursor image upon selection of sidebar pin
