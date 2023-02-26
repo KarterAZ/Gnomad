@@ -81,178 +81,199 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
   //State declared for InfoWindow displaying
   const [showInfoWindow, setShowInfoWindow] = useState(false);
 
-  const [reputation, setReputation] = useState(0);
-
-  // Function for incrementing reputation
-  const incrementReputation = () => {
-    setReputation(reputation + 1);
+  const [reputation, setReputation] = useState(null);
+  //Initially had an incrementer/decrementer but this version just stores one state
+  //of the user, eventually needs to be connected to the database to get a finalized
+  //reputation count on each marker
+  const handleReputationClick = (value) => {
+    if (reputation === null) {
+      setReputation(value)
+    }
+    else {
+      setReputation((prevReputation) =>
+        prevReputation === value ? null : value
+      );
+    }
   };
 
-  // Function for decrementing reputation
-  const decrementReputation = () => {
-    setReputation(reputation - 1);
-  };
-
-  return (
-    <div> 
-      <img //area responsible for marker image
-        src={image}
-        alt="marker"
-        style={{
-          position: 'absolute', //absolute/fixed/static/sticky/relative
-          width: '50px',
-          height: '50px',
-        }}
-        lat={lat}
-        lng={lng}
-        onClick={() => setShowInfoWindow(!showInfoWindow)}//toggles useState
-      />
-      {showInfoWindow && (//Customized InfoWindow, was having too much trouble using google map's 
-        <div
+    return (
+      <div>
+        <img //area responsible for marker image
+          src={image}
+          alt="marker"
           style={{
-            position: 'absolute',
-            top: '-70px',
-            left: '-70px',
-            backgroundColor: 'white',
-            padding: '10px',
-            border: '1px solid black',
-            borderRadius: '10px',
-            width: '140px',
-            maxWidth: '200px',
-            textAlign: 'center',
+            position: 'absolute', //absolute/fixed/static/sticky/relative
+            width: '50px',
+            height: '50px',
           }}
-
-          //InfoWindow Display Code Below:
-        >
-          <div>{name}</div>
-          <div>{description}</div>
-          <div>
-            Reputation: {reputation}
-            <button onClick={incrementReputation}>👍</button>
-            <button onClick={decrementReputation}>👎</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default function Map() {
-  //State declared for storing markers
-  const [markers, setMarkers] = useState(presetMarkers);
-
-  //State declared for enabling/disabling marker creation on click with sidebar
-  const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
-
-  const [selectedPinType, setSelectedPinType] = useState('Select Pin');
-
-  //Function that toggles the sidebar's create pin option
-  const toggleMarkerCreation = (pinType) => {
-    setMarkerCreationEnabled(!markerCreationEnabled);
-    setSelectedPinType(pinType);
-  };
-
-  //Function handling onclick events on the map that will result in marker creation
-  const handleCreatePin = (event) => {
-
-    if (markerCreationEnabled && selectedPinType) {
-      let pinImage = '';
-      switch (selectedPinType) {
-        case 'pin':
-          pinImage = pin;
-          break;
-        case 'bathroom':
-          pinImage = bathroom;
-          break;
-        case 'fuel':
-          pinImage = fuel;
-          break;
-        case 'wifi':
-          pinImage = wifi;
-          break;
-        case 'electric':
-          pinImage = electric;
-          break;
-        case 'diesel':
-          pinImage = diesel;
-          break;
-      }
-
-
-      //Adds marker to array that gets rendered (Eventually will have to add a pin to the database)
-      setMarkers([...markers, {
-        lat: event.lat,
-        lng: event.lng,
-        image: pinImage,
-        name: selectedPinType,
-        description: 'placeholder text',
-      }]);
-      setMarkerCreationEnabled(false);
-      setSelectedPinType('Select Pin');
-
-    }
-  };
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        /*If getting the following erros:
-        //-----------------------------------------------------------------------
-        // getting error "Failed to load resource: net::ERR_CONNECTION_REFUSED" 
-        // also getting "TypeError: Failed to fetch"
-        //-----------------------------------------------------------------------
-        // Make sure to run backend TravelCompanionApi to fix
-        //
-        // Currently returns 401 unauthorized access, need to figure out how to get authorization? api.js? 
-        */
-        const response = await get('pins/all');
-        setMarkers(response.map(marker => ({
-          lat: marker.latitude,
-          lng: marker.longitude,
-          image: pin,
-        })));
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    fetchData();
-  }, []);
-  return (
-    <div id='map'>
-      <div id='wrapper'>
-        <div id='map' >
-          <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
-
-          <GoogleMapReact
-            bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
-            defaultCenter={defaultProps.center}
-            defaultZoom={defaultProps.zoom}
-            onClick={markerCreationEnabled ? handleCreatePin : undefined}
-
+          lat={lat}
+          lng={lng}
+          onClick={() => setShowInfoWindow(!showInfoWindow)}//toggles useState
+        />
+        {showInfoWindow && (//Customized InfoWindow, was having too much trouble using google map's 
+          <div
+            style={{
+              position: 'absolute',
+              top: '-70px',
+              left: '-70px',
+              backgroundColor: 'white',
+              padding: '10px',
+              border: '1px solid black',
+              borderRadius: '10px',
+              width: '140px',
+              maxWidth: '200px',
+              textAlign: 'center',
+            }}
+          /**
+           *  InfoWindow Display Code Below:
+           * =======================================
+           * 
+           * 
+           * 
+           * */    
           >
+            <div>{name}</div>
+            <div>{description}</div>
 
-            {markers.map((marker, index) => ( //Renders presetMarkers on the map
-              <CustomMarker
-                key={index}
-                lat={marker.lat}
-                lng={marker.lng}
-                name={marker.name}
-                description={marker.description}
-                image={marker.image}
-              //onClick={() => handleMarkerClick(marker)}
+            <div>
+              Reputation: {" "}
+              {reputation === null ? "None" : reputation === "1" ? "👍" : "👎"}
+            </div>
 
-              />
-            ))}
-
-          </GoogleMapReact>
-        </div >
-
+            <div>
+              <button
+                disabled={reputation == "1"}
+                onClick={() => handleReputationClick("1")}
+              >
+                👍
+              </button>
+              <button
+                disabled={reputation === "-1"}
+                onClick={() => handleReputationClick("-1")}
+              >
+                👎
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
-  );
-}
+    );
+  };
+
+  export default function Map() {
+    //State declared for storing markers
+    const [markers, setMarkers] = useState(presetMarkers);
+
+    //State declared for enabling/disabling marker creation on click with sidebar
+    const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
+
+    const [selectedPinType, setSelectedPinType] = useState('Select Pin');
+
+    //Function that toggles the sidebar's create pin option
+    const toggleMarkerCreation = (pinType) => {
+      setMarkerCreationEnabled(!markerCreationEnabled);
+      setSelectedPinType(pinType);
+    };
+
+    //Function handling onclick events on the map that will result in marker creation
+    const handleCreatePin = (event) => {
+
+      if (markerCreationEnabled && selectedPinType) {
+        let pinImage = '';
+        switch (selectedPinType) {
+          case 'pin':
+            pinImage = pin;
+            break;
+          case 'bathroom':
+            pinImage = bathroom;
+            break;
+          case 'fuel':
+            pinImage = fuel;
+            break;
+          case 'wifi':
+            pinImage = wifi;
+            break;
+          case 'electric':
+            pinImage = electric;
+            break;
+          case 'diesel':
+            pinImage = diesel;
+            break;
+        }
 
 
+        //Adds marker to array that gets rendered (Eventually will have to add a pin to the database)
+        setMarkers([...markers, {
+          lat: event.lat,
+          lng: event.lng,
+          image: pinImage,
+          name: selectedPinType,
+          description: 'placeholder text',
+        }]);
+        setMarkerCreationEnabled(false);
+        setSelectedPinType('Select Pin');
+
+      }
+    };
+
+    useEffect(() => {
+      async function fetchData() {
+        try {
+          /*If getting the following erros:
+          //-----------------------------------------------------------------------
+          // getting error "Failed to load resource: net::ERR_CONNECTION_REFUSED" 
+          // also getting "TypeError: Failed to fetch"
+          //-----------------------------------------------------------------------
+          // Make sure to run backend TravelCompanionApi to fix
+          //
+          // Currently returns 401 unauthorized access, need to figure out how to get authorization? api.js? 
+          */
+          const response = await get('pins/all');
+          setMarkers(response.map(marker => ({
+            lat: marker.latitude,
+            lng: marker.longitude,
+            image: pin,
+          })));
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      fetchData();
+    }, []);
+    return (
+      <div id='map'>
+        <div id='wrapper'>
+          <div id='map' >
+            <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
+
+            <GoogleMapReact
+              bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
+              defaultCenter={defaultProps.center}
+              defaultZoom={defaultProps.zoom}
+              onClick={markerCreationEnabled ? handleCreatePin : undefined}
+
+            >
+
+              {markers.map((marker, index) => ( //Renders presetMarkers on the map
+                <CustomMarker
+                  key={index}
+                  lat={marker.lat}
+                  lng={marker.lng}
+                  name={marker.name}
+                  description={marker.description}
+                  image={marker.image}
+                //onClick={() => handleMarkerClick(marker)}
+
+                />
+              ))}
+
+            </GoogleMapReact>
+          </div >
+
+        </div>
+      </div>
+    );
+  }
 /** TODO: Change cursor image upon selection of sidebar pin
     useEffect(() => {
       const mapElement = document.getElementById('map');
