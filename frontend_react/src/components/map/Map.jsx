@@ -223,7 +223,9 @@ export default function Map() {
           <GoogleMapReact
             bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
             defaultCenter={defaultProps.center}
-            defaultZoom={defaultProps.zoom}
+                      defaultZoom={defaultProps.zoom}
+                  yesIWantToUseGoogleMapApiInternals //this is important!
+                  onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
 
           >
