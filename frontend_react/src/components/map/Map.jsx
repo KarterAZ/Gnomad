@@ -85,6 +85,8 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
 
   const [isFavorite, setIsFavorite] = useState(false);
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
   //Initially had an incrementer/decrementer but this version just stores one state
   //of the user, eventually needs to be connected to the database to get a finalized
   //reputation count on each marker
@@ -103,16 +105,17 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
     setIsFavorite((prevIsFavorite) => !prevIsFavorite);
   }
 
+  useEffect(()=> {
+    //Toggles menu to close whenever the reputation useState changes (selection is made)
+    setMenuOpen(false);
+  },[reputation]);
+
   return (
     <div>
       <img //area responsible for marker image  
         src={image}
         alt="marker"
-        style={{
-          position: 'absolute', //absolute/fixed/static/sticky/relative
-          width: '50px',
-          height: '50px',
-        }}
+        style={{position: 'absolute', width: '50px',height: '50px',}}
         lat={lat}
         lng={lng}
         onClick={() => setShowInfoWindow(!showInfoWindow)}//toggles useState
@@ -121,8 +124,8 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
         <div
           style={{
             position: 'absolute',
-            top: '-70px',
-            left: '-70px',
+            top: '-100px',
+            left: '-60px',
             backgroundColor: 'white',
             padding: '10px',
             border: '1px solid black',
@@ -132,32 +135,43 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
             textAlign: 'center',
           }}
         >
-          <div>{name}</div>
+          <div style ={{marginBottom: '10px' }}>{name}</div>
           <div>{description}</div>
+          
           {/* Reputation Display */}
-          <div>
+          <div style ={{marginBottom: '10px' }}>
             Reputation: {" "}
             {reputation === null ? "None" : reputation === "1" ? "👍" : "👎"}
           </div>
-          {/* Reputation Buttons */}
+
+          {/* Reputation Menu*/}  
           <div>
-            <button
-              disabled={reputation == "1"}
-              onClick={() => handleReputationClick("1")}
-            >
-              👍
-            </button>
-            <button
-              disabled={reputation === "-1"}
-              onClick={() => handleReputationClick("-1")}
-            >
-              👎
-            </button>
+              <button onClick={() => setMenuOpen(!menuOpen)} style={{position: 'absolute', top: '2px', right: '2px',}} >
+                {reputation === "1" ? "👍" : reputation === "-1" ? "👎" : "📌"}
+              </button>
+              {menuOpen && (
+                <div>
+                  {/*Reputation Buttons*/}  
+                <button
+                  disabled={reputation == "1"}
+                  onClick={() => handleReputationClick("1")}
+                >
+                  👍
+                </button>
+                <button
+                  
+                  disabled={reputation === "-1"}
+                  onClick={() => handleReputationClick("-1")}
+                >
+                  👎
+                </button>
+              </div>
+              )}
           </div>
           {/* Favorite Button */}
-          <div>
+          <div style={{position: 'absolute',top: '2px',left: '2px',}}>
             <button onClick={handleFavoriteClick}>
-              {isFavorite ? "⭐" : "☆"}
+              {isFavorite ? "❤️" : "♡"}
             </button>
           </div>
         </div>
