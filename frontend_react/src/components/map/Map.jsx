@@ -159,7 +159,7 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
             {/* button with onClick event listener to toggle menu*/}
             <button onClick={() => setMenuOpen(!menuOpen)} style={{ position: 'absolute', top: '2px', right: '2px', }} >
               {/*Conditional: if 1 thumbsUp | else if -1 thumbsDown | else default icon*/}
-              {reputation === "1" ? "👍" : reputation === "-1" ? "👎" : "📌"}
+              {reputation === "1" ? "👍" : reputation === "-1" ? "👎" : "⭐"}
             </button>
             {menuOpen && (
               <div>
