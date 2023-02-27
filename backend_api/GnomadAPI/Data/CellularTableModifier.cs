@@ -22,11 +22,6 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using H3Lib;
 using H3Lib.Extensions;
 using System.Diagnostics;
-//using NUnit.Framework;
-//using H3;
-//using H3.Algorithms;
-//using H3.Extensions;
-//using H3Lib.Extensions;
 
 namespace TravelCompanionAPI.Data
 {
@@ -139,6 +134,7 @@ namespace TravelCompanionAPI.Data
                 h3 = id.ToH3Index();
                 //Debug.WriteLine(h3.ToString());
                 geo = h3.ToGeoCoord();
+                geo.
                 //geolist.Add(geo);
                 tup = new Tuple<decimal, decimal>(geo.Latitude, geo.Longitude);
                 coords.Add(tup);
