@@ -353,7 +353,7 @@ namespace TravelCompanionAPI.Data
             throw new NotImplementedException();
         }
 
-        List<Pin> GetAllByTag(List<int> tags)
+        public List<Pin> getAllByTag(List<int> tags)
         {
             List<Pin> pins = new List<Pin>();
             List<Pin> deleteList = new List<Pin>();

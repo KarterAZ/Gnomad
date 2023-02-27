@@ -32,6 +32,6 @@ namespace TravelCompanionAPI.Data
 
         List<Pin> getAllInArea(double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0);
     
-        List<Pin> GetAllByTag(List<int> tags);
+        List<Pin> getAllByTag(List<int> tags);
     }
 }

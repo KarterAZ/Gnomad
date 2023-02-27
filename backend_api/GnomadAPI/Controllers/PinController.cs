@@ -184,7 +184,7 @@ namespace TravelCompanionAPI.Controllers
         [HttpPost("getAllPinsByTag")]
         public JsonResult getAllPinsByTag(List<int> tags)
         {
-            List<Pin> pins = _pin_repo.GetAllByTag(tags);
+            List<Pin> pins = _pin_repo.getAllByTag(tags);
 
             return new JsonResult(Ok(pins));
         }
