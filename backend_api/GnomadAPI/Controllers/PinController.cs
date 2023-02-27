@@ -174,5 +174,19 @@ namespace TravelCompanionAPI.Controllers
 
             return new JsonResult(Ok(0));
         }
+
+        /// <summary>
+        /// Gets all pins with a certain tag from the database
+        /// </summary>
+        /// <returns>
+        /// A JsonResult of Ok(pins), where pins are the asked for pins
+        ///</returns>
+        [HttpPost("getAllPinsByTag")]
+        public JsonResult getAllPinsByTag(List<int> tags)
+        {
+            List<Pin> pins = _pin_repo.GetAllByTag(tags);
+
+            return new JsonResult(Ok(pins));
+        }
     }
 }

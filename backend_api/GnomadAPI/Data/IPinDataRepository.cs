@@ -31,5 +31,7 @@ namespace TravelCompanionAPI.Data
         List<T> getAllByUser(int uid);
 
         List<Pin> getAllInArea(double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0);
+    
+        List<Pin> GetAllByTag(List<int> tags);
     }
 }

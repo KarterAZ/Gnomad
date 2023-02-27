@@ -352,5 +352,18 @@ namespace TravelCompanionAPI.Data
         {
             throw new NotImplementedException();
         }
+
+        List<Pin> GetAllByTag(List<int> tags)
+        {
+            List<Pin> pins = new List<Pin>();
+            pins = this.getAll();
+
+            //Foreach loops
+
+            //Remove all pins outside of range
+            pins.RemoveAll(pin => (!pin.Tags.Contains(0)));
+
+            return pins;
+        }
     }
 }
