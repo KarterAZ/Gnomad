@@ -28,7 +28,7 @@ export default function Sidebar({ toggleMarkerCreation }) {
 
   let [open, setOpen] = useState(true);
 
-  const [pinType, setPinType] = useState('Select Pin');
+  const [pinType, setPinType] = useState("");
 
   // show / hide the Sidebar
   const handleClick = () => {
@@ -100,8 +100,11 @@ export default function Sidebar({ toggleMarkerCreation }) {
 
           <div style={{ textAlign: 'center' }}>
             <label>Pin Type: </label>
-            <select id="pinType" value={pinType} onChange={(e) => setPinType(e.target.value)}>
+            {/*Dropdown menu for pin selection */}
+            <select id="pinType" value={pinType} onChange={(e) => setPinType(e.target.value)}/*Updates pinType when option changes */>
+              {/*First option, doesn't create pins when handleCreatePin gets called in Map.jsx */}
               <option value="">--Select--</option>
+              {/*Valid options for pinTypes*/}
               <option value="bathroom">Bathroom</option>
               <option value="electric">Supercharger</option>
               <option value="diesel">Diesel</option>
