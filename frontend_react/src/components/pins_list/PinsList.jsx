@@ -8,15 +8,16 @@ export default function PinsList({
     onClick
 })
 {
-    let list_items = pins.map(
-        (item) => 
-        <ListElement pin={item} key={item.id} onClick={clicked}></ListElement>
-    );
 
     const clicked = (pin, active) =>
     {
         onClick(pin, active);
     }
+
+    let list_items = pins.map(
+        (item) => 
+        <ListElement pin={item} key={item.id} onClick={clicked}></ListElement>
+    );
 
     /*
     const addPin = (pin) =>
