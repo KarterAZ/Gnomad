@@ -78,13 +78,20 @@ const presetMarkers = [
 
 //General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separte versions 
 const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
+
+  //TODO: Custom marker is starting to get really big, consider making it into a component in it's own class?
+  // such as Marker.jsx , could benefit from having it's own .css file.
+
   //State declared for InfoWindow displaying
   const [showInfoWindow, setShowInfoWindow] = useState(false);
 
+  //State declared for reputation thumbs up (1) down (-1) No selection (null)
   const [reputation, setReputation] = useState(null);
 
+  //State declared for setting marker as a favorite true/false
   const [isFavorite, setIsFavorite] = useState(false);
 
+  //State declared for opening reputation menu
   const [menuOpen, setMenuOpen] = useState(false);
 
   //Initially had an incrementer/decrementer but this version just stores one state
@@ -95,30 +102,32 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
       setReputation(value)
     }
     else {
-      setReputation((prevReputation) =>
-        prevReputation === value ? null : value
+      //if currentRep is equal to value reset reputation value to null, else assign value
+      setReputation((currentReputation) =>
+        currentReputation === value ? null : value
       );
     }
   };
 
+  //Toggles statebetween true/false 
   const handleFavoriteClick = () => {
-    setIsFavorite((prevIsFavorite) => !prevIsFavorite);
+    setIsFavorite((currentIsFavorite) => !currentIsFavorite);
   }
 
-  useEffect(()=> {
+  useEffect(() => {
     //Toggles menu to close whenever the reputation useState changes (selection is made)
     setMenuOpen(false);
-  },[reputation]);
+  }, [reputation]);
 
   return (
     <div>
       <img //area responsible for marker image  
         src={image}
         alt="marker"
-        style={{position: 'absolute', width: '50px',height: '50px',}}
+        style={{ position: 'absolute', width: '50px', height: '50px', }}
         lat={lat}
         lng={lng}
-        onClick={() => setShowInfoWindow(!showInfoWindow)}//toggles useState
+        onClick={() => setShowInfoWindow(!showInfoWindow)}//toggles useState whether to display the InfoWindow upon marker click
       />
       {showInfoWindow && (//Customized InfoWindow, was having too much trouble using google map's 
         <div
@@ -135,41 +144,44 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
             textAlign: 'center',
           }}
         >
-          <div style ={{marginBottom: '10px' }}>{name}</div>
+          <div style={{ marginBottom: '10px' }}>{name}</div>
           <div>{description}</div>
-          
+
           {/* Reputation Display */}
-          <div style ={{marginBottom: '10px' }}>
+          <div style={{ marginBottom: '10px' }}>
             Reputation: {" "}
+            {/*Conditional: if null "None" | else if 1 thumbsUp | else -1 thumbsDown */}
             {reputation === null ? "None" : reputation === "1" ? "👍" : "👎"}
           </div>
 
-          {/* Reputation Menu*/}  
+          {/* Reputation Menu*/}
           <div>
-              <button onClick={() => setMenuOpen(!menuOpen)} style={{position: 'absolute', top: '2px', right: '2px',}} >
-                {reputation === "1" ? "👍" : reputation === "-1" ? "👎" : "📌"}
-              </button>
-              {menuOpen && (
-                <div>
-                  {/*Reputation Buttons*/}  
-                <button
+            {/* button with onClick event listener to toggle menu*/}
+            <button onClick={() => setMenuOpen(!menuOpen)} style={{ position: 'absolute', top: '2px', right: '2px', }} >
+              {/*Conditional: if 1 thumbsUp | else if -1 thumbsDown | else default icon*/}
+              {reputation === "1" ? "👍" : reputation === "-1" ? "👎" : "📌"}
+            </button>
+            {menuOpen && (
+              <div>
+                {/*Reputation Buttons*/}
+                <button // disables button if thumbsUp already selected, onClick updates useState
                   disabled={reputation == "1"}
                   onClick={() => handleReputationClick("1")}
                 >
                   👍
                 </button>
-                <button
-                  
+                <button // disables button if thumbsDown already selected, onClick updates useState
                   disabled={reputation === "-1"}
                   onClick={() => handleReputationClick("-1")}
                 >
                   👎
                 </button>
               </div>
-              )}
+            )}
           </div>
+
           {/* Favorite Button */}
-          <div style={{position: 'absolute',top: '2px',left: '2px',}}>
+          <div style={{ position: 'absolute', top: '2px', left: '2px', }}>
             <button onClick={handleFavoriteClick}>
               {isFavorite ? "❤️" : "♡"}
             </button>
