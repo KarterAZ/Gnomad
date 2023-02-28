@@ -374,6 +374,7 @@ namespace TravelCompanionAPI.Data
                 }
                 if(delete)
                 {
+Console.WriteLine(pin.Title);
                     deleteList.Add(pin);
                 }
             }
