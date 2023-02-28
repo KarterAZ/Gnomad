@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import baselineSearch from '@iconify/icons-ic/baseline-search';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-// intenral imports.
+// internal imports.
 import { LoginButton } from '../login_button/LoginButton';
 import { Map } from '../map/Map.jsx';
 
