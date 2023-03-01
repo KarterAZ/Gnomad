@@ -134,10 +134,31 @@ namespace TravelCompanionAPI.Data
                 h3 = id.ToH3Index();
                 //Debug.WriteLine(h3.ToString());
                 geo = h3.ToGeoCoord();
-                geo.
                 //geolist.Add(geo);
                 tup = new Tuple<decimal, decimal>(geo.Latitude, geo.Longitude);
                 coords.Add(tup);
+            }
+
+            return coords;
+            //return geolist;
+        }
+
+        public Tuple<decimal, decimal>[] getCoordsA()
+        {
+            List<string> h3ids = getAllH3();
+
+            Tuple<decimal, decimal>[] coords = new Tuple<decimal, decimal>[h3ids.Count];
+
+            Tuple<decimal, decimal> tup;
+            H3Index h3;
+            GeoCoord geo = new GeoCoord();
+
+            for (int i = 0; i < h3ids.Count(); i++)
+            {
+                h3 = h3ids[i].ToH3Index();
+                geo = h3.ToGeoCoord();
+                tup = new Tuple<decimal, decimal>(geo.Latitude, geo.Longitude);
+                coords[i] = tup;
             }
 
             return coords;
