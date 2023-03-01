@@ -14,6 +14,7 @@
     "gapi-script": "^1.2.0",
     "google-map-react": "^2.2.0",
     "h3-js": "^4.1.0",
+    "h3-reactnative": "github:realPrimoh/h3-reactnative",
     "jquery": "^3.6.1",
     "loader-utils": ">=3.2.1",
     "nth-check": ">=2.0.1",

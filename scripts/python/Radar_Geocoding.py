@@ -1,3 +1,8 @@
+# Author: Stephen Thomson
+# Date: 2/17/2023
+# Purpose: Uses Radar Geocoding to fill in missing data in the table using
+#           the latitude and longitude of rows missing title and street.
+
 import mysql.connector
 import requests
 

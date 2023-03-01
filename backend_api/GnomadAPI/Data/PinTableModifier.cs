@@ -24,7 +24,7 @@ namespace TravelCompanionAPI.Data
     //No new methods added.
     //Implements getById, getAll, and add.
     //******************************************************************************
-    public class PinTableModifier : IDataRepository<Pin>
+    public class PinTableModifier : IPinDataRepository<Pin>
     {
         //Defines tables for sql
         const string PIN_TABLE = "pins";
@@ -100,9 +100,31 @@ namespace TravelCompanionAPI.Data
                     }
                 }
             }
-
+            connection.Close();
             return pin;
+        }
 
+        /// <summary>
+        /// Gets all pins in the specified area, defaulting to Oregon Tech
+        /// </summary>
+        /// <returns>
+        /// A list of all Pins in the specified area.
+        /// </returns>
+        public List<Pin> getAllInArea(double latStart = 42.257, double longStart = 121.7852, double latRange = 1, double longRange = 1)
+        {
+            double minLat = latStart - latRange;
+            double maxLat = latStart + latRange;
+            double minLong = longStart - longRange;
+            double maxLong = longStart + longRange;
+
+            List<Pin> pins_in_area = new List<Pin>();
+            pins_in_area = this.getAll();
+
+            //Remove all pins outside of range
+            pins_in_area.RemoveAll(pin => ((pin.Latitude < minLat) || (pin.Latitude > maxLat)));
+            pins_in_area.RemoveAll(pin => ((pin.Longitude < minLong) || (pin.Longitude > maxLong)));
+
+            return pins_in_area;
         }
 
         /// <summary>
@@ -164,7 +186,7 @@ namespace TravelCompanionAPI.Data
                     command2.Parameters.Remove(idParameter);
                 }
             }
-
+            connection.Close();
             return pins;
         }
 
@@ -224,7 +246,7 @@ namespace TravelCompanionAPI.Data
                     command2.Parameters.Remove(idParameter);
                 }
             }
-
+            connection.Close();
             return pins;
         }
 
@@ -277,6 +299,7 @@ namespace TravelCompanionAPI.Data
                     command.Parameters.Remove(tagIdParameter);
                 }
             }
+            connection.Close();
             return true;
         }
 
@@ -311,7 +334,7 @@ namespace TravelCompanionAPI.Data
                     }
                 }
             }
-
+            connection.Close();
             return exists;
         }
 

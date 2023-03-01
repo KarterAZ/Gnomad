@@ -28,9 +28,9 @@ namespace TravelCompanionAPI.Controllers
     public class TagController : ControllerBase
     {
         //The repository obtained through dependency injection.
-        private IDataRepository<Tag> _repo;
+        private ITagDataRepository<Tag> _repo;
 
-        public TagController(IDataRepository<Tag> repo)
+        public TagController(ITagDataRepository<Tag> repo)
         {
             _repo = repo;
         }

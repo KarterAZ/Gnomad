@@ -21,7 +21,7 @@ namespace TravelCompanionAPI.Data
     // No new methods added.
     //
     //******************************************************************************
-    public class UserTableModifier : IDataRepository<User>
+    public class UserTableModifier : IUserDataRepository<User>
     {
         const string TABLE = "users";
 
@@ -69,6 +69,7 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
+            connection.Close();
             return user;
         }
 
@@ -137,7 +138,7 @@ namespace TravelCompanionAPI.Data
                     }
                 }
             }
-
+            connection.Close();
             return users;
 
         }
@@ -175,9 +176,8 @@ namespace TravelCompanionAPI.Data
                     }
                 }
             }
-
+            connection.Close();
             return exists;
-
         }
 
         /// <summary>
@@ -203,13 +203,8 @@ namespace TravelCompanionAPI.Data
                 command.ExecuteNonQuery();
             }
 
+            connection.Close();
             return true; //Error handling here.
-        }
-
-        //Not sure what this does.
-        public List<User> getAllByUser(int uid)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

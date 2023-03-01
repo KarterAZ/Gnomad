@@ -1,7 +1,8 @@
-# Author: Stephen Thomson, Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez
-# Date: 1/7/2023
-# Purpose: Breaks Oregon into 2 circles with a 250km radius to theoretically cover all of Oregon.
-#           Sends 2 requests to the HERE API, parses the bathroom data we need, and inserts it into the Testing Database.
+# Author: Stephen Thomson
+# Date: 2/3/2023
+# Purpose: Calculates the circles needed to cover the given
+#           bounding box, then sends requests to the HERE API
+#           to download bathroom and wifi locations.
 
 from sys import argv, stderr, exit
 from json import dumps
@@ -28,8 +29,8 @@ try:
 except ImportError as e:
     raise ImportError(f'{e.msg}\nPackage available at https://pypi.org/project/requests')
 
-# Connect/Insert to database function
-def insert_data(title, street, latitude, longitude):
+# Connect/Insert wifi to database function
+def insert_wifi(title, street, latitude, longitude):
     try:
         cnx = mysql.connector.connect(user='codenome', password='Codenome!1', host='travel.bryceschultz.com', database='codenome_testing')
         cursor = cnx.cursor()
@@ -57,6 +58,38 @@ def insert_data(title, street, latitude, longitude):
 
     # Close the connection to the database
     cnx.close()
+
+# Connect/Insert bathroom to database function
+def insert_bathroom(title, street, latitude, longitude):
+    try:
+        cnx = mysql.connector.connect(user='codenome', password='Codenome!1', host='travel.bryceschultz.com', database='codenome_testing')
+        cursor = cnx.cursor()
+     
+        # Construct the INSERT statement
+        stmt = "INSERT INTO pins (title, street, latitude, longitude, user_id, tag_bathroom) VALUES (%s, %s, %s, %s, 0, 1)"
+        values = (title, street, latitude, longitude)
+
+        # Testing: print the values of the variables
+        print("cnx:", cnx)
+        print("cursor:", cursor)
+        print("stmt:", stmt)
+        print("values:", values)
+    
+        # Execute the statement
+        result = cursor.execute(stmt, values)
+        #Print result to test for error code
+        print("result:", result)
+    
+        # Commit the changes to the database
+        cnx.commit()
+
+    except Exception as e:
+        print("Error:", e)
+
+    # Close the connection to the database
+    cnx.close()
+    
+
     
 usage = """Usage:
     hgs_access_test.py <key-id> <key_secret>
@@ -121,7 +154,7 @@ print("Circle Area: ", circle_area)
 print("num_circles: ",num_circles)
 
 #Pause for testing
-cont = input("Enter to Cotinue. ")
+#cont = input("Enter to Cotinue. ")
 
 # Set Start Point
 x = min_lat + circle_degrees
@@ -151,7 +184,7 @@ for i in range(int(num_circles)):
         x += 2 * circle_degrees
 
 #Pause for testing
-cont = input("Enter to Cotinue. ")
+#cont = input("Enter to Cotinue. ")
 
 # Iterate through the center points
 for point in center_points:
@@ -179,10 +212,39 @@ for point in center_points:
             'longitude': item['position']['lng']
         }
         #Call the function
-        insert_data(place['title'], place['street'], place['latitude'], place['longitude'])
+        insert_wifi(place['title'], place['street'], place['latitude'], place['longitude'])
 
         # Print for testing
         print(place)
+
+# Iterate through the center points
+for point in center_points:
+    # Construct the search query
+    search_query = f'https://discover.search.hereapi.com/v1/discover?in=circle:{point[0]},{point[1]};r=250000&q=bathroom'
+
+    #Print to test
+    print("Search: ", search_query)
+    
+    #Peform Search
+    search_results = dumps(get(search_query, headers=headers).json(), indent=2)
+
+    # Parse JSON
+    pdata = json.loads(search_results)
+
+    #Test Print
+    print(pdata)
+
+    #Iterate through items to create place
+    for item in pdata['items']:
+        place = {
+            'title': item['title'],
+            'street': item['address']['label'],
+            'latitude': item['position']['lat'],
+            'longitude': item['position']['lng']
+        }
+        #Call the function
+        insert_bathroom(place['title'], place['street'], place['latitude'], place['longitude'])
+
     
     # Pause each iteration to choose continue or exit
     #cont = input("Enter to Continue, n to exit. ")
