@@ -120,7 +120,7 @@ namespace TravelCompanionAPI.Data
             double maxLong = longStart + longRange;
 
             List<Pin> pins_in_area = new List<Pin>();
-            pins_in_area = this.getAll();
+            pins_in_area = this.getAll(); //TODO: Use custom query; less wasteful
 
             //Remove all pins outside of range
             pins_in_area.RemoveAll(pin => ((pin.Latitude < minLat) || (pin.Latitude > maxLat)));
@@ -360,7 +360,7 @@ namespace TravelCompanionAPI.Data
         {
             List<Pin> pins;
             List<Pin> deleteList = new List<Pin>();
-            pins = getAll();
+            pins = getAll(); //TODO: change to getAllInArea()
 
             //Checks if pin is valid, adds to deleteList
             foreach(Pin pin in pins)
