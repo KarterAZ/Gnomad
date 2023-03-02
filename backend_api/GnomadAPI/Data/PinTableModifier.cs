@@ -169,7 +169,7 @@ namespace TravelCompanionAPI.Data
             {
                 command2.Connection = connection;
                 command2.CommandType = CommandType.Text;
-                command2.CommandText = "SELECT * FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+                command2.CommandText = "SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
 
                 MySqlParameter idParameter;
 
@@ -278,9 +278,6 @@ namespace TravelCompanionAPI.Data
                 command.ExecuteNonQuery();
 
                 DatabasePinId = (int)command.LastInsertedId;
-                command.ExecuteNonQuery();
-
-                DatabasePinId = (int)command.LastInsertedId;
             }
             
             using (MySqlCommand command = new MySqlCommand())
@@ -353,12 +350,19 @@ namespace TravelCompanionAPI.Data
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Gets all pins with any of the given tags
+        /// </summary>
+        /// <returns>
+        /// A list of pins
+        /// </returns>
         public List<Pin> getAllByTag(List<int> tags)
         {
-            List<Pin> pins = new List<Pin>();
+            List<Pin> pins;
             List<Pin> deleteList = new List<Pin>();
-            pins = this.getAll();
+            pins = getAll();
 
+            //Checks if pin is valid, adds to deleteList
             foreach(Pin pin in pins)
             {
                 bool delete = true;
@@ -374,7 +378,6 @@ namespace TravelCompanionAPI.Data
                 }
                 if(delete)
                 {
-Console.WriteLine(pin.Title);
                     deleteList.Add(pin);
                 }
             }
