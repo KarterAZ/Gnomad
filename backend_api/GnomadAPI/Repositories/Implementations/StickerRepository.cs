@@ -13,8 +13,8 @@ using System.Collections.Generic;
 using TravelCompanionAPI.Models;
 using System.Data;
 
-//TODO: Implement correctly, update, and comment.
-//Do things like remove the * from SELECT statements
+//TODO: Implement correctly, update, and comment. Or just delete and move to pin class.
+//If implementing: Do things like remove the * from SELECT statements
 //And only get the stickers, verifying the correct user
 namespace TravelCompanionAPI.Data
 {
