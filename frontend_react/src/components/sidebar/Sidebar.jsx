@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import baselineSearch from '@iconify/icons-ic/baseline-search';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
-// intenral imports.
+// internal imports.
 import { LoginButton } from '../login_button/LoginButton';
 import { Map } from '../map/Map.jsx';
 
@@ -23,12 +23,12 @@ import './sidebar.css';
 const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com';
 
 // this class renders the Sidebar component.
-export default function Sidebar({ toggleMarkerCreation}) {
+export default function Sidebar({ toggleMarkerCreation }) {
   const navigate = useNavigate();
 
   let [open, setOpen] = useState(true);
 
-  const [pinType, setPinType] = useState('Select Pin');
+  const [pinType, setPinType] = useState("");
 
   // show / hide the Sidebar
   const handleClick = () => {
@@ -58,7 +58,7 @@ export default function Sidebar({ toggleMarkerCreation}) {
 
   const createPin = () => {
     toggleMarkerCreation(pinType);
-    
+
   }
 
   const createRoute = () => {
@@ -98,17 +98,20 @@ export default function Sidebar({ toggleMarkerCreation}) {
             Create Pin
           </button>
 
-          <div className="dropdown"  style={{ textAlign: 'center' }}>
-            <button className="dropbtn">{pinType}</button>
-            <div className="dropdown-content">
-              <button className={pinType === 'Bathroom' ? 'active' : ''} onClick={() => setPinType('bathroom')}>Bathroom</button>
-              <button className={pinType === 'Supercharger' ? 'active' : ''} onClick={() => setPinType('electric')}>Supercharger</button>
-              <button className={pinType === 'Diesel' ? 'active' : ''} onClick={() => setPinType('diesel')}>Diesel</button>
-              <button className={pinType === 'Free Wifi' ? 'active' : ''} onClick={() => setPinType('wifi')}>Free Wifi</button>
-              <button className={pinType === 'Gnome' ? 'active' : ''} onClick={() => setPinType('pin')}>Gnome</button>
-              <button className={pinType === 'Regular' ? 'active' : ''} onClick={() => setPinType('fuel')}>Regular Fuel</button>
-
-            </div>
+          <div style={{ textAlign: 'center' }}>
+            <label>Pin Type: </label>
+            {/*Dropdown menu for pin selection */}
+            <select id="pinType" value={pinType} onChange={(e) => setPinType(e.target.value)}/*Updates pinType when option changes */>
+              {/*First option, doesn't create pins when handleCreatePin gets called in Map.jsx */}
+              <option value="">--Select--</option>
+              {/*Valid options for pinTypes*/}
+              <option value="bathroom">Bathroom</option>
+              <option value="electric">Supercharger</option>
+              <option value="diesel">Diesel</option>
+              <option value="wifi">Free Wifi</option>
+              <option value="pin">Gnome</option>
+              <option value="fuel">Regular Fuel</option>
+            </select>
           </div>
 
           <button className='button' id='route-add-button' onClick={createRoute}>

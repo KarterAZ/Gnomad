@@ -47,24 +47,24 @@ const defaultProps = {
 };
 
 const handleApiLoaded = (map, maps) => {
-    /*const triangleCoords = [
-        { lat: 25.774, lng: -80.19 },
-        { lat: 18.466, lng: -66.118 },
-        { lat: 32.321, lng: -64.757 },
-        { lat: 25.774, lng: -80.19 }
-    ];*/
+  /*const triangleCoords = [
+      { lat: 25.774, lng: -80.19 },
+      { lat: 18.466, lng: -66.118 },
+      { lat: 32.321, lng: -64.757 },
+      { lat: 25.774, lng: -80.19 }
+  ];*/
 
-    const triangleCoords = getH3All();
+  const triangleCoords = getH3All();
 
-    var bermudaTriangle = new maps.Polygon({
-        paths: triangleCoords,
-        strokeColor: "#FF0000",
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: "#FF0000",
-        fillOpacity: 0.35
-    });
-    bermudaTriangle.setMap(map);
+  var bermudaTriangle = new maps.Polygon({
+    paths: triangleCoords,
+    strokeColor: "#FF0000",
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: "#FF0000",
+    fillOpacity: 0.35
+  });
+  bermudaTriangle.setMap(map);
 }
 
 //Array of markers that gets used to populate map, eventually will be filled with pin data from database
@@ -77,23 +77,120 @@ const presetMarkers = [
 ];
 
 //General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separte versions 
-const CustomMarker = ({ lat, lng, image, name, description, onClick }) => (
-  <img
-    src={image}
-    alt="marker"
-    style={{
-      position: 'absolute', // absolute/fixed/static/sticky/relative
-      width: '50px',
-      height: '50px',
-    }}
+const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
 
-    title={`${name} - ${description}`}
-    lat={lat}
-    lng={lng}
-    onClick={onClick}
-  />
+  //TODO: Custom marker is starting to get really big, consider making it into a component in it's own class?
+  // such as Marker.jsx , could benefit from having it's own .css file.
 
-);
+  //State declared for InfoWindow displaying
+  const [showInfoWindow, setShowInfoWindow] = useState(false);
+
+  //State declared for reputation thumbs up (1) down (-1) No selection (null)
+  const [reputation, setReputation] = useState(null);
+
+  //State declared for setting marker as a favorite true/false
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  //State declared for opening reputation menu
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  //Initially had an incrementer/decrementer but this version just stores one state
+  //of the user, eventually needs to be connected to the database to get a finalized
+  //reputation count on each marker
+  const handleReputationClick = (value) => {
+    if (reputation === null) {
+      setReputation(value)
+    }
+    else {
+      //if currentRep is equal to value reset reputation value to null, else assign value
+      setReputation((currentReputation) =>
+        currentReputation === value ? null : value
+      );
+    }
+  };
+
+  //Toggles statebetween true/false 
+  const handleFavoriteClick = () => {
+    setIsFavorite((currentIsFavorite) => !currentIsFavorite);
+  }
+
+  useEffect(() => {
+    //Toggles menu to close whenever the reputation useState changes (selection is made)
+    setMenuOpen(false);
+  }, [reputation]);
+
+  return (
+    <div>
+      <img //area responsible for marker image  
+        src={image}
+        alt="marker"
+        style={{ position: 'absolute', width: '50px', height: '50px', }}
+        lat={lat}
+        lng={lng}
+        onClick={() => setShowInfoWindow(!showInfoWindow)}//toggles useState whether to display the InfoWindow upon marker click
+      />
+      {showInfoWindow && (//Customized InfoWindow, was having too much trouble using google map's 
+        <div
+          style={{
+            position: 'absolute',
+            top: '-100px',
+            left: '-60px',
+            backgroundColor: 'white',
+            padding: '10px',
+            border: '1px solid black',
+            borderRadius: '10px',
+            width: '140px',
+            maxWidth: '200px',
+            textAlign: 'center',
+          }}
+        >
+          <div style={{ marginBottom: '10px' }}>{name}</div>
+          <div>{description}</div>
+
+          {/* Reputation Display */}
+          <div style={{ marginBottom: '10px' }}>
+            Reputation: {" "}
+            {/*Conditional: if null "None" | else if 1 thumbsUp | else -1 thumbsDown */}
+            {reputation === null ? "None" : reputation === "1" ? "👍" : "👎"}
+          </div>
+
+          {/* Reputation Menu*/}
+          <div>
+            {/* button with onClick event listener to toggle menu*/}
+            <button onClick={() => setMenuOpen(!menuOpen)} style={{ position: 'absolute', top: '2px', right: '2px', }} >
+              {/*Conditional: if 1 thumbsUp | else if -1 thumbsDown | else default icon*/}
+              {reputation === "1" ? "👍" : reputation === "-1" ? "👎" : "⭐"}
+            </button>
+            {menuOpen && (
+              <div>
+                {/*Reputation Buttons*/}
+                <button // disables button if thumbsUp already selected, onClick updates useState
+                  disabled={reputation == "1"}
+                  onClick={() => handleReputationClick("1")}
+                >
+                  👍
+                </button>
+                <button // disables button if thumbsDown already selected, onClick updates useState
+                  disabled={reputation === "-1"}
+                  onClick={() => handleReputationClick("-1")}
+                >
+                  👎
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Favorite Button */}
+          <div style={{ position: 'absolute', top: '2px', left: '2px', }}>
+            <button onClick={handleFavoriteClick}>
+              {isFavorite ? "❤️" : "♡"}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
 
 export default function Map() {
   //State declared for storing markers
@@ -102,9 +199,7 @@ export default function Map() {
   //State declared for enabling/disabling marker creation on click with sidebar
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
-  const [selectedPinType, setSelectedPinType] = useState('Select Pin');
-
-  // const [cursorStyle, setCursorStyle] = useState('');
+  const [selectedPinType, setSelectedPinType] = useState("");
 
   //Function that toggles the sidebar's create pin option
   const toggleMarkerCreation = (pinType) => {
@@ -115,7 +210,7 @@ export default function Map() {
   //Function handling onclick events on the map that will result in marker creation
   const handleCreatePin = (event) => {
 
-    if (markerCreationEnabled && selectedPinType) {
+    if (markerCreationEnabled && selectedPinType !="") {
       let pinImage = '';
       switch (selectedPinType) {
         case 'pin':
@@ -138,7 +233,6 @@ export default function Map() {
           break;
       }
 
-
       //Adds marker to array that gets rendered (Eventually will have to add a pin to the database)
       setMarkers([...markers, {
         lat: event.lat,
@@ -148,8 +242,6 @@ export default function Map() {
         description: 'placeholder text',
       }]);
       setMarkerCreationEnabled(false);
-      setSelectedPinType('Select Pin');
-
     }
   };
 
@@ -181,7 +273,7 @@ export default function Map() {
     <div id='map'>
       <div id='wrapper'>
         <div id='map' >
-        <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
+          <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
 
           <GoogleMapReact
             bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
@@ -211,33 +303,6 @@ export default function Map() {
     </div>
   );
 }
-
-
-
-/** TODO: have a googlemaps infowindow display upon click of a pin
- //usestate that will be used to keep track of infowindows
-
- const [selectedMarker, setSelectedMarker] = useState(null);
-
- const InfoWindow = ({ marker, onClose }) => (
-  <div style={{ position: 'absolute', zIndex: 100, backgroundColor: 'white', padding: 10 }}>
-    <h3>{marker.name}</h3>
-    <p>{marker.description}</p>
-    <button onClick={onClose}>Close</button>
-  </div>
-);
-//Some usestate handlers to use
-  const handleMarkerClick = (marker) => {
-    setSelectedMarker(marker);
-  };
-
-  const handleInfoWindowClose = () => {
-    setSelectedMarker(null);
-  };
-
- */
-
-
 /** TODO: Change cursor image upon selection of sidebar pin
     useEffect(() => {
       const mapElement = document.getElementById('map');

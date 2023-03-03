@@ -13,8 +13,6 @@ using System.Collections.Generic;
 using TravelCompanionAPI.Models;
 using Microsoft.Extensions.Configuration;
 using System.Data;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 //using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace TravelCompanionAPI.Data
@@ -308,7 +306,7 @@ namespace TravelCompanionAPI.Data
                 command.Parameters.AddWithValue("@Longitude", data.Longitude);
                 command.Parameters.AddWithValue("@Latitude", data.Latitude);
 
-//TODO: return count with query, and just check if > 0. Check UserRepo for example code
+                //TODO: return count with query, and just check if > 0. Check UserRepo for example code
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())

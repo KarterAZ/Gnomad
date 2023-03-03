@@ -1,6 +1,6 @@
 //################################################################
 //
-// Authors: Bryce Schultz
+// Authors: Bryce Schultz, Andrew Rice
 // Date: 12/19/2022
 // 
 // Purpose: Creates the google login react component
@@ -8,64 +8,97 @@
 //################################################################
 
 // external imports.
-import { useGoogleLogin } from '@react-oauth/google';
-import { useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 // internal imports.
-import login from '../../utilities/api/login';
-import { setCookie } from '../../utilities/cookies';
-import { sstore } from '../../utilities/session_storage';
-
+import login, { logout, isLoggedIn } from '../../utilities/api/login';
 import './login_button.css';
+
+const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com';
 
 // this function renders the login button.
 export function LoginButton() 
 {
+  // reference to the google login button div.
+  const g_sso = useRef(null);
 
+  // use state to manage the state of the login button.
   const [logged_in, setLoggedIn] = useState(false);
-  
-  const signin = useGoogleLogin({
-    onSuccess: res => onSuccess(res),
-    onError: res => onError(res),
-  });
 
-  const onSuccess = async (res) =>
+  const gLogin = async (response) =>
   {
-    console.log(res.access_token);
+    if (response === undefined)
+    {
+      console.log("Login error.");
+      return;
+    }
 
-    // save the access token returned on login.
-    setCookie('id_token', 'Bearer ' + res.access_token);
+    const token = response.credential;
 
-    // call login on the backend and get the user.
-    const user = await login();
-
-    console.log(user);
+    const user = await login(token);
 
     if (user !== undefined)
     {
       setLoggedIn(true);
     }
-    
-    // store the user in session storage.
-    sstore('user', user);
-  };
-
-  const onError = async (res) =>
-  {
   }
 
-  if (!logged_in)
+  const gLogout = () =>
   {
-    // render the actual button.
+    setLoggedIn(false);
+    logout();
+  }
+
+  useEffect(()=>
+  {
+    if (isLoggedIn())
+    {
+      setLoggedIn(true);
+    }
+  }, []);
+
+  useEffect(() => 
+  {
+    if (g_sso.current) 
+    {
+      window.google.accounts.id.initialize(
+      {
+        client_id: client_id,
+        callback: (res, error) => 
+        {
+          if (error === undefined)
+          {
+            gLogin(res);
+          }
+          else
+          {
+            console.log("A login error occurred.")
+          }
+        },
+      });
+
+      window.google.accounts.id.renderButton(g_sso.current, 
+      {
+        theme: 'default',
+        size: 'medium',
+        type: 'standard',
+        text: 'signin',
+        shape: 'pill',
+        logo_alignment: 'left',
+      });
+    }
+  }, [g_sso.current]);
+
+  if (logged_in === false)
+  {
     return (
-      <button className='user-button' onClick={signin}>Login</button>
+      <div ref={g_sso}/>
     );
   }
   else
   {
-    return(
-      <>
-      </>
+    return (
+      <button className='user-button' onClick={gLogout}>Logout</button>
     );
   }
 }
