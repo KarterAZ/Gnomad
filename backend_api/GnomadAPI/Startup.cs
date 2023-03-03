@@ -135,26 +135,27 @@ namespace TravelCompanionAPI
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
             });
 
-            //Adds dependency injection so that UserTableModifier gets called wherever IUserDataRepository gets called
-            services.AddTransient<IUserDataRepository<User>, UserTableModifier>();
-            //Adds dependency injection so that PinTagTableModifier gets called wherever IPinTagDataRepository gets called
-            services.AddTransient<IPinTagDataRepository<PinTag>, PinTagTableModifier>();
-            //Adds dependency injection so that PinTableModifier gets called wherever IPinDataRepository gets called
-            services.AddTransient<IPinDataRepository<Pin>, PinTableModifier>();
-            //Adds dependency injection so that StickerTableModifier gets called wherever IStickerDataRepository gets called
-            services.AddTransient<IPinDataRepository<Sticker>, StickerTableModifier>();
-            //Adds dependency injection so that TagTableModifier gets called wherever ITagDataRepository gets called
-            services.AddTransient<ITagDataRepository<Tag>, TagTableModifier>();
-            //Adds dependency injection so that CellularTableModifier gets called wherever ICellDataRepository gets called
-            services.AddTransient<ICellDataRepository<Cellular>, CellularTableModifier>();
-            //Adds a singleton to UserTableModifier
-            services.AddSingleton<UserTableModifier>();
-            //Adds a singleton to PinTableModifier
-            services.AddSingleton<PinTableModifier>();
-            //Adds a singleton to TagTableModifier
-            services.AddSingleton<TagTableModifier>();
-            //Adds a singleton to CellularTableModifier
-            services.AddSingleton<CellularTableModifier>();
+            //Adds dependency injection so that UserRepository gets called wherever IUserRepository gets called
+            services.AddTransient<IUserRepository, UserRepository>();
+            //Adds dependency injection so that PinTagRepository gets called wherever IPinTagRepository gets called
+            services.AddTransient<IPinTagRepository, PinTagRepository>();
+            //Adds dependency injection so that PinRepository gets called wherever IPinRepository gets called
+            services.AddTransient<IPinRepository, PinRepository>();
+            //TODO: implement
+            //Adds dependency injection so that StickerRepository gets called wherever IStickerRepository gets called
+            //services.AddTransient<IPinRepository, StickerRepository>();
+            //Adds dependency injection so that TagRepository gets called wherever ITagRepository gets called
+            services.AddTransient<ITagRepository, TagRepository>();
+            //Adds dependency injection so that CellularRepository gets called wherever ICellRepository gets called
+            services.AddTransient<ICellularRepository, CellularRepository>();
+            //Adds a singleton to UserRepository
+            services.AddSingleton<UserRepository>();
+            //Adds a singleton to PinRepository
+            services.AddSingleton<PinRepository>();
+            //Adds a singleton to TagRepository
+            services.AddSingleton<TagRepository>();
+            //Adds a singleton to CellularRepository
+            services.AddSingleton<CellularRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -16,7 +16,7 @@ using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI.Models
 {
-    public class PinTag : IDataEntity
+    public class PinTag
     {
         public PinTag()
         { }

@@ -24,7 +24,7 @@ namespace TravelCompanionAPI.Data
     //No new methods added.
     //Implements getById, getAll, and add.
     //******************************************************************************
-    public class PinTableModifier : IPinDataRepository<Pin>
+    public class PinRepository : IPinRepository
     {
         //Defines tables for sql
         const string PIN_TABLE = "pins";
@@ -32,9 +32,9 @@ namespace TravelCompanionAPI.Data
         /// <summary>
         /// Constructor
         /// </summary>
-        public PinTableModifier(IConfiguration config)
+        public PinRepository(IConfiguration config)
         {
-
+            //TODO: do we need the config?
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM " + PIN_TABLE + " WHERE(`id` = @Id);";
+                command.CommandText = "SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " WHERE(`id` = @Id);";
                 command.Parameters.AddWithValue("Id", id);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -73,23 +73,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
-                command.Parameters.AddWithValue("Id", id);
-
-                using (MySqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        pin.Tags.Add(reader.GetInt32(0));
-                    }
-                }
-            }
-
-            using (MySqlCommand command = new MySqlCommand())
-            {
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+                command.CommandText = "SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
                 command.Parameters.AddWithValue("Id", id);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -144,8 +128,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + PIN_TABLE + " LIMIT 50;";
-
+                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " LIMIT 50;";
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -206,7 +189,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + PIN_TABLE + " WHERE(`user_id` = @Uid);";
+                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " WHERE(`user_id` = @Uid);";
                 command.Parameters.AddWithValue("@Uid", uid);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -226,11 +209,12 @@ namespace TravelCompanionAPI.Data
                 }
 
             }
+
             using (MySqlCommand command2 = new MySqlCommand())
             {
                 command2.Connection = connection;
                 command2.CommandType = CommandType.Text;
-                command2.CommandText = "SELECT * FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+                command2.CommandText = "SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
 
                 MySqlParameter idParameter;
 
@@ -243,12 +227,13 @@ namespace TravelCompanionAPI.Data
                     {
                         while (reader2.Read())
                         {
-                            pin.Tags.Add(reader2.GetInt32(1)); // 1 gets the tag, 0 gets the id -- not needed currently.
+                            pin.Tags.Add(reader2.GetInt32(0));
                         }
                     }
                     command2.Parameters.Remove(idParameter);
                 }
             }
+
             connection.Close();
             return pins;
         }
@@ -319,10 +304,11 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + PIN_TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
+                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " WHERE longitude = @Longitude AND latitude = @Latitude;";
                 command.Parameters.AddWithValue("@Longitude", data.Longitude);
                 command.Parameters.AddWithValue("@Latitude", data.Latitude);
 
+//TODO: return count with query, and just check if > 0. Check UserRepo for example code
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
@@ -335,6 +321,7 @@ namespace TravelCompanionAPI.Data
                     }
                 }
             }
+
             connection.Close();
             return exists;
         }
@@ -347,6 +334,7 @@ namespace TravelCompanionAPI.Data
         /// </returns>
         public int getId(Pin data)
         {
+            //TODO: implement or delete function
             throw new NotImplementedException();
         }
 
@@ -360,7 +348,7 @@ namespace TravelCompanionAPI.Data
         {
             List<Pin> pins;
             List<Pin> deleteList = new List<Pin>();
-            pins = getAll(); //TODO: change to getAllInArea()
+            pins = getAll(); //TODO: change to getAllInArea() and get area data passed into funtion
 
             //Checks if pin is valid, adds to deleteList
             foreach(Pin pin in pins)

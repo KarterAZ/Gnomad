@@ -12,23 +12,23 @@ using TravelCompanionAPI.Models;
 
 namespace TravelCompanionAPI.Data
 {
-    public interface IPinDataRepository<T> where T : IDataEntity
+    public interface IPinRepository
     {
         //******************************************************************************
         //This class defines the default functions for dependency injection
         //******************************************************************************
 
-        public T getById(int id);
+        public Pin getById(int id);
 
-        public int getId(T data);
+        public int getId(Pin data);
 
-        public List<T> getAll();
+        public List<Pin> getAll();
 
-        public bool add(T data);
+        public bool add(Pin data);
 
-        public bool contains(T data);
+        public bool contains(Pin data);
         
-        List<T> getAllByUser(int uid);
+        List<Pin> getAllByUser(int uid);
 
         List<Pin> getAllInArea(double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0);
     

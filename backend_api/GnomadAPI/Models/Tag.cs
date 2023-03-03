@@ -9,14 +9,10 @@
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI.Models
 {
-    public class Tag : IDataEntity
+    public class Tag
     {
         public Tag()
         { }

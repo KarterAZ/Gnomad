@@ -12,16 +12,18 @@ using TravelCompanionAPI.Models;
 
 namespace TravelCompanionAPI.Data
 {
-    public interface ITagDataRepository<T> where T : IDataEntity
+    public interface IPinTagRepository
     {
         //******************************************************************************
         //This class defines the default functions for dependency injection
         //******************************************************************************
 
-        public T getById(int id);
+        public List<PinTag> getByPinId(int pid);
 
-        public List<T> getAll();
+        public List<PinTag> getByTagId(int pid);
 
-        public bool add(T data);
+        public List<PinTag> getAll();
+
+        public bool add(PinTag data);
     }
 }

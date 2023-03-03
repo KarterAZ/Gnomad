@@ -21,17 +21,18 @@ namespace TravelCompanionAPI.Data
     // No new methods added.
     //
     //******************************************************************************
-    public class UserTableModifier : IUserDataRepository<User>
+    public class UserRepository : IUserRepository
     {
         const string TABLE = "users";
 
-        public UserTableModifier()
+        //TODO: Why two constructors? Do we need config?
+        public UserRepository()
         { }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public UserTableModifier(IConfiguration config)
+        public UserRepository(IConfiguration config)
         {
 
         }
@@ -52,7 +53,7 @@ namespace TravelCompanionAPI.Data
 
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE id = @Id;";
+                command.CommandText = @"SELECT id, email, profile_photo_url, first_name, last_name FROM " + TABLE + " WHERE id = @Id;";
                 command.Parameters.AddWithValue("@Id", id);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -87,7 +88,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE email = @Email;";
+                command.CommandText = @"SELECT id, email, profile_photo_url, first_name, last_name FROM " + TABLE + " WHERE email = @Email;";
                 command.Parameters.AddWithValue("@Email", user.Email);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -121,7 +122,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + ";";
+                command.CommandText = @"SELECT id, email, profile_photo_url, first_name, last_name FROM " + TABLE + ";";
 
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -204,7 +205,7 @@ namespace TravelCompanionAPI.Data
             }
 
             connection.Close();
-            return true; //Error handling here.
+            return true; //TODO: Error handling here.
         }
     }
 }

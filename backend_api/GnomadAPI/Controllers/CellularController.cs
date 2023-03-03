@@ -28,9 +28,9 @@ namespace TravelCompanionAPI.Controllers
     public class CellularController : ControllerBase
     {
         //The repository obtained through dependency injection.
-        private ICellDataRepository<Cellular> _repo;
+        private ICellularRepository _repo;
 
-        public CellularController(ICellDataRepository<Cellular> repo)
+        public CellularController(ICellularRepository repo)
         {
             _repo = repo;
         }

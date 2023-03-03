@@ -10,17 +10,13 @@
 
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using TravelCompanionAPI.Data;
 using TravelCompanionAPI.Extras;
 
 namespace TravelCompanionAPI.Models
 {
-    public class User : IDataEntity
+    public class User
     {
         public User()
         { }

@@ -8,10 +8,8 @@
 ************************************************************************************************/
 
 using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
 using TravelCompanionAPI.Models;
-using Microsoft.Extensions.Configuration;
 using System.Data;
 
 namespace TravelCompanionAPI.Data
@@ -21,22 +19,20 @@ namespace TravelCompanionAPI.Data
     // No new methods added.
     // Implements getByPinId, getByTagId, getAll, and add.
     //******************************************************************************
-    public class PinTagTableModifier : IPinTagDataRepository<PinTag>
+    public class PinTagRepository : IPinTagRepository
     {
         const string TABLE = "pin_tags";
-        //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
-        public PinTagTableModifier()
+        public PinTagRepository()
         { }
 
         /// <summary>
-        /// Gets a pintag (pin id and user id)
+        /// Gets pintags (pin id and user id)
         /// </summary>
         /// <returns>
         /// A list of pintags
         /// </returns>
         /// 
-
         public List<PinTag> getByPinId(int pid)
         {
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
@@ -46,7 +42,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`pin_id` = @Pid);";
+                command.CommandText = @"SELECT pin_id, tag_id FROM " + TABLE + " WHERE(`pin_id` = @Pid);";
                 command.Parameters.AddWithValue("@Pid", pid);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -66,13 +62,14 @@ namespace TravelCompanionAPI.Data
             return pintags;
         }
 
+        //TODO: will this ever be used?
         /// <summary>
-        /// Should be user id?
+        /// Returns a list of pins that have the right tag id
         /// </summary>
         /// <returns>
-        /// A list of all Pins
+        /// A list of all tags with the right tag id
         /// </returns>
-        /*public List<PinTag> getByTagId(int tid)
+        public List<PinTag> getByTagId(int tid)
         {
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
             List<PinTag> pintags = new List<PinTag>();
@@ -81,7 +78,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " WHERE(`tag_id` = @Tid);";
+                command.CommandText = @"SELECT pin_id, tag_id FROM " + TABLE + " WHERE(`tag_id` = @Tid);";
                 command.Parameters.AddWithValue("@Tid", tid);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -99,7 +96,7 @@ namespace TravelCompanionAPI.Data
             connection.Close();
 
             return pintags;
-        }*/
+        }
 
         /// <summary>
         /// Gets all PinTags
@@ -116,7 +113,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + ";";
+                command.CommandText = @"SELECT pin_id, tag_id FROM " + TABLE + ";";
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -158,48 +155,7 @@ namespace TravelCompanionAPI.Data
 
             connection.Close();
 
-            return true; //Error handling later.
+            return true; //TODO: Error handling later.
         }
-
-        /// <summary>
-        /// ? Shouldn't be here.
-        /// </summary>
-        /// <returns>
-        /// A list of all Pins
-        /// </returns>
-        /*private readonly object _lockObject = new object(); //??
-        public bool contains(Sticker sticker)
-        {
-            lock (_lockObject)
-            {
-                MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
-                bool exists = false;
-
-                using (MySqlCommand command = new MySqlCommand())
-                {
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = @"SELECT * FROM " + TABLE + " WHERE longitude = @Longitude AND latitude=@Latitude;";
-                    command.Parameters.AddWithValue("@Longitude", sticker.Longitude);
-                    command.Parameters.AddWithValue("@Latitude", sticker.Latitude);
-
-                    using (MySqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            if (sticker.Longitude == int.Parse(reader.GetString(0)) && sticker.Latitude == int.Parse(reader.GetString(1)))
-                            {
-                                exists = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                connection.Close();
-
-                return exists;
-            }
-        }*/
     }
 }
