@@ -112,7 +112,7 @@ namespace TravelCompanionAPI.Data
                 {
                     while (reader.Read())
                     {
-                        String cellular = reader.GetString(4);
+                        String cellular = reader.GetString(0);
                         h3_oregon_data.Add(cellular);
                     }
                 }
