@@ -195,5 +195,10 @@ namespace TravelCompanionAPI.Data
         {
             throw new NotImplementedException();
         }
+
+        public List<Pin> getAllByTag(List<int> tags)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

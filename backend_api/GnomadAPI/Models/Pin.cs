@@ -31,6 +31,17 @@ namespace TravelCompanionAPI.Models
             Title = title;
             Tags = new List<int>();
         }
+
+        public static bool operator==(Pin lhs, Pin rhs)
+        {
+            return (lhs.Latitude == rhs.Latitude && lhs.Longitude == rhs.Longitude && lhs.Title == rhs.Title);
+        }
+
+        public static bool operator!=(Pin lhs, Pin rhs)
+        {
+            return !(lhs.Latitude == rhs.Latitude && lhs.Longitude == rhs.Longitude && lhs.Title == rhs.Title);
+        }
+
         [BindNever] //User shouldn't be able to change Id
         public int Id { get; set; }
         public int UserId { get; set; }

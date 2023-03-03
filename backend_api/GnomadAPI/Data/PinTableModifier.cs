@@ -120,7 +120,7 @@ namespace TravelCompanionAPI.Data
             double maxLong = longStart + longRange;
 
             List<Pin> pins_in_area = new List<Pin>();
-            pins_in_area = this.getAll();
+            pins_in_area = this.getAll(); //TODO: Use custom query; less wasteful
 
             //Remove all pins outside of range
             pins_in_area.RemoveAll(pin => ((pin.Latitude < minLat) || (pin.Latitude > maxLat)));
@@ -169,7 +169,7 @@ namespace TravelCompanionAPI.Data
             {
                 command2.Connection = connection;
                 command2.CommandType = CommandType.Text;
-                command2.CommandText = "SELECT * FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+                command2.CommandText = "SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
 
                 MySqlParameter idParameter;
 
@@ -278,9 +278,6 @@ namespace TravelCompanionAPI.Data
                 command.ExecuteNonQuery();
 
                 DatabasePinId = (int)command.LastInsertedId;
-                command.ExecuteNonQuery();
-
-                DatabasePinId = (int)command.LastInsertedId;
             }
             
             using (MySqlCommand command = new MySqlCommand())
@@ -351,6 +348,44 @@ namespace TravelCompanionAPI.Data
         public int getId(Pin data)
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Gets all pins with any of the given tags
+        /// </summary>
+        /// <returns>
+        /// A list of pins
+        /// </returns>
+        public List<Pin> getAllByTag(List<int> tags)
+        {
+            List<Pin> pins;
+            List<Pin> deleteList = new List<Pin>();
+            pins = getAll(); //TODO: change to getAllInArea()
+
+            //Checks if pin is valid, adds to deleteList
+            foreach(Pin pin in pins)
+            {
+                bool delete = true;
+                foreach(int tag in tags)
+                {
+                    if(delete)
+                    {
+                        if(pin.Tags.Contains(tag))
+                        {
+                            delete = false;
+                        }
+                    }
+                }
+                if(delete)
+                {
+                    deleteList.Add(pin);
+                }
+            }
+
+            //Remove all pins without the specified tags
+            pins.RemoveAll(pin => (deleteList.Contains(pin)));
+
+            return pins;
         }
     }
 }

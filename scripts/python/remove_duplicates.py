@@ -57,6 +57,32 @@ try:
             latitude, longitude, count = duplicate
             sql = f"""
                 DELETE FROM pins
+                WHERE latitude = {latitude} AND longitude = {longitude} AND tag_bathroom = 1
+                LIMIT {count-1};
+            """
+            cursor.execute(sql)
+
+    # Commit the changes
+    connection.commit()
+
+    #Run through wifi tags
+    with connection.cursor() as cursor:
+        # Select rows with duplicate latitude and longitude values
+        sql = """
+            SELECT latitude, longitude, COUNT(*)
+            FROM pins
+            WHERE tag_wifi = 1
+            GROUP BY latitude, longitude
+            HAVING COUNT(*) > 1;
+        """
+        cursor.execute(sql)
+        duplicates = cursor.fetchall()
+
+        # Remove the duplicate rows
+        for duplicate in duplicates:
+            latitude, longitude, count = duplicate
+            sql = f"""
+                DELETE FROM pins
                 WHERE latitude = {latitude} AND longitude = {longitude} AND tag_wifi = 1
                 LIMIT {count-1};
             """

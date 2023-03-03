@@ -199,7 +199,7 @@ export default function Map() {
   //State declared for enabling/disabling marker creation on click with sidebar
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
-  const [selectedPinType, setSelectedPinType] = useState('Select Pin');
+  const [selectedPinType, setSelectedPinType] = useState("");
 
   //Function that toggles the sidebar's create pin option
   const toggleMarkerCreation = (pinType) => {
@@ -210,7 +210,7 @@ export default function Map() {
   //Function handling onclick events on the map that will result in marker creation
   const handleCreatePin = (event) => {
 
-    if (markerCreationEnabled && selectedPinType) {
+    if (markerCreationEnabled && selectedPinType !="") {
       let pinImage = '';
       switch (selectedPinType) {
         case 'pin':
@@ -233,7 +233,6 @@ export default function Map() {
           break;
       }
 
-
       //Adds marker to array that gets rendered (Eventually will have to add a pin to the database)
       setMarkers([...markers, {
         lat: event.lat,
@@ -243,8 +242,6 @@ export default function Map() {
         description: 'placeholder text',
       }]);
       setMarkerCreationEnabled(false);
-      setSelectedPinType('Select Pin');
-
     }
   };
 
