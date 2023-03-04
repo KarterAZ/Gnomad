@@ -85,7 +85,8 @@ const handleApiLoaded = (map, maps) => {
         { lat: 0.7332315831520411, lng: -2.1351042993418656 }
     ]; */
 
-    const triangleCoords = getH3All();
+    console.log(getH3All());
+    var triangleCoords = getH3All();
 
     /*for (const h3 in triangleCoords)
     {
