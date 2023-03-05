@@ -29,10 +29,12 @@ namespace TravelCompanionAPI.Data
 
         public bool contains(Pin data);
         
-        List<Pin> getAllByUser(int uid);
+        public List<Pin> getAllByUser(int uid);
 
-        List<Pin> getAllInArea(double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0);
+        public List<Pin> getAllInArea(double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0);
     
-        List<Pin> getAllByTag(List<int> tags);
+        public List<Pin> getAllByTag(List<int> tags);
+
+        public List<Pin> getAllByAddress(string address);
     }
 }

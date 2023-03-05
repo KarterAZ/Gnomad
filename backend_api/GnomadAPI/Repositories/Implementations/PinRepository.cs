@@ -373,5 +373,14 @@ namespace TravelCompanionAPI.Data
 
             return pins;
         }
+
+        public List<Pin> getAllByAddress(string address)
+        {
+            List<Pin> pins = new List<Pin>();
+
+            //query where "like"
+
+            return pins;
+        }
     }
 }

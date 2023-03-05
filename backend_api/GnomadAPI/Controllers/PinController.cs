@@ -186,5 +186,19 @@ namespace TravelCompanionAPI.Controllers
 
             return new JsonResult(Ok(pins));
         }
+
+        /// <summary>
+        /// Gets all pins with a similar address from the database
+        /// </summary>
+        /// <returns>
+        /// A JsonResult of Ok(pins), where pins are the asked for pins
+        ///</returns>
+        [HttpPost("getAllPinsByAddress")]
+        public JsonResult getAllPinsByAddress(string address)
+        {
+            List<Pin> pins = _pin_repo.getAllByAddress(address);
+
+            return new JsonResult(Ok(pins));
+        }
     }
 }
