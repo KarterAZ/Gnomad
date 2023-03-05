@@ -377,8 +377,64 @@ namespace TravelCompanionAPI.Data
         public List<Pin> getAllByAddress(string address)
         {
             List<Pin> pins = new List<Pin>();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
-            //query where "like"
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                //Search the pins table for pins with similar streets.
+                //Set all to lower to dismiss case sensitivity
+                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " WHERE(LOWER(street) LIKE @address);";
+                command.Parameters.AddWithValue("@address", "%" + address.ToLower() + "%");
+
+                //Go through and add pin to pins list
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Pin pin = new Pin();
+                        pin.Id = reader.GetInt32(0);
+                        pin.UserId = reader.GetInt32(1);
+                        pin.Longitude = reader.GetInt32(2);
+                        pin.Latitude = reader.GetInt32(3);
+                        pin.Title = reader.GetString(4);
+                        pin.Street = reader.GetString(5);
+
+                        pins.Add(pin);
+                    }
+                }
+            }
+
+            //Add tag to the pins in the pin list
+            using (MySqlCommand command2 = new MySqlCommand())
+            {
+                command2.Connection = connection;
+                command2.CommandType = CommandType.Text;
+                command2.CommandText = "SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+
+                MySqlParameter idParameter;
+
+                foreach (Pin pin in pins)
+                {
+                    //Sets id for current pin
+                    idParameter = new MySqlParameter("Id", pin.Id);
+                    command2.Parameters.Add(idParameter);
+
+                    using (MySqlDataReader reader2 = command2.ExecuteReader())
+                    {
+                        while (reader2.Read())
+                        {
+                            pin.Tags.Add(reader2.GetInt32(0));
+                        }
+                    }
+
+                    //Can't rerun query for new pin until old is deleted
+                    command2.Parameters.Remove(idParameter);
+                }
+            }
+
+            connection.Close();
 
             return pins;
         }
