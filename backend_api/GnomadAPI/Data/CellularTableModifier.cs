@@ -143,13 +143,12 @@ namespace TravelCompanionAPI.Data
             //return geolist;
         }
 
-        public Tuple<decimal, decimal>[] getCoordsA()
+        public decimal[] getCoordsLat()
         {
             List<string> h3ids = getAllH3();
 
-            Tuple<decimal, decimal>[] coords = new Tuple<decimal, decimal>[h3ids.Count];
+            decimal[] coords = new decimal[h3ids.Count];
 
-            Tuple<decimal, decimal> tup;
             H3Index h3;
             GeoCoord geo = new GeoCoord();
 
@@ -157,12 +156,29 @@ namespace TravelCompanionAPI.Data
             {
                 h3 = h3ids[i].ToH3Index();
                 geo = h3.ToGeoCoord();
-                tup = new Tuple<decimal, decimal>(geo.Latitude, geo.Longitude);
-                coords[i] = tup;
+                coords[i] = geo.Latitude;
             }
 
             return coords;
-            //return geolist;
+        }
+
+        public decimal[] getCoordsLng()
+        {
+            List<string> h3ids = getAllH3();
+
+            decimal[] coords = new decimal[h3ids.Count];
+
+            H3Index h3;
+            GeoCoord geo = new GeoCoord();
+
+            for (int i = 0; i < h3ids.Count(); i++)
+            {
+                h3 = h3ids[i].ToH3Index();
+                geo = h3.ToGeoCoord();
+                coords[i] = geo.Longitude;
+            }
+
+            return coords;
         }
     }
 }

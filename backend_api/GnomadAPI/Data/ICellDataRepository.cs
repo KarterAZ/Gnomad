@@ -28,7 +28,8 @@ namespace TravelCompanionAPI.Data
         public List<string> getAllH3();
 
         public List<Tuple<decimal, decimal>> getCoords();
-        public Tuple<decimal, decimal>[] getCoordsA();
-        //public List<GeoCoord> getCoords();
+
+        public decimal[] getCoordsLat();
+        public decimal[] getCoordsLng();
     }
 }

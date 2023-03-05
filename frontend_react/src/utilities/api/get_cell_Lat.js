@@ -11,11 +11,11 @@
 import { get, isAuthenticated} from './api';
 
 // this function gets cell data
-export default async function getH3All()
+export default async function getLatAll()
 {
     if (!isAuthenticated()) return null;
 
-    const response = await get('h3_oregon_data/allGeoCoords');
+    const response = await get('h3_oregon_data/allLatCoords');
 
     return response;
 }

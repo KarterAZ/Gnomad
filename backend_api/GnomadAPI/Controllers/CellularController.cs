@@ -76,10 +76,18 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(h3Array));
         }
 
-        [HttpGet("allGeoCoords")]
-        public JsonResult getCoordsA()
+        [HttpGet("allLatCoords")]
+        public JsonResult getCoordsLat()
         {
-            Tuple<decimal, decimal>[] h3List = _repo.getCoordsA();
+            decimal[] h3List = _repo.getCoordsLat();
+
+            return new JsonResult(Ok(h3List));
+        }
+
+        [HttpGet("allLngCoords")]
+        public JsonResult getCoordsLng()
+        {
+            decimal[] h3List = _repo.getCoordsLng();
 
             return new JsonResult(Ok(h3List));
         }

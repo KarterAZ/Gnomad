@@ -34,7 +34,8 @@ import diesel from './gas-station-fuel-svgrepo-com.svg';
 import wifi from './free-wifi-svgrepo-com.svg';
 import electric from './tesla-svgrepo-com.svg';
 
-import getH3All from '../../utilities/api/get_cell_data';
+import getLatAll from '../../utilities/api/get_cell_Lat';
+import getLngAll from '../../utilities/api/get_cell_Lng';
 
 
 //can later make the default lat/lng be user's location?
@@ -85,8 +86,18 @@ const handleApiLoaded = (map, maps) => {
         { lat: 0.7332315831520411, lng: -2.1351042993418656 }
     ]; */
 
-    console.log(getH3All());
-    var triangleCoords = getH3All();
+    //console.log(getH3All());
+    //var triangleCoords = getH3All();
+
+    var latLngArray = [];
+    var latArray = getLatAll();
+    var lngArray = getLngAll();
+
+    for (let i = 0; i < latArray.length; i++) {
+        let gData = new maps.LatLng(parseFloat(latArray[i]), parseFloat(lngArray[i]));
+        //let gData = new maps.LatLng(latArray[i], lngArray[i]);
+        latLngArray.push(gData);
+    }
 
     /*for (const h3 in triangleCoords)
     {
@@ -95,7 +106,7 @@ const handleApiLoaded = (map, maps) => {
     }*/
 
     var bermudaTriangle = new maps.Polygon({
-        paths: triangleCoords,
+        paths: latLngArray, //triangleCoords,
         strokeColor: "#FF0000",
         strokeOpacity: 0.8,
         strokeWeight: 2,
