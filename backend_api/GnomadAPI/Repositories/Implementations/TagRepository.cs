@@ -8,15 +8,8 @@
 ************************************************************************************************/
 
 using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TravelCompanionAPI.Models;
-using System.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
-using static Org.BouncyCastle.Math.EC.ECCurve;
-using System.Data.Common;
 using System.Data;
 
 namespace TravelCompanionAPI.Data
@@ -26,12 +19,12 @@ namespace TravelCompanionAPI.Data
     //No new methods added.
     //Implements getById, getAll, and add.
     //******************************************************************************
-    public class TagTableModifier : ITagDataRepository<Tag>
+    public class TagRepository : ITagRepository
     {
         const string TABLE = "tags";
         //Connection strings should be in secrets.json. Check out the resources tab in Discord to update yours (or ask Andrew).
 
-        public TagTableModifier()
+        public TagRepository()
         { }
 
         /// <summary>
@@ -49,7 +42,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM + " + TABLE + " WHERE(`id` = @Id);";
+                command.CommandText = "SELECT id, type FROM + " + TABLE + " WHERE(`id` = @Id);";
                 command.Parameters.AddWithValue("Id", id);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -83,7 +76,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + ";";
+                command.CommandText = @"SELECT id, type FROM " + TABLE + ";";
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -125,14 +118,7 @@ namespace TravelCompanionAPI.Data
 
             connection.Close();
 
-            return true; //Error handling here.
+            return true; //TODO: Error handling here.
         }
-
-        /// <summary>
-        /// Checks if a tag is in the database
-        /// </summary>
-        /// <returns>
-        /// Returns true if the tag is in the database, else false.
-        /// </returns>
     }
 }

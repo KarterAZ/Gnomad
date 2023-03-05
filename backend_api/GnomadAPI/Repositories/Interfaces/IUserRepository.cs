@@ -1,31 +1,31 @@
 ﻿/************************************************************************************************
 *
 * Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
-* Date: 1/27/2023
+* Date: 11/28/2022
 *
-* Purpose: Defines the default functions for dependency injection. Declares getByH3Id, getAll
+* Purpose: Defines the default functions for dependency injection. Declares getById, getAll, and add.
 *
 ************************************************************************************************/
 
-using System;
 using System.Collections.Generic;
 using TravelCompanionAPI.Models;
 
 namespace TravelCompanionAPI.Data
 {
-    public interface ICellDataRepository<T> where T : IDataEntity
+    public interface IUserRepository
     {
         //******************************************************************************
         //This class defines the default functions for dependency injection
-        //Declares getByH3Id, getAll
         //******************************************************************************
 
-        public T getByH3Id(string id);
+        public User getById(int id);
 
-        public List<T> getAll();
+        public int getId(User data);
 
-        public List<string> getAllH3();
+        public List<User> getAll();
 
-        public List<Tuple<decimal, decimal>> getCoords();
+        public bool add(User data);
+
+        public bool contains(User data);
     }
 }

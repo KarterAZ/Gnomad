@@ -7,7 +7,6 @@
 *
 ************************************************************************************************/
 
-using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using System;
 

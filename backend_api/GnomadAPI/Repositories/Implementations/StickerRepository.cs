@@ -11,9 +11,11 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using TravelCompanionAPI.Models;
-using Microsoft.Extensions.Configuration;
 using System.Data;
 
+//TODO: Implement correctly, update, and comment. Or just delete and move to pin class.
+//If implementing: Do things like remove the * from SELECT statements
+//And only get the stickers, verifying the correct user
 namespace TravelCompanionAPI.Data
 {
     //******************************************************************************
@@ -21,17 +23,17 @@ namespace TravelCompanionAPI.Data
     //No new methods added.
     //Implements getById, getByTagId, getAll, and add.
     //******************************************************************************
-    public class StickerTableModifier : IPinDataRepository<Sticker>
+    public class StickerRepository// : IPinRepository
     {
-        const string TABLE = "stickers";
+        /*const string TABLE = "stickers"; //TODO: Is this correct? Are they separate from pins?
 
-        public StickerTableModifier()
+        public StickerRepository()
         { }
 
-        public Sticker getById(int id)
+        public Pin getById(int id)
         {
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
-            Sticker stickers = null;
+            List<Pin> stickers = new List<Pin>();
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -46,13 +48,15 @@ namespace TravelCompanionAPI.Data
 
                     while (reader.Read())
                     {
-                        stickers = new Sticker();
-                        stickers.Id = reader.GetInt32(0);
-                        stickers.UserId = reader.GetInt32(1);
-                        stickers.Longitude = reader.GetInt32(2);
-                        stickers.Latitude = reader.GetInt32(3);
-                        stickers.Title = reader.GetString(4);
-                        stickers.Street = reader.GetString(5);
+                        Pin sticker = new Pin();
+                        sticker.Id = reader.GetInt32(0);
+                        sticker.UserId = reader.GetInt32(1);
+                        sticker.Longitude = reader.GetInt32(2);
+                        sticker.Latitude = reader.GetInt32(3);
+                        sticker.Title = reader.GetString(4);
+                        sticker.Street = reader.GetString(5);
+
+                        stickers.Add(sticker);
                     }
                 }
             }
@@ -61,9 +65,9 @@ namespace TravelCompanionAPI.Data
             return stickers;
         }
 
-        public List<Sticker> getAll()
+        public List<Pin> getAll()
         {
-            List<Sticker> stickers = new List<Sticker>();
+            List<Pin> stickers = new List<Pin>();
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
             using (MySqlCommand command = new MySqlCommand())
@@ -200,5 +204,35 @@ namespace TravelCompanionAPI.Data
         {
             throw new NotImplementedException();
         }
+
+        Pin IPinRepository.getById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int getId(Pin data)
+        {
+            throw new NotImplementedException();
+        }
+
+        List<Pin> IPinRepository.getAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool add(Pin data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool contains(Pin data)
+        {
+            throw new NotImplementedException();
+        }
+
+        List<Pin> IPinRepository.getAllByUser(int uid)
+        {
+            throw new NotImplementedException();
+        }*/
     }
 }

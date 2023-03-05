@@ -25,8 +25,8 @@ namespace TravelCompanionAPI.Controllers
     public class UserController : ControllerBase
     {
         //Repo is the list of users in the database
-        private IUserDataRepository<User> _user_database;
-        public UserController(IUserDataRepository<User> repo)
+        private IUserRepository _user_database;
+        public UserController(IUserRepository repo)
         {
             _user_database = repo;
         }
