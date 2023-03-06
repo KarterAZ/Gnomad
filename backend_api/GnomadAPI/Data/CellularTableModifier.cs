@@ -105,7 +105,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " Limit 25 ;";
+                command.CommandText = @"SELECT * FROM " + TABLE + " LIMIT 500000 ;";
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -132,6 +132,7 @@ namespace TravelCompanionAPI.Data
             foreach(string id in h3ids)
             {
                 h3 = id.ToH3Index();
+                h3 = h3.SetResolution(1);
                 //Debug.WriteLine(h3.ToString());
                 geo = h3.ToGeoCoord();
                 //geolist.Add(geo);
