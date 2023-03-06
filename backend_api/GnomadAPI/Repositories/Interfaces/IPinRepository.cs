@@ -36,5 +36,7 @@ namespace TravelCompanionAPI.Data
         public List<Pin> getAllByTag(List<int> tags);
 
         public List<Pin> getAllByAddress(string address);
+
+        public List<Pin> getByName(string searchString);
     }
 }

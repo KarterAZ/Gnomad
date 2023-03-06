@@ -225,6 +225,65 @@ namespace TravelCompanionAPI.Data
             return pins;
         }
 
+        //Gets pins that have the search bar input string in the title
+        public List<Pin> getByName(string searchString)
+        {
+            List<Pin> pins = new List<Pin>();
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                //Search the pins table title column for strings with the search string in it.
+                //Set all to lower to dismiss case sensitivity
+                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " WHERE(LOWER(title) LIKE LOWER(@SearchString));";
+                command.Parameters.AddWithValue("@SearchString", "%" + searchString + "%");
+
+                //Go through and add to pin list
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Pin pin = new Pin();
+                        pin.Id = reader.GetInt32(0);
+                        pin.UserId = reader.GetInt32(1);
+                        pin.Longitude = reader.GetInt32(2);
+                        pin.Latitude = reader.GetInt32(3);
+                        pin.Title = reader.GetString(4);
+                        pin.Street = reader.GetString(5);
+
+                        pins.Add(pin);
+                    }
+                }
+            }
+            //Add tag to the pins in the pin list
+            using (MySqlCommand command2 = new MySqlCommand())
+            {
+                command2.Connection = connection;
+                command2.CommandType = CommandType.Text;
+                command2.CommandText = "SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+
+                MySqlParameter idParameter;
+
+                foreach (Pin pin in pins)
+                {
+                    idParameter = new MySqlParameter("Id", pin.Id);
+                    command2.Parameters.Add(idParameter);
+
+                    using (MySqlDataReader reader2 = command2.ExecuteReader())
+                    {
+                        while (reader2.Read())
+                        {
+                            pin.Tags.Add(reader2.GetInt32(0)); //Gets the tag
+                        }
+                    }
+                    command2.Parameters.Remove(idParameter); //Don't need id
+                }
+            }
+            connection.Close();
+            return pins;
+        }
+
         /// <summary>
         /// Gets all pins from a specified user
         /// </summary>

@@ -173,6 +173,26 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(0));
         }
 
+        /// Gets a pin based on name search term
+        /// </summary>
+        /// <returns>
+        /// Returns a JsonResult of NotFound() if it's not found or 
+        ///Ok(pin) with the pin found.
+        ///</returns>
+        [HttpGet("getName/{searchTerm}")]
+        public JsonResult getName(string searchTerm)
+        {
+
+            List<Pin> pins = _pin_repo.getByName(searchTerm);
+
+            if (pins == null)
+            {
+                return new JsonResult(NotFound());
+            }
+
+            return new JsonResult(Ok(pins));
+        }
+
         /// <summary>
         /// Gets all pins with a certain tag from the database
         /// </summary>
