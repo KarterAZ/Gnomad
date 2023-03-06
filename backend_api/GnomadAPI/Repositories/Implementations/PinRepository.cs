@@ -102,11 +102,63 @@ namespace TravelCompanionAPI.Data
             double maxLong = longStart + longRange;
 
             List<Pin> pins_in_area = new List<Pin>();
-            pins_in_area = this.getAll(); //TODO: Use custom query; less wasteful
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
-            //Remove all pins outside of range
-            pins_in_area.RemoveAll(pin => ((pin.Latitude < minLat) || (pin.Latitude > maxLat)));
-            pins_in_area.RemoveAll(pin => ((pin.Longitude < minLong) || (pin.Longitude > maxLong)));
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + 
+                                    " WHERE(longitude > @minLong AND longitude < @maxLong AND latitude > @minLat AND latitude < @maxLat);";
+
+                command.Parameters.AddWithValue("@minLong", minLong);
+                command.Parameters.AddWithValue("@minLat", minLat);
+                command.Parameters.AddWithValue("@maxLong", maxLong);
+                command.Parameters.AddWithValue("@maxLat", maxLat);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Pin pin = new Pin();
+                        pin.Id = reader.GetInt32(0);
+                        pin.UserId = reader.GetInt32(1);
+                        pin.Longitude = reader.GetInt32(2);
+                        pin.Latitude = reader.GetInt32(3);
+                        pin.Title = reader.GetString(4);
+                        pin.Street = reader.GetString(5);
+
+                        pins_in_area.Add(pin);
+                    }
+                }
+            }
+
+
+            using (MySqlCommand command2 = new MySqlCommand())
+            {
+                command2.Connection = connection;
+                command2.CommandType = CommandType.Text;
+                command2.CommandText = "SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+
+                MySqlParameter idParameter;
+
+                foreach (Pin pin in pins_in_area)
+                {
+                    idParameter = new MySqlParameter("Id", pin.Id);
+                    command2.Parameters.Add(idParameter);
+
+                    using (MySqlDataReader reader2 = command2.ExecuteReader())
+                    {
+                        while (reader2.Read())
+                        {
+                            pin.Tags.Add(reader2.GetInt32(0));
+                        }
+                    }
+                    command2.Parameters.Remove(idParameter);
+                }
+            }
+
+            connection.Close();
 
             return pins_in_area;
         }
