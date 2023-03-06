@@ -13,9 +13,14 @@ import { get, isAuthenticated} from './api';
 // this function gets cell data
 export default async function getLatAll()
 {
-    if (!isAuthenticated()) return null;
+    //if (!isAuthenticated()) return null;
 
     const response = await get('h3_oregon_data/allLatCoords');
+
+    if (response)
+        console.log("response from lat");
+    else
+        console.log("null response lat");
 
     return response;
 }

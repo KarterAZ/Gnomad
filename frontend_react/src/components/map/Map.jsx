@@ -22,7 +22,7 @@ import './map.css';
 
 
 // internal imports.
-import { get } from '../../utilities/api/api.js';
+import { get, isAuthenticated } from '../../utilities/api/api.js';
 import Sidebar from '../sidebar/Sidebar'
 
 
@@ -47,7 +47,7 @@ const defaultProps = {
   },
 };
 
-const handleApiLoaded = (map, maps) => {
+const handleApiLoaded = async(map, maps) => {
     /*const triangleCoords = [
         { lat: 25.774, lng: -80.19 },
         { lat: 18.466, lng: -66.118 },
@@ -86,24 +86,27 @@ const handleApiLoaded = (map, maps) => {
         { lat: 0.7332315831520411, lng: -2.1351042993418656 }
     ]; */
 
-    //console.log(getH3All());
     //var triangleCoords = getH3All();
+    //while (logged_in == 0) { console.log("looping"); }
 
     var latLngArray = [];
-    var latArray = getLatAll();
-    var lngArray = getLngAll();
+    var latArray = await getLatAll();
+    var lngArray = await getLngAll();
 
+    for (var i = 0; i < latArray.length; i++) {
+        latArray[i] += 42;
+    }
+    for (var i = 0; i < lngArray.length; i++) {
+        lngArray[i] -= 122;
+    }
+       
     for (let i = 0; i < latArray.length; i++) {
         let gData = new maps.LatLng(parseFloat(latArray[i]), parseFloat(lngArray[i]));
         //let gData = new maps.LatLng(latArray[i], lngArray[i]);
         latLngArray.push(gData);
     }
 
-    /*for (const h3 in triangleCoords)
-    {
-        h3.lat += 42;
-        h3.lat -= 124;
-    }*/
+    console.log(latLngArray);
 
     var bermudaTriangle = new maps.Polygon({
         paths: latLngArray, //triangleCoords,
