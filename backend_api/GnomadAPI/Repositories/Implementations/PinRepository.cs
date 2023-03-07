@@ -582,27 +582,27 @@ namespace TravelCompanionAPI.Data
                 }
             }
             //Add tag to the pins in the pin list
-            using (MySqlCommand command2 = new MySqlCommand())
+            using (MySqlCommand command = new MySqlCommand())
             {
-                command2.Connection = connection;
-                command2.CommandType = CommandType.Text;
-                command2.CommandText = "SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
 
                 MySqlParameter idParameter;
 
                 foreach (Pin pin in pins)
                 {
                     idParameter = new MySqlParameter("Id", pin.Id);
-                    command2.Parameters.Add(idParameter);
+                    command.Parameters.Add(idParameter);
 
-                    using (MySqlDataReader reader2 = command2.ExecuteReader())
+                    using (MySqlDataReader reader2 = command.ExecuteReader())
                     {
                         while (reader2.Read())
                         {
                             pin.Tags.Add(reader2.GetInt32(0)); //Gets the tag
                         }
                     }
-                    command2.Parameters.Remove(idParameter); //Don't need id
+                    command.Parameters.Remove(idParameter); //Don't need id
                 }
             }
             connection.Close();
