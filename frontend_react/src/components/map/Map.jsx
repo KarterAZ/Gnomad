@@ -90,19 +90,18 @@ const handleApiLoaded = async(map, maps) => {
     //while (logged_in == 0) { console.log("looping"); }
 
     var latLngArray = [];
-    var latArray = await getLatAll();
+    //var latArray = await getLatAll();
     var lngArray = await getLngAll();
 
-    for (var i = 0; i < latArray.length; i++) {
+    /*for (var i = 0; i < latArray.length; i++) {
         latArray[i] += 42;
     }
     for (var i = 0; i < lngArray.length; i++) {
         lngArray[i] -= 122;
-    }
+    }*/
        
-    for (let i = 0; i < latArray.length; i++) {
-        let gData = new maps.LatLng(parseFloat(latArray[i]), parseFloat(lngArray[i]));
-        //let gData = new maps.LatLng(latArray[i], lngArray[i]);
+    for (let i = 0; i < lngArray.length; i += 2) {
+        let gData = new maps.LatLng(parseFloat(lngArray[i]), parseFloat(lngArray[i+1]));
         latLngArray.push(gData);
     }
 

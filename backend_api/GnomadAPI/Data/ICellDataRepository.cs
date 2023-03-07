@@ -29,6 +29,8 @@ namespace TravelCompanionAPI.Data
 
         public List<Tuple<decimal, decimal>> getCoords();
 
+        public List<decimal> getHexCoords();
+
         public decimal[] getCoordsLat();
         public decimal[] getCoordsLng();
     }

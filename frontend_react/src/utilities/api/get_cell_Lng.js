@@ -14,7 +14,7 @@ export default async function getLngAll() {
 
     //if (!isAuthenticated()) return null;
 
-    const response = await get('h3_oregon_data/allLngCoords');
+    const response = await get('h3_oregon_data/allHexCoords');
 
     if (response)
         console.log("response from lng");

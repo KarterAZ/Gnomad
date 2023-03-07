@@ -70,8 +70,18 @@ namespace TravelCompanionAPI.Controllers
         public JsonResult getCoords()
         {
             List<Tuple<decimal, decimal>> h3List = _repo.getCoords();
-            //Array<Tuple<decimal, decimal>> h3list= _repo.getCoords();
+
             Tuple<decimal,decimal>[] h3Array = h3List.ToArray();
+
+            return new JsonResult(Ok(h3Array));
+        }
+
+        [HttpGet("allHexCoords")]
+        public JsonResult getHexCoords()
+        {
+            List<decimal> h3List = _repo.getHexCoords();
+
+            decimal[] h3Array = h3List.ToArray();
 
             return new JsonResult(Ok(h3Array));
         }

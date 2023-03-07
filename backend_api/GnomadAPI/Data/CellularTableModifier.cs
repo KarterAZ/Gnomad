@@ -105,7 +105,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " LIMIT 500000 ;";
+                command.CommandText = @"SELECT * FROM " + TABLE + " LIMIT 500 ;";
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -127,21 +127,44 @@ namespace TravelCompanionAPI.Data
             Tuple<decimal, decimal> tup;
             H3Index h3;
             GeoCoord geo = new GeoCoord();
-            //List<GeoCoord> geolist = new List<GeoCoord>();
 
             foreach(string id in h3ids)
             {
                 h3 = id.ToH3Index();
-                h3 = h3.SetResolution(1);
-                //Debug.WriteLine(h3.ToString());
                 geo = h3.ToGeoCoord();
-                //geolist.Add(geo);
                 tup = new Tuple<decimal, decimal>(geo.Latitude, geo.Longitude);
                 coords.Add(tup);
             }
 
             return coords;
             //return geolist;
+        }
+
+        public List<decimal> getHexCoords()
+        {
+            List<string> h3ids = getAllH3();
+            List<decimal> coords = new List<decimal>();
+            H3Index h3;
+            GeoBoundary geoBounds;
+            List<GeoCoord> geoVerts = new List<GeoCoord>();
+
+            foreach (string id in h3ids)
+            {
+                h3 = id.ToH3Index();
+                geoBounds = h3.ToGeoBoundary();
+                geoVerts = geoBounds.Verts;
+
+                for (int i = 0; i <= 5; i++)
+                {
+                    coords.Add(geoVerts[i].Latitude);
+                    coords.Add(geoVerts[i].Longitude);
+                }
+                coords.Add(geoVerts[0].Latitude);
+                coords.Add(geoVerts[0].Longitude);
+                geoVerts.Clear();
+            }
+
+            return coords;
         }
 
         public decimal[] getCoordsLat()
