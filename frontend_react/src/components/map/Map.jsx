@@ -99,14 +99,12 @@ const handleApiLoaded = async(map, maps) => {
     for (var i = 0; i < lngArray.length; i++) {
         lngArray[i] -= 122;
     }*/
+    var bermudaTriangles = [];
        
     for (let i = 0; i < lngArray.length; i += 2) {
-        let gData = new maps.LatLng(parseFloat(lngArray[i]), parseFloat(lngArray[i+1]));
+        let gData = new maps.LatLng(parseFloat(lngArray[i]), parseFloat(lngArray[i + 1]));
         latLngArray.push(gData);
     }
-
-    console.log(latLngArray);
-
     var bermudaTriangle = new maps.Polygon({
         paths: latLngArray, //triangleCoords,
         strokeColor: "#FF0000",
@@ -115,7 +113,22 @@ const handleApiLoaded = async(map, maps) => {
         fillColor: "#FF0000",
         fillOpacity: 0.35
     });
-    bermudaTriangle.setMap(map);
+    bermudaTriangles.push(bermudaTriangle);
+
+    for (let i = 0; i < bermudaTriangles.length; i++) {
+        bermudaTriangles[i].setMap(map);
+    }
+    console.log(latLngArray);
+
+    /*var bermudaTriangle = new maps.Polygon({
+        paths: latLngArray, //triangleCoords,
+        strokeColor: "#FF0000",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#FF0000",
+        fillOpacity: 0.35
+    });
+    bermudaTriangle.setMap(map);*/
 }
 
 //Array of markers that gets used to populate map, eventually will be filled with pin data from database
