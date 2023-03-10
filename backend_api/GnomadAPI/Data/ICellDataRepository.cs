@@ -25,7 +25,7 @@ namespace TravelCompanionAPI.Data
 
         public List<T> getAll();
 
-        public List<string> getAllH3();
+        public List<string> getAllH3(int offset);
 
         public List<Tuple<decimal, decimal>> getCoords();
 

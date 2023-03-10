@@ -58,10 +58,10 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(cellularList));
         }
 
-        [HttpGet("allH3Id")]
-        public JsonResult getAllH3()
+        [HttpGet("allH3Id/{offset}")]
+        public JsonResult getAllH3(int offset)
         {
-            List<string> h3List = _repo.getAllH3();
+            List<string> h3List = _repo.getAllH3(offset);
 
             return new JsonResult(Ok(h3List));
         }

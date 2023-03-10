@@ -97,7 +97,7 @@ namespace TravelCompanionAPI.Data
             return h3_oregon_data;
         }
 
-        public List<string> getAllH3()
+        public List<string> getAllH3(int offset)
         {
             List<string> h3_oregon_data = new List<string>();
 
@@ -105,7 +105,8 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " LIMIT 70000 ;"; //limit
+                command.CommandText = @"SELECT h3_res9_id FROM " + TABLE + " LIMIT 70000 OFFSET @Offset;";
+                command.Parameters.AddWithValue("@Offset", offset);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -122,7 +123,7 @@ namespace TravelCompanionAPI.Data
 
         public List<Tuple<decimal, decimal>> getCoords() //List<GeoCoord> getCoords()
         {
-            List<string> h3ids = getAllH3();
+            List<string> h3ids = getAllH3(0);
             List<Tuple<decimal, decimal>> coords = new List<Tuple<decimal, decimal>>();
             Tuple<decimal, decimal> tup;
             H3Index h3;
@@ -142,7 +143,7 @@ namespace TravelCompanionAPI.Data
 
         public List<decimal> getHexCoords()
         {
-            List<string> h3ids = getAllH3();
+            List<string> h3ids = getAllH3(0);
             List<decimal> coords = new List<decimal>();
             H3Index h3;
             GeoBoundary geoBounds;
@@ -169,7 +170,7 @@ namespace TravelCompanionAPI.Data
 
         public decimal[] getCoordsLat()
         {
-            List<string> h3ids = getAllH3();
+            List<string> h3ids = getAllH3(0);
 
             decimal[] coords = new decimal[h3ids.Count];
 
@@ -188,7 +189,7 @@ namespace TravelCompanionAPI.Data
 
         public decimal[] getCoordsLng()
         {
-            List<string> h3ids = getAllH3();
+            List<string> h3ids = getAllH3(0);
 
             decimal[] coords = new decimal[h3ids.Count];
 
