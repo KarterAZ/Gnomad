@@ -27,5 +27,9 @@ namespace TravelCompanionAPI.Data
         public bool add(User data);
 
         public bool contains(User data);
+
+        public void review(int id, int pinid, int vote);
+
+        public bool voted(int uid, int pinid);
     }
 }

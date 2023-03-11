@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using TravelCompanionAPI.Models;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System;
 
 namespace TravelCompanionAPI.Data
 {
@@ -215,6 +216,7 @@ namespace TravelCompanionAPI.Data
         {
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
+            //Update the pins table
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = connection;
@@ -226,6 +228,7 @@ namespace TravelCompanionAPI.Data
 
             }
 
+            //Update the user_review table
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = connection;
@@ -238,6 +241,29 @@ namespace TravelCompanionAPI.Data
                 command.ExecuteNonQuery();
             }
             connection.Close();
+        }
+
+        //Check to see if user already voted on this pin
+        public bool voted(int uid, int pinid)
+        {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+
+            //Looks for if row exists
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT COUNT(*) FROM " + RTABLE + " WHERE user_id=@UserId AND pin_id=@PinId;";
+                command.Parameters.AddWithValue("@UserId", uid);
+                command.Parameters.AddWithValue("@PinId", pinid);
+
+                int count = Convert.ToInt32(command.ExecuteScalar());
+
+                connection.Close();
+
+                //If row exists, count > 0 so return true, else return false
+                return count > 0;
+            }
         }
     }
 }
