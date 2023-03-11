@@ -24,6 +24,8 @@ namespace TravelCompanionAPI.Data
     public class UserRepository : IUserRepository
     {
         const string TABLE = "users";
+        const string PTABLE = "pins";
+        const string RTABLE = "user_review";
 
         //TODO: Why two constructors? Do we need config?
         public UserRepository()
@@ -206,6 +208,36 @@ namespace TravelCompanionAPI.Data
 
             connection.Close();
             return true; //TODO: Error handling here.
+        }
+
+        //Register a user's review of a pin
+        public void review(int id, int pinid, int vote)
+        {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "UPDATE " + PTABLE + " SET " + (vote == 1 ? "up_vote = up_vote + 1" : "down_vote = down_vote + 1") + " WHERE id = @Id;";
+                command.Parameters.AddWithValue("@Id", pinid);
+
+                command.ExecuteNonQuery();
+
+            }
+
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "INSERT INTO " + RTABLE + " (user_id, pin_id, review) VALUES (@UserId, @PinId, @Review);";
+                command.Parameters.AddWithValue("@UserId", id);
+                command.Parameters.AddWithValue("@PinId", pinid);
+                command.Parameters.AddWithValue("@Review", vote);
+
+                command.ExecuteNonQuery();
+            }
+            connection.Close();
         }
     }
 }
