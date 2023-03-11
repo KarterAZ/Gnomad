@@ -211,7 +211,7 @@ namespace TravelCompanionAPI.Data
             return true; //TODO: Error handling here.
         }
 
-        //Register a user's review of a pin
+        //Register a user's review of a pin - vote values: 0 = down vote, 1 = up vote
         public void review(int id, int pinid, int vote)
         {
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
