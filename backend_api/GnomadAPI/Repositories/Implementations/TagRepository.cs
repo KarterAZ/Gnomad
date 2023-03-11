@@ -110,7 +110,7 @@ namespace TravelCompanionAPI.Data
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "INSERT INTO " + TABLE + " (id, type) VALUES (@ID, @Type);";
-                command.Parameters.AddWithValue("@Id", tag.Id);
+                command.Parameters.AddWithValue("@ID", tag.Id);
                 command.Parameters.AddWithValue("@Type", tag.Type);
 
                 command.ExecuteNonQuery();

@@ -136,7 +136,7 @@ namespace TravelCompanionAPI
             });
 
             //Adds dependency injection so that UserRepository gets called wherever IUserRepository gets called
-            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IUserRepository, UserRepository>(); //IMPORTANT: If changed, update user model since it can't do dependency injection :(
             //Adds dependency injection so that PinTagRepository gets called wherever IPinTagRepository gets called
             services.AddTransient<IPinTagRepository, PinTagRepository>();
             //Adds dependency injection so that PinRepository gets called wherever IPinRepository gets called
@@ -148,6 +148,8 @@ namespace TravelCompanionAPI
             services.AddTransient<ITagRepository, TagRepository>();
             //Adds dependency injection so that CellularRepository gets called wherever ICellRepository gets called
             services.AddTransient<ICellularRepository, CellularRepository>();
+            //Adds dependency injection so that RouteRepository gets called wherever IRouteRepository gets called
+            services.AddTransient<IRouteRepository, RouteRepository>();
             //Adds a singleton to UserRepository
             services.AddSingleton<UserRepository>();
             //Adds a singleton to PinRepository

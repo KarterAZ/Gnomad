@@ -9,12 +9,9 @@
 
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Data;
-using TravelCompanionAPI.Extras;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace TravelCompanionAPI.Controllers

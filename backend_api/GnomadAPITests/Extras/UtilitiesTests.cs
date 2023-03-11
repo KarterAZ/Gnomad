@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TravelCompanionAPI.Models;
 
 namespace TravelCompanionAPI.Extras.Tests
 {
     [TestClass()]
-    public class UtilitiesTests
+    public class UtilitiesTests //TODO: Not in untilities anymore. Rename?
     {
         [TestMethod()]
         public void parseFirstNameTest()
@@ -17,7 +18,7 @@ namespace TravelCompanionAPI.Extras.Tests
             var full_name = "Bryce Schultz";
             var expected = "Bryce";
 
-            var result = Utilities.parseFirstName(full_name);
+            var result = User.parseFirstName(full_name);
 
             Assert.AreEqual(expected, result);
         }
@@ -28,7 +29,7 @@ namespace TravelCompanionAPI.Extras.Tests
             var full_name = "Bryce Schultz";
             var expected = "Schultz";
 
-            var result = Utilities.parseLastName(full_name);
+            var result = User.parseLastName(full_name);
 
             Assert.AreEqual(expected, result);
         }
@@ -39,7 +40,7 @@ namespace TravelCompanionAPI.Extras.Tests
             var full_name = "Bryce";
             var expected = "Bryce";
 
-            var result = Utilities.parseFirstName(full_name);
+            var result = User.parseFirstName(full_name);
 
             Assert.AreEqual(expected, result);
         }
@@ -50,7 +51,7 @@ namespace TravelCompanionAPI.Extras.Tests
             var full_name = "Bryce";
             var expected = "";
 
-            var result = Utilities.parseLastName(full_name);
+            var result = User.parseLastName(full_name);
 
             Assert.AreEqual(expected, result);
         }

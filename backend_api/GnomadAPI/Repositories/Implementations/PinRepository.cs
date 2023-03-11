@@ -138,7 +138,7 @@ namespace TravelCompanionAPI.Data
             {
                 command2.Connection = connection;
                 command2.CommandType = CommandType.Text;
-                command2.CommandText = "SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+                command2.CommandText = @"SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
 
                 MySqlParameter idParameter;
 
@@ -356,7 +356,6 @@ namespace TravelCompanionAPI.Data
         public bool add(Pin pin)
         {
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
-            int DatabasePinId;
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -371,7 +370,7 @@ namespace TravelCompanionAPI.Data
 
                 command.ExecuteNonQuery();
 
-                DatabasePinId = (int)command.LastInsertedId;
+                pin.Id = (int)command.LastInsertedId;
             }
             
             using (MySqlCommand command = new MySqlCommand())
@@ -379,7 +378,7 @@ namespace TravelCompanionAPI.Data
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = "INSERT INTO " + TAG_TABLE + " (pin_id, tag_id) VALUES (@pin_id, @tag_id);";
-                command.Parameters.AddWithValue("@pin_id", DatabasePinId);
+                command.Parameters.AddWithValue("@pin_id", pin.Id);
 
                 MySqlParameter tagIdParameter;
                 
