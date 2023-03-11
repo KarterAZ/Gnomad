@@ -77,7 +77,7 @@ namespace TravelCompanionAPI.Controllers
 
             return new JsonResult(Ok(_user_database.voted(user.Id, pinid)));
         }
-        [HttpPost("review/{int pinid}/{vote}")]
+        [HttpPost("review/{pinid}/{vote}")]
         public JsonResult review(int pinid, int vote)
         {
             var identity = (User.Identity as ClaimsIdentity);
