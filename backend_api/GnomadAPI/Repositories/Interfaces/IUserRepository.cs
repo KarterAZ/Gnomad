@@ -31,5 +31,7 @@ namespace TravelCompanionAPI.Data
         public void review(int id, int pinid, int vote);
 
         public bool voted(int uid, int pinid);
+
+        public int getVote(int uid, int pinid);
     }
 }

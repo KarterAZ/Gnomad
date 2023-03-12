@@ -265,5 +265,40 @@ namespace TravelCompanionAPI.Data
                 return count > 0;
             }
         }
+
+        //Checks if the vote exists, then returns the value of that user's vote. Returns -1 if it doesn't exist.
+        public int getVote(int uid, int pinid)
+        {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+            int review = -1;
+
+            if (voted(uid, pinid))
+            {
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT review FROM " + RTABLE + " WHERE user_id=@UserId AND pin_id=@PinId;";
+                    command.Parameters.AddWithValue("@UserId", uid);
+                    command.Parameters.AddWithValue("@PinId", pinid);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            review = reader.GetInt32("review");
+                        }
+                    }
+
+                    connection.Close();
+                }
+            }
+            else
+            {
+                connection.Close();
+            }
+
+            return review;
+        }
     }
 }
