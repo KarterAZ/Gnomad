@@ -33,3 +33,47 @@
 .creating-pin { 
   cursor: url('./pin.png') 12 38, auto !important;
 }
+
+.info-window
+{
+  display: flex;
+  flex-direction: column;
+
+  transform: translate(-38%, -100px);
+  padding: 10px;
+  width: 160px;
+  max-width: 200px;
+
+  background-color: var(--secondary-background);
+
+  border: 1px solid var(--secondary-background-accent);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.info-window-header
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+.header-button
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
+  width: 25px;
+}
+
+.favorite-button
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
+  width: 25px;
+}

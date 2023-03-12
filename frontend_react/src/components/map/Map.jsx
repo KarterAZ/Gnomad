@@ -109,7 +109,7 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
     }
   };
 
-  //Toggles statebetween true/false 
+  //Toggles state between true/false 
   const handleFavoriteClick = () => {
     setIsFavorite((currentIsFavorite) => !currentIsFavorite);
   }
@@ -130,61 +130,57 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
         onClick={() => setShowInfoWindow(!showInfoWindow)}//toggles useState whether to display the InfoWindow upon marker click
       />
       {showInfoWindow && (//Customized InfoWindow, was having too much trouble using google map's 
-        <div
-          style={{
-            position: 'absolute',
-            top: '-100px',
-            left: '-60px',
-            backgroundColor: 'white',
-            padding: '10px',
-            border: '1px solid black',
-            borderRadius: '10px',
-            width: '140px',
-            maxWidth: '200px',
-            textAlign: 'center',
-          }}
-        >
-          <div style={{ marginBottom: '10px' }}>{name}</div>
-          <div>{description}</div>
+        <div className='info-window'>
+          <div className='info-window-header'>
+            {/* Favorite Button */}
+            <div>
+              <button className='header-button' onClick={handleFavoriteClick}>
+                {isFavorite ? "❤️" : "♡"}
+              </button>
+            </div>
 
-          {/* Reputation Display */}
-          <div style={{ marginBottom: '10px' }}>
-            Reputation: {" "}
-            {/*Conditional: if null "None" | else if 1 thumbsUp | else -1 thumbsDown */}
-            {reputation === null ? "None" : reputation === "1" ? "👍" : "👎"}
-          </div>
+            <div>{name}</div>
 
-          {/* Reputation Menu*/}
-          <div>
-            {/* button with onClick event listener to toggle menu*/}
-            <button onClick={() => setMenuOpen(!menuOpen)} style={{ position: 'absolute', top: '2px', right: '2px', }} >
+            <button className='header-button' onClick={() => setMenuOpen(!menuOpen)}>
               {/*Conditional: if 1 thumbsUp | else if -1 thumbsDown | else default icon*/}
               {reputation === "1" ? "👍" : reputation === "-1" ? "👎" : "⭐"}
             </button>
-            {menuOpen && (
-              <div>
-                {/*Reputation Buttons*/}
-                <button // disables button if thumbsUp already selected, onClick updates useState
-                  disabled={reputation == "1"}
-                  onClick={() => handleReputationClick("1")}
-                >
-                  👍
-                </button>
-                <button // disables button if thumbsDown already selected, onClick updates useState
-                  disabled={reputation === "-1"}
-                  onClick={() => handleReputationClick("-1")}
-                >
-                  👎
-                </button>
-              </div>
-            )}
+          </div>
+          
+          <div className='info-window-body'>
+            <div>{description}</div>
           </div>
 
-          {/* Favorite Button */}
-          <div style={{ position: 'absolute', top: '2px', left: '2px', }}>
-            <button onClick={handleFavoriteClick}>
-              {isFavorite ? "❤️" : "♡"}
-            </button>
+          <div className='info-window-reputation'>
+            <div style={{ marginBottom: '10px' }}>
+              Reputation: {" "}
+              {/*Conditional: if null "None" | else if 1 thumbsUp | else -1 thumbsDown */}
+              {reputation === null ? "None" : reputation === "1" ? "👍" : "👎"}
+            </div>
+          </div>
+
+          <div className='info-window-rating'>
+            <div>
+              {/* button with onClick event listener to toggle menu*/}
+              
+              {menuOpen && (
+                <div>
+                  {/*Reputation Buttons*/}
+                  <button // disables button if thumbsUp already selected, onClick updates useState
+                    disabled={reputation == "1"}
+                    onClick={() => handleReputationClick("1")}
+                  >
+                    👍
+                  </button>
+                  <button // disables button if thumbsDown already selected, onClick updates useState
+                    disabled={reputation === "-1"}
+                    onClick={() => handleReputationClick("-1")}
+                  >
+                    👎
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

@@ -9,7 +9,7 @@
 
 // internal imports.
 import { post } from './api';
-import { sstore, sget } from '../session_storage';
+import { session_store, session_get } from '../session_storage';
 import { setCookie } from '../cookies';
 
 // this function makes a post request to user/login
@@ -30,7 +30,7 @@ export default async function login(token)
     // the session variable for logged_in to true.
     if (user !== undefined)
     {
-        sstore(logged_in_key, true);
+        session_store(logged_in_key, true);
     }
 
     return user;
@@ -40,10 +40,10 @@ export async function logout()
 {
     // on logout set the session variable to 
     // false, and remove the id_token cookie.
-    sstore(logged_in_key, false);
+    session_store(logged_in_key, false);
 }
 
 export function isLoggedIn()
 {
-    return sget(logged_in_key);
+    return session_get(logged_in_key);
 }
