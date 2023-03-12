@@ -88,5 +88,17 @@ namespace TravelCompanionAPI.Controllers
             
             return new JsonResult(Ok());
         }
+
+        [HttpPost("getVote/{pinid}")]
+        public int getVote(int pinid)
+        {
+            var identity = (User.Identity as ClaimsIdentity);
+
+            User user = new User(identity);
+
+            int uVote = _user_database.getVote(user.Id, pinid);
+
+            return uVote;
+        }
     }
 }

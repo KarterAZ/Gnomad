@@ -40,5 +40,7 @@ namespace TravelCompanionAPI.Data
         public List<Pin> getByName(string searchString);
 
         public List<Pin> getByCity(string searchString);
+
+        public int getAverageVote(int pinid);
     }
 }
