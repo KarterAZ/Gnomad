@@ -87,6 +87,9 @@ export function LoginButton()
         logo_alignment: 'left',
       });
     }
+    // disable invalid warning about g_sso.current
+    // not needing to be a dependency, it does.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [g_sso.current]);
 
   if (logged_in === false)

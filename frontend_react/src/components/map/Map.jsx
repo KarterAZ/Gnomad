@@ -24,15 +24,15 @@ import { get } from '../../utilities/api/api.js';
 import Sidebar from '../sidebar/Sidebar'
 
 
-import pin from './pin.png';
-import bathroom from './restroom.svg';
-import fuel from './gas-station-svgrepo-com.svg';
+import pin from '../../images/Pin.png';
+import bathroom from '../../images/Restroom.png';
+import fuel from '../../images/Gas.png';
 
-import diesel from './gas-station-fuel-svgrepo-com.svg';
-import wifi from './free-wifi-svgrepo-com.svg';
-import electric from './tesla-svgrepo-com.svg';
+import diesel from '../../images/Diesel.png';
+import wifi from '../../images/WiFi.png';
+import electric from '../../images/Charger.png';
 
-import getH3All from '../../utilities/api/get_cell_data';
+//import getH3All from '../../utilities/api/get_cell_data';
 
 
 //can later make the default lat/lng be user's location?
@@ -45,14 +45,14 @@ const defaultProps =
   },
 };
 
-const handleApiLoaded = (map, maps) => 
+/*const handleApiLoaded = (map, maps) => 
 {
-  /*const triangleCoords = [
+  const triangleCoords = [
       { lat: 25.774, lng: -80.19 },
       { lat: 18.466, lng: -66.118 },
       { lat: 32.321, lng: -64.757 },
       { lat: 25.774, lng: -80.19 }
-  ];*/
+  ];
 
   const triangleCoords = getH3All();
 
@@ -68,14 +68,14 @@ const handleApiLoaded = (map, maps) =>
   );
 
   bermudaTriangle.setMap(map);
-}
+}*/
 
 //Array of markers that gets used to populate map, eventually will be filled with pin data from database
 const presetMarkers = [
   { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, name: "Restroom", description: " Brevada" },
   { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, name: "Gas Station", description: "Pilot" },
   { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, name: "Pin", description: "Oregon Tech" },
-  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, name: "Supercharger", description: "Oregon Tech Parking Lot F Oregon Tech Parking Lot F Oregon Tech Parking Lot F Oregon Tech Parking Lot F Oregon Tech Parking Lot F Oregon Tech Parking Lot F Oregon Tech Parking Lot F" },
+  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, name: "Supercharger", description: "Oregon Tech Parking Lot F" },
   { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, name: "Free Wifi", description: "College Union Guest Wifi" },
 ];
 
@@ -130,7 +130,7 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) =>
   }, [reputation]);
 
   return (
-    <div>
+    <div className='marker-container'>
       <img //area responsible for marker image  
         className='marker'
         src={image}
@@ -149,9 +149,9 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) =>
               </button>
             </div>
 
-            <div>{name}</div>
+            <div className='pin-title'>{name}</div>
 
-            <button className='header-button' onClick={() => setMenuOpen(!menuOpen)}>
+            <button tooltip='Rating' className='header-button' onClick={() => setMenuOpen(!menuOpen)}>
               {/*Conditional: if 1 thumbsUp | else if -1 thumbsDown | else default icon*/}
               {reputation === THUMBS_UP ? "👍" : reputation === THUMBS_DOWN ? "👎" : "⭐"}
             </button>
@@ -177,12 +177,14 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) =>
                   <div>
                     {/*Reputation Buttons*/}
                     <button // disables button if thumbsUp already selected, onClick updates useState
-                      disabled={reputation == THUMBS_UP}
+                      className='reputation-button'
+                      disabled={reputation === THUMBS_UP}
                       onClick={() => handleReputationClick(THUMBS_UP)}
                     >
                       👍
                     </button>
                     <button // disables button if thumbsDown already selected, onClick updates useState
+                      className='reputation-button'
                       disabled={reputation === THUMBS_DOWN}
                       onClick={() => handleReputationClick(THUMBS_DOWN)}
                     >
@@ -217,7 +219,7 @@ export default function Map() {
   //Function handling onclick events on the map that will result in marker creation
   const handleCreatePin = (event) => {
 
-    if (markerCreationEnabled && selectedPinType !="") {
+    if (markerCreationEnabled && selectedPinType !== "") {
       let pinImage = '';
       switch (selectedPinType) {
         case 'pin':
@@ -238,6 +240,8 @@ export default function Map() {
         case 'diesel':
           pinImage = diesel;
           break;
+        default:
+          pinImage = pin;
       }
 
       //Adds marker to array that gets rendered (Eventually will have to add a pin to the database)

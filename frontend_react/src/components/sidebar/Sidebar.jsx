@@ -16,7 +16,6 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 
 // internal imports.
 import { LoginButton } from '../login_button/LoginButton';
-import { Map } from '../map/Map.jsx';
 
 import './sidebar.css';
 
@@ -46,14 +45,6 @@ export default function Sidebar({ toggleMarkerCreation }) {
   const search = async () => {
     const query = document.getElementById('search-bar').value;
     console.log(query);
-  }
-
-  const create = () => {
-    let select = document.getElementById('pin-select');
-
-    if (select.value === '4') {
-      navigate('routes');
-    }
   }
 
   const createPin = () => {
