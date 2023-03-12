@@ -100,6 +100,7 @@ namespace TravelCompanionAPI.Data
         public List<string> getAllH3(int offset)
         {
             List<string> h3_oregon_data = new List<string>();
+            offset = offset * 70000;
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -112,7 +113,7 @@ namespace TravelCompanionAPI.Data
                 {
                     while (reader.Read())
                     {
-                        String cellular = reader.GetString(4);
+                        String cellular = reader.GetString(0);
                         h3_oregon_data.Add(cellular);
                     }
                 }
@@ -138,12 +139,11 @@ namespace TravelCompanionAPI.Data
             }
 
             return coords;
-            //return geolist;
         }
 
-        public List<decimal> getHexCoords()
+        public List<decimal> getHexCoords(int pass)
         {
-            List<string> h3ids = getAllH3(0);
+            List<string> h3ids = getAllH3(pass);
             List<decimal> coords = new List<decimal>();
             H3Index h3;
             GeoBoundary geoBounds;

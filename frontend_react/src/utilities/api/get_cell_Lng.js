@@ -10,11 +10,11 @@
 // internal imports.
 import { get, isAuthenticated} from './api';
 
-export default async function getLngAll() {
+export default async function getLngAll(pass) {
 
-    //if (!isAuthenticated()) return null;
+    if (!isAuthenticated()) return null;
 
-    const response = await get('h3_oregon_data/allHexCoords');
+    const response = await get('h3_oregon_data/allHexCoords?' + pass);
 
     if (response)
         console.log("response from lng");

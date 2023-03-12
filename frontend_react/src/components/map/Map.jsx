@@ -91,7 +91,11 @@ const handleApiLoaded = async(map, maps) => {
 
     var latLngArray = [];
     //var latArray = await getLatAll();
-    var lngArray = await getLngAll();
+    var lngArray = await getLngAll(0);
+
+    var latLng2Array = [];
+    //var latArray = await getLatAll();
+    var latArray = await getLngAll(1);
 
     /*for (var i = 0; i < latArray.length; i++) {
         latArray[i] += 42;
@@ -114,6 +118,20 @@ const handleApiLoaded = async(map, maps) => {
         fillOpacity: 0.35
     });
     bermudaTriangles.push(bermudaTriangle);
+
+    for (let i = 0; i < latArray.length; i += 2) {
+        let gData = new maps.LatLng(parseFloat(latArray[i]), parseFloat(latArray[i + 1]));
+        latLng2Array.push(gData);
+    }
+    var bermudaTriangle2 = new maps.Polygon({
+        paths: latLng2Array, //triangleCoords,
+        strokeColor: "#FF0000",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: "#AA0000",
+        fillOpacity: 0.35
+    });
+    bermudaTriangles.push(bermudaTriangle2);
 
     for (let i = 0; i < bermudaTriangles.length; i++) {
         bermudaTriangles[i].setMap(map);

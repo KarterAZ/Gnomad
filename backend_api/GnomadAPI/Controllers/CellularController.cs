@@ -76,10 +76,10 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(h3Array));
         }
 
-        [HttpGet("allHexCoords")]
-        public JsonResult getHexCoords()
+        [HttpGet("allHexCoords/{pass}")]
+        public JsonResult getHexCoords(int pass)
         {
-            List<decimal> h3List = _repo.getHexCoords();
+            List<decimal> h3List = _repo.getHexCoords(pass);
 
             decimal[] h3Array = h3List.ToArray();
 
