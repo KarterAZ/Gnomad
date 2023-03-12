@@ -69,15 +69,14 @@ const handleApiLoaded = (map, maps) => {
 
 //Array of markers that gets used to populate map, eventually will be filled with pin data from database
 const presetMarkers = [
-  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, name: "Restroom", description: " Brevada" },
-  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, name: "Gas Station", description: "Pilot" },
-  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, name: "Pin", description: "Oregon Tech" },
-  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, name: "Supercharger", description: "Oregon Tech Parking Lot F" },
-  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, name: "Free Wifi", description: "College Union Guest Wifi" },
+  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, title: "Restroom", street: " Brevada" },
+  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, title: "Gas Station", street: "Pilot" },
+  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, title: "Pin", street: "Oregon Tech" },
+  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, title: "Supercharger", street: "Oregon Tech Parking Lot F" },
+  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, title: "Free Wifi", street: "College Union Guest Wifi" },
 ];
-
 //General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separte versions 
-const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
+const CustomMarker = ({ lat, lng, title, street, description, onClick }) => {
 
   //TODO: Custom marker is starting to get really big, consider making it into a component in it's own class?
   // such as Marker.jsx , could benefit from having it's own .css file.
@@ -144,8 +143,8 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
             textAlign: 'center',
           }}
         >
-          <div style={{ marginBottom: '10px' }}>{name}</div>
-          <div>{description}</div>
+          <div style={{ marginBottom: '10px' }}>{title}</div>
+          <div>{street}</div>
 
           {/* Reputation Display */}
           <div style={{ marginBottom: '10px' }}>
@@ -210,7 +209,7 @@ export default function Map() {
   //Function handling onclick events on the map that will result in marker creation
   const handleCreatePin = (event) => {
 
-    if (markerCreationEnabled && selectedPinType !="") {
+    if (markerCreationEnabled && selectedPinType != "") {
       let pinImage = '';
       switch (selectedPinType) {
         case 'pin':
@@ -238,37 +237,75 @@ export default function Map() {
         lat: event.lat,
         lng: event.lng,
         image: pinImage,
-        name: selectedPinType,
-        description: 'placeholder text',
+        title: selectedPinType,
+        street: 'placeholder text',
       }]);
       setMarkerCreationEnabled(false);
     }
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        /*If getting the following erros:
-        //-----------------------------------------------------------------------
-        // getting error "Failed to load resource: net::ERR_CONNECTION_REFUSED" 
-        // also getting "TypeError: Failed to fetch"
-        //-----------------------------------------------------------------------
-        // Make sure to run backend TravelCompanionApi to fix
-        //
-        // Currently returns 401 unauthorized access, need to figure out how to get authorization? api.js? 
-        */
-        const response = await get('pins/all');
-        setMarkers(response.map(marker => ({
+  const handleMapChange = ({ center, zoom, bounds }) => {
+
+    const { lat, lng } = center;
+    const { lat: latStart, lng: longStart } = bounds.sw;
+    const latRange = bounds.ne.lat - bounds.sw.lat;
+    const longRange = bounds.ne.lng - bounds.sw.lng;
+    console.log(lat, lng, latRange, longRange);
+    fetchData(lat, lng, latRange, longRange);
+  };
+
+  /*If getting the error:
+  //-----------------------------------------------------------------------
+  // getting error "Failed to load resource: net::ERR_CONNECTION_REFUSED" 
+  //-----------------------------------------------------------------------
+  // Make sure to run backend TravelCompanionApi to fix
+  //TODO: Update switch statement to seperate between customer/free wifi/bathroom when marker resources finalized
+  //TODO: always goes to the default option, fix tag reading from DB.
+  */
+  const fetchData = async (latStart, longStart, latRange, longRange) => {
+    try {
+      const response = await get(`pins/getAllInArea?latStart=${latStart}&longStart=${longStart}&latRange=${latRange}&longRange=${longRange}`);
+      let imageType;
+      //adjusts marker imageType depending on json response 
+      const markers = response.map(marker => {
+        switch (marker.tags[0]) {
+          case 1:
+          case 2:
+            imageType = bathroom;
+            break;
+          case 3:
+            imageType = electric;
+            break;
+          case 4:
+            imageType = fuel;
+            break;
+          case 5:
+            imageType = diesel;
+            break;
+          case 7:
+          case 8:
+            imageType = wifi;
+          default:
+            imageType = pin;
+            break;
+        }
+        return {
           lat: marker.latitude,
           lng: marker.longitude,
-          image: pin,
-        })));
-      } catch (error) {
-        console.error(error);
-      }
+          image: imageType,
+          title: marker.street,
+          street: marker.title,
+
+        };
+      });
+      console.log(markers);
+      setMarkers(markers);
+
+    } catch (error) {
+      console.error(error);
     }
-    fetchData();
-  }, []);
+  }
+
   return (
     <div id='map'>
       <div id='wrapper'>
@@ -283,13 +320,14 @@ export default function Map() {
 
           >
 
-            {markers.map((marker, index) => ( //Renders presetMarkers on the map
+            {[...markers, ...presetMarkers].map((marker, index) => (//Renders presetMarkers on the map
               <CustomMarker
                 key={index}
                 lat={marker.lat}
                 lng={marker.lng}
                 name={marker.name}
-                description={marker.description}
+
+                street={marker.street}
                 image={marker.image}
               //onClick={() => handleMarkerClick(marker)}
 
