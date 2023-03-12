@@ -7,8 +7,7 @@
 //
 //################################################################
 
-import React, { Component, useState, useRef, useEffect } from 'react';
-
+import React, { useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 
 //import h3 from 'h3-js/legacy';
@@ -18,7 +17,6 @@ import GoogleMapReact from 'google-map-react';
 
 // internal imports.
 import './map.css';
-//import getAll from '../../utilities/api/get_cell_data';
 
 
 // internal imports.
@@ -38,7 +36,8 @@ import getH3All from '../../utilities/api/get_cell_data';
 
 
 //can later make the default lat/lng be user's location?
-const defaultProps = {
+const defaultProps = 
+{
   zoom: 6,
   center: {
     lat: 42.2565,
@@ -46,7 +45,8 @@ const defaultProps = {
   },
 };
 
-const handleApiLoaded = (map, maps) => {
+const handleApiLoaded = (map, maps) => 
+{
   /*const triangleCoords = [
       { lat: 25.774, lng: -80.19 },
       { lat: 18.466, lng: -66.118 },
@@ -56,14 +56,17 @@ const handleApiLoaded = (map, maps) => {
 
   const triangleCoords = getH3All();
 
-  var bermudaTriangle = new maps.Polygon({
-    paths: triangleCoords,
-    strokeColor: "#FF0000",
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-    fillColor: "#FF0000",
-    fillOpacity: 0.35
-  });
+  var bermudaTriangle = new maps.Polygon(
+    {
+      paths: triangleCoords,
+      strokeColor: "#FF0000",
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: "#FF0000",
+      fillOpacity: 0.35
+    }
+  );
+
   bermudaTriangle.setMap(map);
 }
 
@@ -72,13 +75,15 @@ const presetMarkers = [
   { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, name: "Restroom", description: " Brevada" },
   { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, name: "Gas Station", description: "Pilot" },
   { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, name: "Pin", description: "Oregon Tech" },
-  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, name: "Supercharger", description: "Oregon Tech Parking Lot F" },
+  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, name: "Supercharger", description: "Oregon Tech Parking Lot F Oregon Tech Parking Lot F Oregon Tech Parking Lot F Oregon Tech Parking Lot F Oregon Tech Parking Lot F Oregon Tech Parking Lot F Oregon Tech Parking Lot F" },
   { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, name: "Free Wifi", description: "College Union Guest Wifi" },
 ];
 
-//General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separte versions 
-const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
-
+//General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separate versions 
+const CustomMarker = ({ lat, lng, image, name, description, onClick }) => 
+{
+  const THUMBS_UP = "1";
+  const THUMBS_DOWN = "-1";
   //TODO: Custom marker is starting to get really big, consider making it into a component in it's own class?
   // such as Marker.jsx , could benefit from having it's own .css file.
 
@@ -97,11 +102,14 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
   //Initially had an incrementer/decrementer but this version just stores one state
   //of the user, eventually needs to be connected to the database to get a finalized
   //reputation count on each marker
-  const handleReputationClick = (value) => {
-    if (reputation === null) {
+  const handleReputationClick = (value) => 
+  {
+    if (reputation === null) 
+    {
       setReputation(value)
-    }
-    else {
+    } 
+    else 
+    {
       //if currentRep is equal to value reset reputation value to null, else assign value
       setReputation((currentReputation) =>
         currentReputation === value ? null : value
@@ -110,11 +118,13 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
   };
 
   //Toggles state between true/false 
-  const handleFavoriteClick = () => {
+  const handleFavoriteClick = () => 
+  {
     setIsFavorite((currentIsFavorite) => !currentIsFavorite);
   }
 
-  useEffect(() => {
+  useEffect(() => 
+  {
     //Toggles menu to close whenever the reputation useState changes (selection is made)
     setMenuOpen(false);
   }, [reputation]);
@@ -122,9 +132,9 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
   return (
     <div>
       <img //area responsible for marker image  
+        className='marker'
         src={image}
         alt="marker"
-        style={{ position: 'absolute', width: '50px', height: '50px', }}
         lat={lat}
         lng={lng}
         onClick={() => setShowInfoWindow(!showInfoWindow)}//toggles useState whether to display the InfoWindow upon marker click
@@ -135,7 +145,7 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
             {/* Favorite Button */}
             <div>
               <button className='header-button' onClick={handleFavoriteClick}>
-                {isFavorite ? "❤️" : "♡"}
+                {isFavorite ? "❤️" : "🖤"}
               </button>
             </div>
 
@@ -143,7 +153,7 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
 
             <button className='header-button' onClick={() => setMenuOpen(!menuOpen)}>
               {/*Conditional: if 1 thumbsUp | else if -1 thumbsDown | else default icon*/}
-              {reputation === "1" ? "👍" : reputation === "-1" ? "👎" : "⭐"}
+              {reputation === THUMBS_UP ? "👍" : reputation === THUMBS_DOWN ? "👎" : "⭐"}
             </button>
           </div>
           
@@ -155,31 +165,32 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) => {
             <div style={{ marginBottom: '10px' }}>
               Reputation: {" "}
               {/*Conditional: if null "None" | else if 1 thumbsUp | else -1 thumbsDown */}
-              {reputation === null ? "None" : reputation === "1" ? "👍" : "👎"}
+              {reputation === null ? "None" : reputation === THUMBS_UP ? "👍" : "👎"}
             </div>
           </div>
 
           <div className='info-window-rating'>
             <div>
               {/* button with onClick event listener to toggle menu*/}
-              
-              {menuOpen && (
-                <div>
-                  {/*Reputation Buttons*/}
-                  <button // disables button if thumbsUp already selected, onClick updates useState
-                    disabled={reputation == "1"}
-                    onClick={() => handleReputationClick("1")}
-                  >
-                    👍
-                  </button>
-                  <button // disables button if thumbsDown already selected, onClick updates useState
-                    disabled={reputation === "-1"}
-                    onClick={() => handleReputationClick("-1")}
-                  >
-                    👎
-                  </button>
-                </div>
-              )}
+              {
+                menuOpen && (
+                  <div>
+                    {/*Reputation Buttons*/}
+                    <button // disables button if thumbsUp already selected, onClick updates useState
+                      disabled={reputation == THUMBS_UP}
+                      onClick={() => handleReputationClick(THUMBS_UP)}
+                    >
+                      👍
+                    </button>
+                    <button // disables button if thumbsDown already selected, onClick updates useState
+                      disabled={reputation === THUMBS_DOWN}
+                      onClick={() => handleReputationClick(THUMBS_DOWN)}
+                    >
+                      👎
+                    </button>
+                  </div>
+                )
+              }
             </div>
           </div>
         </div>
