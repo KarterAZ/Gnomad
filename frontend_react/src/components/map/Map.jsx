@@ -72,15 +72,15 @@ const defaultProps =
 
 //Array of markers that gets used to populate map, eventually will be filled with pin data from database
 const presetMarkers = [
-  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, name: "Restroom", description: " Brevada" },
-  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, name: "Gas Station", description: "Pilot" },
-  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, name: "Pin", description: "Oregon Tech" },
-  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, name: "Supercharger", description: "Oregon Tech Parking Lot F" },
-  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, name: "Free Wifi", description: "College Union Guest Wifi" },
+  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", description: " Brevada" },
+  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", description: "Pilot" },
+  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", description: "Oregon Tech" },
+  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", description: "Oregon Tech Parking Lot F" },
+  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
 ];
 
 //General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separate versions 
-const CustomMarker = ({ lat, lng, image, name, description, onClick }) => 
+const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) => 
 {
   const THUMBS_UP = "1";
   const THUMBS_DOWN = "-1";
@@ -95,9 +95,6 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) =>
 
   //State declared for setting marker as a favorite true/false
   const [isFavorite, setIsFavorite] = useState(false);
-
-  //State declared for opening reputation menu
-  const [menuOpen, setMenuOpen] = useState(false);
 
   //Initially had an incrementer/decrementer but this version just stores one state
   //of the user, eventually needs to be connected to the database to get a finalized
@@ -123,12 +120,6 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) =>
     setIsFavorite((currentIsFavorite) => !currentIsFavorite);
   }
 
-  useEffect(() => 
-  {
-    //Toggles menu to close whenever the reputation useState changes (selection is made)
-    setMenuOpen(false);
-  }, [reputation]);
-
   return (
     <div className='marker-container'>
       <img //area responsible for marker image  
@@ -143,21 +134,34 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) =>
         <div className='info-window'>
           <div className='info-window-header'>
             {/* Favorite Button */}
-            <div>
+            <div className='header-button-wrapper'>
               <button className='header-button' onClick={handleFavoriteClick}>
                 {isFavorite ? "❤️" : "🖤"}
               </button>
             </div>
 
-            <div className='pin-title'>{name}</div>
+            <div className='pin-title'>{type}</div>
 
-            <button tooltip='Rating' className='header-button' onClick={() => setMenuOpen(!menuOpen)}>
-              {/*Conditional: if 1 thumbsUp | else if -1 thumbsDown | else default icon*/}
-              {reputation === THUMBS_UP ? "👍" : reputation === THUMBS_DOWN ? "👎" : "⭐"}
-            </button>
+            <div className='header-button-wrapper'>
+              <button
+                className='header-button'
+                disabled={reputation === THUMBS_UP}
+                onClick={() => handleReputationClick(THUMBS_UP)}
+              >
+                👍
+              </button>
+              <button
+                className='header-button'
+                disabled={reputation === THUMBS_DOWN}
+                onClick={() => handleReputationClick(THUMBS_DOWN)}
+              >
+                👎
+              </button>
+            </div>
           </div>
           
           <div className='info-window-body'>
+            <div>{name}</div>
             <div>{description}</div>
           </div>
 
@@ -168,76 +172,57 @@ const CustomMarker = ({ lat, lng, image, name, description, onClick }) =>
               {reputation === null ? "None" : reputation === THUMBS_UP ? "👍" : "👎"}
             </div>
           </div>
-
-          <div className='info-window-rating'>
-            <div>
-              {/* button with onClick event listener to toggle menu*/}
-              {
-                menuOpen && (
-                  <div>
-                    {/*Reputation Buttons*/}
-                    <button // disables button if thumbsUp already selected, onClick updates useState
-                      className='reputation-button'
-                      disabled={reputation === THUMBS_UP}
-                      onClick={() => handleReputationClick(THUMBS_UP)}
-                    >
-                      👍
-                    </button>
-                    <button // disables button if thumbsDown already selected, onClick updates useState
-                      className='reputation-button'
-                      disabled={reputation === THUMBS_DOWN}
-                      onClick={() => handleReputationClick(THUMBS_DOWN)}
-                    >
-                      👎
-                    </button>
-                  </div>
-                )
-              }
-            </div>
-          </div>
         </div>
       )}
     </div>
   );
 };
 
-export default function Map() {
+export default function Map() 
+{
   //State declared for storing markers
   const [markers, setMarkers] = useState(presetMarkers);
 
   //State declared for enabling/disabling marker creation on click with sidebar
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
+  const [selectedPinName, setSelectedPinName] = useState("");
+  const [selectedPinDescription, setSelectedPinDescription] = useState("");
   const [selectedPinType, setSelectedPinType] = useState("");
 
   //Function that toggles the sidebar's create pin option
-  const toggleMarkerCreation = (pinType) => {
+  const toggleMarkerCreation = (pinName, pinDescription, pinType) => 
+  {
     setMarkerCreationEnabled(!markerCreationEnabled);
+    setSelectedPinName(pinName);
+    setSelectedPinDescription(pinDescription);
     setSelectedPinType(pinType);
   };
 
   //Function handling onclick events on the map that will result in marker creation
-  const handleCreatePin = (event) => {
-
-    if (markerCreationEnabled && selectedPinType !== "") {
+  const handleCreatePin = (event) => 
+  {
+    if (markerCreationEnabled && selectedPinType !== "") 
+    {
       let pinImage = '';
-      switch (selectedPinType) {
-        case 'pin':
+      switch (selectedPinType) 
+      {
+        case 'Pin':
           pinImage = pin;
           break;
-        case 'bathroom':
+        case 'Bathroom':
           pinImage = bathroom;
           break;
-        case 'fuel':
+        case 'Fuel':
           pinImage = fuel;
           break;
-        case 'wifi':
+        case 'Wi-Fi':
           pinImage = wifi;
           break;
-        case 'electric':
+        case 'Supercharger':
           pinImage = electric;
           break;
-        case 'diesel':
+        case 'Diesel':
           pinImage = diesel;
           break;
         default:
@@ -245,21 +230,26 @@ export default function Map() {
       }
 
       //Adds marker to array that gets rendered (Eventually will have to add a pin to the database)
-      setMarkers([...markers, {
+      setMarkers([...markers, 
+      {
         lat: event.lat,
         lng: event.lng,
         image: pinImage,
-        name: selectedPinType,
-        description: 'placeholder text',
+        type: selectedPinType,
+        name: selectedPinName,
+        description: selectedPinDescription,
       }]);
       setMarkerCreationEnabled(false);
     }
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        /*If getting the following erros:
+  useEffect(() => 
+  {
+    async function fetchData() 
+    {
+      try 
+      {
+        /*If getting the following errors:
         //-----------------------------------------------------------------------
         // getting error "Failed to load resource: net::ERR_CONNECTION_REFUSED" 
         // also getting "TypeError: Failed to fetch"
@@ -269,49 +259,46 @@ export default function Map() {
         // Currently returns 401 unauthorized access, need to figure out how to get authorization? api.js? 
         */
         const response = await get('pins/all');
-        setMarkers(response.map(marker => ({
+        setMarkers(response.map(marker => (
+        {
           lat: marker.latitude,
           lng: marker.longitude,
           image: pin,
         })));
-      } catch (error) {
+      } 
+      catch (error) 
+      {
         console.error(error);
       }
     }
     fetchData();
   }, []);
-  return (
-    <div id='map'>
-      <div id='wrapper'>
-        <div id='map' >
-          <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
 
+  return (
+      <div id='wrapper'>
+        <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
+        <div id='map'>
           <GoogleMapReact
             bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
             defaultCenter={defaultProps.center}
             defaultZoom={defaultProps.zoom}
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
-
           >
-
             {markers.map((marker, index) => ( //Renders presetMarkers on the map
               <CustomMarker
                 key={index}
                 lat={marker.lat}
                 lng={marker.lng}
+                type={marker.type}
                 name={marker.name}
                 description={marker.description}
                 image={marker.image}
-              //onClick={() => handleMarkerClick(marker)}
-
               />
             ))}
 
           </GoogleMapReact>
         </div >
-
       </div>
-    </div>
   );
 }
 /** TODO: Change cursor image upon selection of sidebar pin

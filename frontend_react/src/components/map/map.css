@@ -4,8 +4,10 @@
 
   z-index: 1;
 
-  width: 100%;
+  flex-grow: 1;
+
   height: 100vh;
+  height: 100svh;
 }
 
 #wrapper 
@@ -58,6 +60,7 @@
 .marker-container:hover .info-window
 {
   bottom: 100px;
+  z-index: 100;
 }
 
 .info-window
@@ -74,7 +77,7 @@
   gap: 6px;
 
   padding: 10px;
-  width: 160px;
+  width: 250px;
   max-width: 200px;
 
   background-color: var(--secondary-background);
@@ -91,6 +94,12 @@
   justify-content: space-between;
   align-items: center;
 
+}
+
+.header-button-wrapper
+{
+  display: flex;
+  min-width: 50px;
 }
 
 .header-button
