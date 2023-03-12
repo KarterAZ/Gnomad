@@ -241,6 +241,7 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(pins));
         }
 
+        //Gets the average review result which is up_vote - down_vote
         [HttpGet("getReview /{pinid}")]
         public int getReview(int pinid)
         {

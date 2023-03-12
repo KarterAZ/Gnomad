@@ -618,7 +618,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT up_vote, down_vote FROM " + PIN_TABLE + " WHERE pin_id=@PinId;";
+                command.CommandText = "SELECT up_vote, down_vote FROM " + PIN_TABLE + " WHERE id=@PinId;";
                 command.Parameters.AddWithValue("@PinId", pinid);
 
                 using (MySqlDataReader reader = command.ExecuteReader())

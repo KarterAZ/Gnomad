@@ -89,6 +89,7 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok());
         }
 
+        //Gets the user's review value from the user_review table
         [HttpGet("getVote/{pinid}")]
         public int getVote(int pinid)
         {
