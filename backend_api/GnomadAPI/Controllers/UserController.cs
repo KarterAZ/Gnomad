@@ -68,5 +68,38 @@ namespace TravelCompanionAPI.Controllers
 
             return new JsonResult(Ok(user));
         }
+        [HttpPost("voted/{pinid}")]
+        public JsonResult voted(int pinid)
+        {
+            var identity = (User.Identity as ClaimsIdentity);
+
+            User user = new User(identity);
+
+            return new JsonResult(Ok(_user_database.voted(user.Id, pinid)));
+        }
+        [HttpPost("review/{pinid}/{vote}")]
+        public JsonResult review(int pinid, int vote)
+        {
+            var identity = (User.Identity as ClaimsIdentity);
+
+            User user = new User(identity);
+
+            _user_database.review(user.Id, pinid, vote);
+            
+            return new JsonResult(Ok());
+        }
+
+        //Gets the user's review value from the user_review table
+        [HttpGet("getVote/{pinid}")]
+        public int getVote(int pinid)
+        {
+            var identity = (User.Identity as ClaimsIdentity);
+
+            User user = new User(identity);
+
+            int uVote = _user_database.getVote(user.Id, pinid);
+
+            return uVote;
+        }
     }
 }

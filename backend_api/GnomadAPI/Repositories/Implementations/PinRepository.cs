@@ -607,5 +607,34 @@ namespace TravelCompanionAPI.Data
             connection.Close();
             return pins;
         }
+
+        //Gets the up_vote and down_vote values by pin id, then returns the average
+        public int getAverageVote(int pinid)
+        {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+            int voteDifference = 0;
+
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT up_vote, down_vote FROM " + PIN_TABLE + " WHERE id=@PinId;";
+                command.Parameters.AddWithValue("@PinId", pinid);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        int upVote = reader.GetInt32("up_vote");
+                        int downVote = reader.GetInt32("down_vote");
+                        voteDifference = upVote - downVote;
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return voteDifference;
+        }
     }
 }
