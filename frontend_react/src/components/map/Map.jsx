@@ -279,6 +279,7 @@ export default function Map()
         <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
         <div id='map'>
           <GoogleMapReact
+            draggable={!markerCreationEnabled}
             bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
             defaultCenter={defaultProps.center}
             defaultZoom={defaultProps.zoom}
