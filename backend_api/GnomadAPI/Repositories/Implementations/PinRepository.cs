@@ -59,8 +59,8 @@ namespace TravelCompanionAPI.Data
                         pin = new Pin();
                         pin.Id = reader.GetInt32(0);
                         pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
+                        pin.Longitude = reader.GetDouble(2);
+                        pin.Latitude = reader.GetDouble(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
                     }
@@ -123,8 +123,8 @@ namespace TravelCompanionAPI.Data
                         Pin pin = new Pin();
                         pin.Id = reader.GetInt32(0);
                         pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
+                        pin.Longitude = reader.GetDouble(2);
+                        pin.Latitude = reader.GetDouble(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
 
@@ -187,8 +187,8 @@ namespace TravelCompanionAPI.Data
                         Pin pin = new Pin();
                         pin.Id = reader.GetInt32(0);
                         pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
+                        pin.Longitude = reader.GetDouble(2);
+                        pin.Latitude = reader.GetDouble(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
 
@@ -247,8 +247,8 @@ namespace TravelCompanionAPI.Data
                         Pin pin = new Pin();
                         pin.Id = reader.GetInt32(0);
                         pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
+                        pin.Longitude = reader.GetDouble(2);
+                        pin.Latitude = reader.GetDouble(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
 
@@ -308,8 +308,8 @@ namespace TravelCompanionAPI.Data
                         Pin pin = new Pin();
                         pin.Id = reader.GetInt32(0);
                         pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
+                        pin.Longitude = reader.GetDouble(2);
+                        pin.Latitude = reader.GetDouble(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
 
@@ -506,8 +506,8 @@ namespace TravelCompanionAPI.Data
                         Pin pin = new Pin();
                         pin.Id = reader.GetInt32(0);
                         pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
+                        pin.Longitude = reader.GetDouble(2);
+                        pin.Latitude = reader.GetDouble(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
 
@@ -571,8 +571,8 @@ namespace TravelCompanionAPI.Data
                         Pin pin = new Pin();
                         pin.Id = reader.GetInt32(0);
                         pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
+                        pin.Longitude = reader.GetDouble(2);
+                        pin.Latitude = reader.GetDouble(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
 
