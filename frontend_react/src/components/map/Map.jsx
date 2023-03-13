@@ -76,7 +76,7 @@ const presetMarkers = [
   { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, title: "Free Wifi", street: "College Union Guest Wifi" },
 ];
 //General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separte versions 
-const CustomMarker = ({ lat, lng, title, street, description, onClick }) => {
+const CustomMarker = ({ lat, lng, image, title, street, onClick }) => {
 
   //TODO: Custom marker is starting to get really big, consider making it into a component in it's own class?
   // such as Marker.jsx , could benefit from having it's own .css file.
@@ -250,8 +250,26 @@ export default function Map() {
     const { lat: latStart, lng: longStart } = bounds.sw;
     const latRange = bounds.ne.lat - bounds.sw.lat;
     const longRange = bounds.ne.lng - bounds.sw.lng;
+
+
     console.log(lat, lng, latRange, longRange);
     fetchData(lat, lng, latRange, longRange);
+   
+    // Remove markers that are not within the current bounds
+   
+    for (let i = 0; i < markers.length; i++) {
+      const marker = markers[i];
+      if (marker.getPosition && 
+          (marker.getPosition().lat() < latStart ||
+           marker.getPosition().lat() > latStart + latRange ||
+           marker.getPosition().lng() < longStart ||
+           marker.getPosition().lng() > longStart + longRange)) {
+        marker.setMap(null);
+        markers.splice(i, 1);
+        i--;
+      }
+    }
+
   };
 
   /*If getting the error:
@@ -317,6 +335,8 @@ export default function Map() {
             defaultCenter={defaultProps.center}
             defaultZoom={defaultProps.zoom}
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
+            onChange={handleMapChange}
+
 
           >
 
