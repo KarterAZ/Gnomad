@@ -7,10 +7,8 @@
 //
 //################################################################
 
-import React, { Component, useState, useRef, useEffect } from 'react';
-
+import React, { useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
-
 
 // internal imports.
 import './map.css';
@@ -21,24 +19,28 @@ import { get, isAuthenticated } from '../../utilities/api/api.js';
 import Sidebar from '../sidebar/Sidebar'
 
 
-import pin from './pin.png';
-import bathroom from './restroom.svg';
-import fuel from './gas-station-svgrepo-com.svg';
+import pin from '../../images/Pin.png';
+import bathroom from '../../images/Restroom.png';
+import fuel from '../../images/Gas.png';
 
-import diesel from './gas-station-fuel-svgrepo-com.svg';
-import wifi from './free-wifi-svgrepo-com.svg';
-import electric from './tesla-svgrepo-com.svg';
+import diesel from '../../images/Diesel.png';
+import wifi from '../../images/WiFi.png';
+import electric from '../../images/Charger.png';
+
 
 import getAllCoords from '../../utilities/api/get_cell_coords';
 
+
 //can later make the default lat/lng be user's location?
-const defaultProps = {
+const defaultProps = 
+{
   zoom: 6,
   center: {
     lat: 42.2565,
     lng: -121.78,
   },
 };
+
 
 const handleApiLoaded = async(map, maps) => {
     var colorNum = 0;
@@ -68,16 +70,21 @@ const handleApiLoaded = async(map, maps) => {
     }
 }
 
+
 //Array of markers that gets used to populate map, eventually will be filled with pin data from database
 const presetMarkers = [
-  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, title: "Restroom", street: " Brevada" },
-  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, title: "Gas Station", street: "Pilot" },
-  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, title: "Pin", street: "Oregon Tech" },
-  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, title: "Supercharger", street: "Oregon Tech Parking Lot F" },
-  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, title: "Free Wifi", street: "College Union Guest Wifi" },
+  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", description: " Brevada" },
+  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", description: "Pilot" },
+  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", description: "Oregon Tech" },
+  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", description: "Oregon Tech Parking Lot F" },
+  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
 ];
-//General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separte versions 
-const CustomMarker = ({ lat, lng, title, street, description, onClick }) => {
+
+//General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separate versions 
+const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) => 
+{
+  const THUMBS_UP = "1";
+  const THUMBS_DOWN = "-1";
 
   //TODO: Custom marker is starting to get really big, consider making it into a component in it's own class?
   // such as Marker.jsx , could benefit from having it's own .css file.
@@ -91,17 +98,17 @@ const CustomMarker = ({ lat, lng, title, street, description, onClick }) => {
   //State declared for setting marker as a favorite true/false
   const [isFavorite, setIsFavorite] = useState(false);
 
-  //State declared for opening reputation menu
-  const [menuOpen, setMenuOpen] = useState(false);
-
   //Initially had an incrementer/decrementer but this version just stores one state
   //of the user, eventually needs to be connected to the database to get a finalized
   //reputation count on each marker
-  const handleReputationClick = (value) => {
-    if (reputation === null) {
+  const handleReputationClick = (value) => 
+  {
+    if (reputation === null) 
+    {
       setReputation(value)
-    }
-    else {
+    } 
+    else 
+    {
       //if currentRep is equal to value reset reputation value to null, else assign value
       setReputation((currentReputation) =>
         currentReputation === value ? null : value
@@ -109,82 +116,64 @@ const CustomMarker = ({ lat, lng, title, street, description, onClick }) => {
     }
   };
 
-  //Toggles statebetween true/false 
-  const handleFavoriteClick = () => {
+  //Toggles state between true/false 
+  const handleFavoriteClick = () => 
+  {
     setIsFavorite((currentIsFavorite) => !currentIsFavorite);
   }
 
-  useEffect(() => {
-    //Toggles menu to close whenever the reputation useState changes (selection is made)
-    setMenuOpen(false);
-  }, [reputation]);
-
   return (
-    <div>
+    <div className='marker-container'>
       <img //area responsible for marker image  
+        className='marker'
         src={image}
         alt="marker"
-        style={{ position: 'absolute', width: '50px', height: '50px', }}
         lat={lat}
         lng={lng}
         onClick={() => setShowInfoWindow(!showInfoWindow)}//toggles useState whether to display the InfoWindow upon marker click
       />
       {showInfoWindow && (//Customized InfoWindow, was having too much trouble using google map's 
-        <div
-          style={{
-            position: 'absolute',
-            top: '-100px',
-            left: '-60px',
-            backgroundColor: 'white',
-            padding: '10px',
-            border: '1px solid black',
-            borderRadius: '10px',
-            width: '140px',
-            maxWidth: '200px',
-            textAlign: 'center',
-          }}
-        >
-          <div style={{ marginBottom: '10px' }}>{title}</div>
-          <div>{street}</div>
 
-          {/* Reputation Display */}
-          <div style={{ marginBottom: '10px' }}>
-            Reputation: {" "}
-            {/*Conditional: if null "None" | else if 1 thumbsUp | else -1 thumbsDown */}
-            {reputation === null ? "None" : reputation === "1" ? "👍" : "👎"}
+        <div className='info-window'>
+          <div className='info-window-header'>
+            {/* Favorite Button */}
+            <div className='header-button-wrapper'>
+              <button className='header-button' onClick={handleFavoriteClick}>
+                {isFavorite ? "❤️" : "🖤"}
+              </button>
+            </div>
+
+            <div className='pin-title'>{type}</div>
+
+            <div className='header-button-wrapper'>
+              <button
+                className='header-button'
+                disabled={reputation === THUMBS_UP}
+                onClick={() => handleReputationClick(THUMBS_UP)}
+              >
+                👍
+              </button>
+              <button
+                className='header-button'
+                disabled={reputation === THUMBS_DOWN}
+                onClick={() => handleReputationClick(THUMBS_DOWN)}
+              >
+                👎
+              </button>
+            </div>
+          </div>
+          
+          <div className='info-window-body'>
+            <div>{name}</div>
+            <div>{description}</div>
           </div>
 
-          {/* Reputation Menu*/}
-          <div>
-            {/* button with onClick event listener to toggle menu*/}
-            <button onClick={() => setMenuOpen(!menuOpen)} style={{ position: 'absolute', top: '2px', right: '2px', }} >
-              {/*Conditional: if 1 thumbsUp | else if -1 thumbsDown | else default icon*/}
-              {reputation === "1" ? "👍" : reputation === "-1" ? "👎" : "⭐"}
-            </button>
-            {menuOpen && (
-              <div>
-                {/*Reputation Buttons*/}
-                <button // disables button if thumbsUp already selected, onClick updates useState
-                  disabled={reputation == "1"}
-                  onClick={() => handleReputationClick("1")}
-                >
-                  👍
-                </button>
-                <button // disables button if thumbsDown already selected, onClick updates useState
-                  disabled={reputation === "-1"}
-                  onClick={() => handleReputationClick("-1")}
-                >
-                  👎
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Favorite Button */}
-          <div style={{ position: 'absolute', top: '2px', left: '2px', }}>
-            <button onClick={handleFavoriteClick}>
-              {isFavorite ? "❤️" : "♡"}
-            </button>
+          <div className='info-window-reputation'>
+            <div style={{ marginBottom: '10px' }}>
+              Reputation: {" "}
+              {/*Conditional: if null "None" | else if 1 thumbsUp | else -1 thumbsDown */}
+              {reputation === null ? "None" : reputation === THUMBS_UP ? "👍" : "👎"}
+            </div>
           </div>
         </div>
       )}
@@ -192,58 +181,74 @@ const CustomMarker = ({ lat, lng, title, street, description, onClick }) => {
   );
 };
 
-export default function Map() {
+export default function Map() 
+{
   //State declared for storing markers
   const [markers, setMarkers] = useState(presetMarkers);
 
   //State declared for enabling/disabling marker creation on click with sidebar
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
+  const [selectedPinName, setSelectedPinName] = useState("");
+  const [selectedPinDescription, setSelectedPinDescription] = useState("");
   const [selectedPinType, setSelectedPinType] = useState("");
 
   //Function that toggles the sidebar's create pin option
-  const toggleMarkerCreation = (pinType) => {
+  const toggleMarkerCreation = (pinName, pinDescription, pinType) => 
+  {
     setMarkerCreationEnabled(!markerCreationEnabled);
+    setSelectedPinName(pinName);
+    setSelectedPinDescription(pinDescription);
     setSelectedPinType(pinType);
   };
 
   //Function handling onclick events on the map that will result in marker creation
-  const handleCreatePin = (event) => {
 
-    if (markerCreationEnabled && selectedPinType != "") {
+  const handleCreatePin = (event) => 
+  {
+    if (markerCreationEnabled && selectedPinType !== "") 
+    {
       let pinImage = '';
-      switch (selectedPinType) {
-        case 'pin':
+      switch (selectedPinType) 
+      {
+        case 'Pin':
           pinImage = pin;
           break;
-        case 'bathroom':
+        case 'Bathroom':
           pinImage = bathroom;
           break;
-        case 'fuel':
+        case 'Fuel':
           pinImage = fuel;
           break;
-        case 'wifi':
+        case 'Wi-Fi':
           pinImage = wifi;
           break;
-        case 'electric':
+        case 'Supercharger':
           pinImage = electric;
           break;
-        case 'diesel':
+        case 'Diesel':
           pinImage = diesel;
           break;
+        default:
+          pinImage = pin;
       }
 
       //Adds marker to array that gets rendered (Eventually will have to add a pin to the database)
-      setMarkers([...markers, {
+      setMarkers([...markers, 
+      {
         lat: event.lat,
         lng: event.lng,
         image: pinImage,
-        title: selectedPinType,
-        street: 'placeholder text',
+
+        type: selectedPinType,
+        name: selectedPinName,
+        description: selectedPinDescription,
+
       }]);
       setMarkerCreationEnabled(false);
     }
   };
+
 
   const handleMapChange = ({ center, zoom, bounds }) => {
 
@@ -294,8 +299,8 @@ export default function Map() {
           lat: marker.latitude,
           lng: marker.longitude,
           image: imageType,
-          title: marker.street,
-          street: marker.title,
+          type: marker.title,
+          street: marker.street,
 
         };
       });
@@ -308,40 +313,36 @@ export default function Map() {
   }
 
   return (
-    <div id='map'>
       <div id='wrapper'>
-        <div id='map' >
-          <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
-
+        <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
+        <div id='map'>
           <GoogleMapReact
+            draggable={!markerCreationEnabled}
             bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
             defaultCenter={defaultProps.center}
                       defaultZoom={defaultProps.zoom}
                   yesIWantToUseGoogleMapApiInternals //this is important!
                   onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
-
           >
+
 
             {[...markers, ...presetMarkers].map((marker, index) => (//Renders presetMarkers on the map
               <CustomMarker
                 key={index}
                 lat={marker.lat}
                 lng={marker.lng}
+                type={marker.type}
                 name={marker.name}
 
                 street={marker.street}
                 image={marker.image}
-              //onClick={() => handleMarkerClick(marker)}
-
               />
             ))}
 
           </GoogleMapReact>
         </div >
-
       </div>
-    </div>
   );
 }
 /** TODO: Change cursor image upon selection of sidebar pin

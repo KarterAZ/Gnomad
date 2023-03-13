@@ -1,13 +1,17 @@
-#map {
+#map 
+{
   display: flex;
 
   z-index: 1;
 
-  width: 100%;
+  flex-grow: 1;
+
   height: 100vh;
+  height: 100svh;
 }
 
-#wrapper {
+#wrapper 
+{
   display: flex;
   width: 100%;
   height: 100%;
@@ -17,7 +21,8 @@
   background-color: aqua;
 }
 
-.lat-lng {
+.lat-lng 
+{
   position: absolute;
   top: 1rem;
   left: 50%;
@@ -25,11 +30,109 @@
   z-index: 1;
 }
 
-.lat-lng input {
+.lat-lng input 
+{
   margin: 0px 0.5rem;
   padding: 0.5rem;
 }
 
-.creating-pin { 
+.creating-pin 
+{ 
   cursor: url('./pin.png') 12 38, auto !important;
+}
+
+.marker
+{
+  position: absolute;
+  width: 50px;
+
+  transform: translate(-50%, -100%);
+  cursor: pointer;
+}
+
+
+.marker-container:hover .marker
+{
+  width: 80px;
+  z-index: 100;
+}
+
+.marker-container:hover .info-window
+{
+  bottom: 100px;
+  z-index: 100;
+}
+
+.info-window
+{
+  position: absolute;
+  bottom: 60px;
+  right: 0px;
+
+  transform: translateX(50%);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+
+  padding: 10px;
+  width: 250px;
+  max-width: 200px;
+
+  background-color: var(--secondary-background);
+
+  border: 1px solid var(--secondary-background-accent);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.info-window-header
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+.header-button-wrapper
+{
+  display: flex;
+  min-width: 50px;
+}
+
+.header-button
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
+  width: 25px;
+
+  font-size: 2em;
+
+  background-color: transparent;
+  border: none;
+
+  cursor: pointer;
+}
+
+.reputation-button
+{
+  font-size: 2em;
+
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.pin-title
+{
+  font-size: 1.2em;
+}
+
+.pointer
+{
+  cursor: pointer !important;
 }
