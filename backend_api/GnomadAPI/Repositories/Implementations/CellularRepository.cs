@@ -10,15 +10,9 @@
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using TravelCompanionAPI.Models;
-using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using static Org.BouncyCastle.Math.EC.ECCurve;
-using System.Data.Common;
 using System.Data;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using H3Lib;
 using H3Lib.Extensions;
 using System.Diagnostics;
@@ -30,11 +24,12 @@ namespace TravelCompanionAPI.Data
     //No new methods added.
     //Implements getByH3Id, getAll
     //******************************************************************************
-    public class CellularTableModifier : ICellDataRepository<Cellular>
+    public class CellularRepository : ICellularRepository
     {
         const string TABLE = "h3_oregon_data";
 
-        public CellularTableModifier(IConfiguration config)
+//TODO: do we need config?
+        public CellularRepository(IConfiguration config)
         {
 
         }
@@ -47,7 +42,8 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT * FROM " + TABLE + " WHERE h3_res9_id = @Id";
+                //TODO: Fix spelling for environment (this is what it currently is in database)
+                command.CommandText = "SELECT technology, mindown, minup, environmnt, h3_res9_id FROM " + TABLE + " WHERE h3_res9_id = @Id";
                 command.Parameters.AddWithValue("Id", id);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -77,7 +73,8 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT * FROM " + TABLE + " Limit 25 ;";
+                //TODO: Fix spelling for environment (this is what it currently is in database)
+                command.CommandText = "SELECT technology, mindown, minup, environmnt, h3_res9_id FROM " + TABLE + " Limit 25 ;";
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {

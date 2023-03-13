@@ -9,15 +9,15 @@
 //################################################################
 
 // this function stores some object 
-// at some key in the session storgae.
-export function sstore(key, value)
+// at some key in the session storage.
+export function session_store(key, value)
 {
     sessionStorage.setItem(key, JSON.stringify(value));
 }
 
 // this function gets some object
 // from session storage at some key.
-export function sget(key)
+export function session_get(key)
 {
     return JSON.parse(sessionStorage.getItem(key));
 }

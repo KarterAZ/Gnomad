@@ -10,14 +10,14 @@
 
 // this function stores some object 
 // at some key in the local storgae.
-export function lstore(key, value)
+export function local_store(key, value)
 {
     localStorage.setItem(key, JSON.stringify(value));
 }
 
 // this function gets some object
 // from local storage at some key.
-export function lget(key)
+export function local_get(key)
 {
     return JSON.parse(localStorage.getItem(key));
 }

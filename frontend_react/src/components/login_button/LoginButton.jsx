@@ -8,82 +8,97 @@
 //################################################################
 
 // external imports.
-import { useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 // internal imports.
-import login from '../../utilities/api/login';
-import { setCookie } from '../../utilities/cookies';
-
+import login, { logout, isLoggedIn } from '../../utilities/api/login';
 import './login_button.css';
+
+const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com';
 
 // this function renders the login button.
 export function LoginButton() 
 {
-  console.log("Calling LoginButton()");
+  // reference to the google login button div.
+  const g_sso = useRef(null);
 
-  const [logged_in, setLoggedIn] = useState(0);
-  //const [elementVisible, setElementVisible] = useState(logged_in);
+  // use state to manage the state of the login button.
+  const [logged_in, setLoggedIn] = useState(false);
 
-  window.googleLogin = async (response) =>
+  const gLogin = async (response) =>
   {
-    console.log(response);
-    console.log(response.credential);
-    setCookie('id_token', 'Bearer ' + response.credential);
-    const user = await login();
-    setLoggedIn(1);
-    console.log('user:', user);
+    if (response === undefined)
+    {
+      console.log("Login error.");
+      return;
+    }
+
+    const token = response.credential;
+
+    const user = await login(token);
+
+    if (user !== undefined)
+    {
+      setLoggedIn(true);
+    }
   }
 
-  const login = () =>
+  const gLogout = () =>
   {
-    setLoggedIn(1);
+    setLoggedIn(false);
+    logout();
   }
 
-  const logout = () =>
+  useEffect(()=>
   {
-    setLoggedIn(2);
-  }
+    if (isLoggedIn())
+    {
+      setLoggedIn(true);
+    }
+  }, []);
 
-  if (logged_in === 0)
+  useEffect(() => 
   {
-    console.log("(0)logged_in = " + logged_in);
-    // render the actual button.
+    if (g_sso.current) 
+    {
+      window.google.accounts.id.initialize(
+      {
+        client_id: client_id,
+        callback: (res, error) => 
+        {
+          if (error === undefined)
+          {
+            gLogin(res);
+          }
+          else
+          {
+            console.log("A login error occurred.")
+          }
+        },
+      });
+
+      window.google.accounts.id.renderButton(g_sso.current, 
+      {
+        theme: 'default',
+        size: 'medium',
+        type: 'standard',
+        text: 'signin',
+        shape: 'pill',
+        logo_alignment: 'left',
+      });
+    }
+  }, [g_sso.current]);
+
+  if (logged_in === false)
+  {
     return (
-      <>
-        <div id="g_id_onload"
-          data-client_id="55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com"
-          data-context="signin"
-          data-ux_mode="popup"
-          data-callback="googleLogin"
-          data-auto_select="true"
-          data-itp_support="true">
-        </div>
-
-        <div className="g_id_signin"
-            data-type="standard"
-            data-shape="pill"
-            data-theme="filled_black"
-            data-text="signin"
-            data-size="medium"
-            data-logo_alignment="left">
-        </div>
-      </>
+      <div ref={g_sso}/>
     );
-  }
-  else if(logged_in === 1)
-  {
-    console.log("(1)logged_in = " + logged_in);
-    return(
-        <button className='user-button' onClick={logout}>Logout</button>
-        );
   }
   else
   {
-    console.log("(2)logged_in = " + logged_in);
-    //window.location.reload(false); //Only way to get button to load is to reload page.
-    //Requires double refresh
-    return(
-        <button className='user-button' onClick={login}>Login</button>
-        );
+    return (
+      <button className='user-button' onClick={gLogout}>Logout</button>
+    );
   }
 }

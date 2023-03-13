@@ -12,20 +12,16 @@ using TravelCompanionAPI.Models;
 
 namespace TravelCompanionAPI.Data
 {
-    public interface IUserDataRepository<T> where T : IDataEntity
+    public interface ITagRepository
     {
         //******************************************************************************
         //This class defines the default functions for dependency injection
         //******************************************************************************
 
-        public T getById(int id);
+        public Tag getById(int id);
 
-        public int getId(T data);
+        public List<Tag> getAll();
 
-        public List<T> getAll();
-
-        public bool add(T data);
-
-        public bool contains(T data);
+        public bool add(Tag data);
     }
 }

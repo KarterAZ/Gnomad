@@ -9,12 +9,9 @@
 
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Data;
-using TravelCompanionAPI.Extras;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 namespace TravelCompanionAPI.Controllers
@@ -25,8 +22,8 @@ namespace TravelCompanionAPI.Controllers
     public class UserController : ControllerBase
     {
         //Repo is the list of users in the database
-        private IUserDataRepository<User> _user_database;
-        public UserController(IUserDataRepository<User> repo)
+        private IUserRepository _user_database;
+        public UserController(IUserRepository repo)
         {
             _user_database = repo;
         }
@@ -70,6 +67,39 @@ namespace TravelCompanionAPI.Controllers
             user.Id = _user_database.getId(user);
 
             return new JsonResult(Ok(user));
+        }
+        [HttpPost("voted/{pinid}")]
+        public JsonResult voted(int pinid)
+        {
+            var identity = (User.Identity as ClaimsIdentity);
+
+            User user = new User(identity);
+
+            return new JsonResult(Ok(_user_database.voted(user.Id, pinid)));
+        }
+        [HttpPost("review/{pinid}/{vote}")]
+        public JsonResult review(int pinid, int vote)
+        {
+            var identity = (User.Identity as ClaimsIdentity);
+
+            User user = new User(identity);
+
+            _user_database.review(user.Id, pinid, vote);
+            
+            return new JsonResult(Ok());
+        }
+
+        //Gets the user's review value from the user_review table
+        [HttpGet("getVote/{pinid}")]
+        public int getVote(int pinid)
+        {
+            var identity = (User.Identity as ClaimsIdentity);
+
+            User user = new User(identity);
+
+            int uVote = _user_database.getVote(user.Id, pinid);
+
+            return uVote;
         }
     }
 }

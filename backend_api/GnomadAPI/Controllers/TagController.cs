@@ -7,30 +7,26 @@
 *
 ************************************************************************************************/
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI.Controllers
 {
-        /// <summary>
-        /// Default route controller.
-        /// </summary>
+    /// <summary>
+    /// Default route controller.
+    /// </summary>
     [Route("tags")]
     [ApiController]
     [Authorize]
     public class TagController : ControllerBase
     {
         //The repository obtained through dependency injection.
-        private ITagDataRepository<Tag> _repo;
+        private ITagRepository _repo;
 
-        public TagController(ITagDataRepository<Tag> repo)
+        public TagController(ITagRepository repo)
         {
             _repo = repo;
         }

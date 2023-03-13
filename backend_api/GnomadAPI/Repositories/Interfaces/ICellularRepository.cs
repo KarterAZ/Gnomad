@@ -14,16 +14,16 @@ using TravelCompanionAPI.Models;
 
 namespace TravelCompanionAPI.Data
 {
-    public interface ICellDataRepository<T> where T : IDataEntity
+    public interface ICellularRepository
     {
         //******************************************************************************
         //This class defines the default functions for dependency injection
         //Declares getByH3Id, getAll
         //******************************************************************************
 
-        public T getByH3Id(string id);
+        public Cellular getByH3Id(string id);
 
-        public List<T> getAll();
+        public List<Cellular> getAll();
 
         public List<string> getAllH3(int offset);
 

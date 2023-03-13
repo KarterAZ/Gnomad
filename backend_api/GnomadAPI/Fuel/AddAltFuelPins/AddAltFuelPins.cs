@@ -16,8 +16,7 @@ namespace TravelCompanionAPI.Fuel
     static class AddingAltFuelData
     {
         //Adds the relevent data to the database.
-        public static void AddAltFuel(IPinDataRepository<Pin> pin_repo)
-
+        public static void AddAltFuel(IPinRepository pin_repo)
         {
             //Get connection string and set up database done in pin_repo (of type PinTableModifier)
             //File I/O
@@ -27,7 +26,8 @@ namespace TravelCompanionAPI.Fuel
             {
                 foreach (AltFuelData data in JsonSerializer.Deserialize<List<AltFuelData>>(File.ReadAllText(path)))
                 {
-                    if (data.properties.country.Equals("US") && data.properties.state.Equals("OR") && !data.properties.fuel_type_code.Equals(null)) //If in Oregon
+                    if (data.properties.country != null && data.properties.country.Equals("US") &&
+                        data.properties.state != null && data.properties.state.Equals("OR") && !data.properties.fuel_type_code.Equals(null)) //If in Oregon
                     {
                         Pin pin = new Pin();
                         pin.UserId = 0;

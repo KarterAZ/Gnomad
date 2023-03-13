@@ -11,8 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
 using TravelCompanionAPI.Models;
-using TravelCompanionAPI.Data;
 using TravelCompanionAPI.Fuel;
+using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI.Controllers
 {
@@ -25,8 +25,7 @@ namespace TravelCompanionAPI.Controllers
     public class PinController : ControllerBase
     {
         //The repository obtained through dependency injection.
-        private IPinDataRepository<Pin> _pin_repo;
-        private IPinTagDataRepository<PinTag> _tag_repo;
+        private IPinRepository _pin_repo;
 
         /// <summary>
         /// Constructor that takes in repo through dependecy injection
@@ -34,10 +33,9 @@ namespace TravelCompanionAPI.Controllers
         /// <returns>
         /// Sets repository to PinTableModifier (defined in setup.cs)
         ///</returns>
-        public PinController(IPinDataRepository<Pin> pin_repo,IPinTagDataRepository<PinTag> tag_repo)
+        public PinController(IPinRepository pin_repo)
         {
             _pin_repo = pin_repo;
-            _tag_repo = tag_repo;
         }
 
         /// <summary>
@@ -173,6 +171,83 @@ namespace TravelCompanionAPI.Controllers
             AddingAltFuelData.AddAltFuel(_pin_repo);
 
             return new JsonResult(Ok(0));
+        }
+
+        /// Gets a pin based on name search term
+        /// </summary>
+        /// <returns>
+        /// Returns a JsonResult of NotFound() if it's not found or 
+        ///Ok(pin) with the pin found.
+        ///</returns>
+        [HttpGet("getName/{searchTerm}")]
+        public JsonResult getName(string searchTerm)
+        {
+
+            List<Pin> pins = _pin_repo.getByName(searchTerm);
+
+            if (pins == null)
+            {
+                return new JsonResult(NotFound());
+            }
+
+            return new JsonResult(Ok(pins));
+        }
+
+        /// <summary>
+        /// Gets all pins with a certain tag from the database
+        /// </summary>
+        /// <returns>
+        /// A JsonResult of Ok(pins), where pins are the asked for pins
+        ///</returns>
+        [HttpPost("getAllPinsByTag")]
+        public JsonResult getAllPinsByTag(List<int> tags)
+        {
+            List<Pin> pins = _pin_repo.getAllByTag(tags);
+
+            return new JsonResult(Ok(pins));
+        }
+
+        /// <summary>
+        /// Gets all pins with a similar address from the database
+        /// </summary>
+        /// <returns>
+        /// A JsonResult of Ok(pins), where pins are the asked for pins
+        ///</returns>
+        [HttpPost("getAllPinsByAddress")]
+        public JsonResult getAllPinsByAddress(string address)
+        {
+            List<Pin> pins = _pin_repo.getAllByAddress(address);
+
+            return new JsonResult(Ok(pins));
+        }
+
+        /// Gets a pin based on city search term
+        /// </summary>
+        /// <returns>
+        /// Returns a JsonResult of NotFound() if it's not found or 
+        ///Ok(pin) with the pin found.
+        ///</returns>
+        [HttpGet("getCity/{searchTerm}")]
+        public JsonResult getCity(string searchTerm)
+        {
+
+            List<Pin> pins = _pin_repo.getByCity(searchTerm);
+
+            if (pins == null)
+            {
+                return new JsonResult(NotFound());
+            }
+
+            return new JsonResult(Ok(pins));
+        }
+
+        //Gets the average review result which is up_vote - down_vote
+        [HttpGet("getReview /{pinid}")]
+        public int getReview(int pinid)
+        {
+            int review = _pin_repo.getAverageVote(pinid);
+
+            return review;
         }
     }
 }

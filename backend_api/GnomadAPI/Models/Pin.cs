@@ -11,12 +11,11 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using TravelCompanionAPI.Data;
 
 namespace TravelCompanionAPI.Models
 {
-    public class Pin : IDataEntity
+    //For both pins and stickers (also pins)
+    public class Pin
     {
         public Pin()
         { 
@@ -31,6 +30,7 @@ namespace TravelCompanionAPI.Models
             Title = title;
             Tags = new List<int>();
         }
+
         [BindNever] //User shouldn't be able to change Id
         public int Id { get; set; }
         public int UserId { get; set; }

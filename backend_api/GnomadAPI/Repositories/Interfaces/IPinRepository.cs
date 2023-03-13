@@ -12,16 +12,35 @@ using TravelCompanionAPI.Models;
 
 namespace TravelCompanionAPI.Data
 {
-    public interface IPinTagDataRepository<T> where T : IDataEntity
+    //TODO: Might need <> to specify pin or sticker, or just make sticker same class as pin.
+    public interface IPinRepository
     {
         //******************************************************************************
         //This class defines the default functions for dependency injection
         //******************************************************************************
 
-        public List<T> getByPinId(int pid);
+        public Pin getById(int id);
 
-        public List<T> getAll();
+        public int getId(Pin data);
 
-        public bool add(T data);
+        public List<Pin> getAll();
+
+        public bool add(Pin data);
+
+        public bool contains(Pin data);
+        
+        public List<Pin> getAllByUser(int uid);
+
+        public List<Pin> getAllInArea(double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0);
+    
+        public List<Pin> getAllByTag(List<int> tags);
+
+        public List<Pin> getAllByAddress(string address);
+
+        public List<Pin> getByName(string searchString);
+
+        public List<Pin> getByCity(string searchString);
+
+        public int getAverageVote(int pinid);
     }
 }

@@ -1,27 +1,29 @@
 ﻿/************************************************************************************************
 *
-* Author: Bryce Schultz, Andrew Rice, Karter Zwetschke, Andrew Ramirez, Stephen Thomson
-* Date: 11/28/2022
+* Author: Andrew Rice
+* Date: 3/6/2023
 *
 * Purpose: Defines the default functions for dependency injection. Declares getById, getAll, and add.
 *
 ************************************************************************************************/
 
 using System.Collections.Generic;
+using GnomadAPI.Models;
 using TravelCompanionAPI.Models;
 
+//TODO: Some namespaces are TravelCompanion while others are Gnomad. Should change, but not important.
 namespace TravelCompanionAPI.Data
 {
-    public interface ITagDataRepository<T> where T : IDataEntity
+    public interface IRouteRepository
     {
         //******************************************************************************
         //This class defines the default functions for dependency injection
         //******************************************************************************
 
-        public T getById(int id);
+        public Route getById(int id, int user_id);
 
-        public List<T> getAll();
+        public List<Route> getAll(int userId);
 
-        public bool add(T data);
+        public bool add(Route data);
     }
 }

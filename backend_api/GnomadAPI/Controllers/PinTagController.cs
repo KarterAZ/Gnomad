@@ -8,12 +8,8 @@
 *
 ************************************************************************************************/
 
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Data;
@@ -31,8 +27,8 @@ namespace TravelCompanionAPI.Controllers
     [Authorize]
     public class PinTagController : ControllerBase
     {
-        private IPinTagDataRepository<PinTag> _repo;
-        public PinTagController(IPinTagDataRepository<PinTag> repo)
+        private IPinTagRepository _repo;
+        public PinTagController(IPinTagRepository repo)
         {
             _repo = repo;
         }
