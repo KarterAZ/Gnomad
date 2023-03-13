@@ -100,13 +100,13 @@ namespace TravelCompanionAPI.Data
         public List<string> getAllH3(int offset)
         {
             List<string> h3_oregon_data = new List<string>();
-            offset = offset * 70000;
+            offset *= 5600;
 
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT h3_res9_id FROM " + TABLE + " LIMIT 70000 OFFSET @Offset;";
+                command.CommandText = @"SELECT h3_res9_id FROM " + TABLE + " LIMIT 5600 OFFSET @Offset;";
                 command.Parameters.AddWithValue("@Offset", offset);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
@@ -122,32 +122,13 @@ namespace TravelCompanionAPI.Data
             return h3_oregon_data;
         }
 
-        public List<Tuple<decimal, decimal>> getCoords() //List<GeoCoord> getCoords()
-        {
-            List<string> h3ids = getAllH3(0);
-            List<Tuple<decimal, decimal>> coords = new List<Tuple<decimal, decimal>>();
-            Tuple<decimal, decimal> tup;
-            H3Index h3;
-            GeoCoord geo = new GeoCoord();
-
-            foreach(string id in h3ids)
-            {
-                h3 = id.ToH3Index();
-                geo = h3.ToGeoCoord();
-                tup = new Tuple<decimal, decimal>(geo.Latitude, geo.Longitude);
-                coords.Add(tup);
-            }
-
-            return coords;
-        }
-
         public List<decimal> getHexCoords(int pass)
         {
             List<string> h3ids = getAllH3(pass);
             List<decimal> coords = new List<decimal>();
             H3Index h3;
             GeoBoundary geoBounds;
-            List<GeoCoord> geoVerts = new List<GeoCoord>();
+            List<GeoCoord> geoVerts;
 
             foreach (string id in h3ids)
             {
@@ -163,44 +144,6 @@ namespace TravelCompanionAPI.Data
                 coords.Add(geoVerts[0].Latitude);
                 coords.Add(geoVerts[0].Longitude);
                 geoVerts.Clear();
-            }
-
-            return coords;
-        }
-
-        public decimal[] getCoordsLat()
-        {
-            List<string> h3ids = getAllH3(0);
-
-            decimal[] coords = new decimal[h3ids.Count];
-
-            H3Index h3;
-            GeoCoord geo = new GeoCoord();
-
-            for (int i = 0; i < h3ids.Count(); i++)
-            {
-                h3 = h3ids[i].ToH3Index();
-                geo = h3.ToGeoCoord();
-                coords[i] = geo.Latitude;
-            }
-
-            return coords;
-        }
-
-        public decimal[] getCoordsLng()
-        {
-            List<string> h3ids = getAllH3(0);
-
-            decimal[] coords = new decimal[h3ids.Count];
-
-            H3Index h3;
-            GeoCoord geo = new GeoCoord();
-
-            for (int i = 0; i < h3ids.Count(); i++)
-            {
-                h3 = h3ids[i].ToH3Index();
-                geo = h3.ToGeoCoord();
-                coords[i] = geo.Longitude;
             }
 
             return coords;

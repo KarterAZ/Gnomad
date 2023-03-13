@@ -10,17 +10,11 @@
 // internal imports.
 import { get, isAuthenticated} from './api';
 
-// this function gets cell data
-export default async function getLatAll()
-{
-    //if (!isAuthenticated()) return null;
+export default async function getAllCoords(pass) {
 
-    const response = await get('h3_oregon_data/allLatCoords');
+    if (!isAuthenticated()) return null;
 
-    if (response)
-        console.log("response from lat");
-    else
-        console.log("null response lat");
+    const response = await get('h3_oregon_data/allHexCoords/' + String(pass));
 
     return response;
 }

@@ -21,7 +21,7 @@ using H3Lib;
 namespace TravelCompanionAPI.Controllers
 {
     /// <summary>
-    /// Default route controller.
+    /// Default cellular controller.
     /// </summary>
     [Route("h3_oregon_data")]
     [ApiController]
@@ -66,16 +66,6 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(h3List));
         }
 
-        [HttpGet("allCoords")]
-        public JsonResult getCoords()
-        {
-            List<Tuple<decimal, decimal>> h3List = _repo.getCoords();
-
-            Tuple<decimal,decimal>[] h3Array = h3List.ToArray();
-
-            return new JsonResult(Ok(h3Array));
-        }
-
         [HttpGet("allHexCoords/{pass}")]
         public JsonResult getHexCoords(int pass)
         {
@@ -84,22 +74,6 @@ namespace TravelCompanionAPI.Controllers
             decimal[] h3Array = h3List.ToArray();
 
             return new JsonResult(Ok(h3Array));
-        }
-
-        [HttpGet("allLatCoords")]
-        public JsonResult getCoordsLat()
-        {
-            decimal[] h3List = _repo.getCoordsLat();
-
-            return new JsonResult(Ok(h3List));
-        }
-
-        [HttpGet("allLngCoords")]
-        public JsonResult getCoordsLng()
-        {
-            decimal[] h3List = _repo.getCoordsLng();
-
-            return new JsonResult(Ok(h3List));
         }
     }
 }
