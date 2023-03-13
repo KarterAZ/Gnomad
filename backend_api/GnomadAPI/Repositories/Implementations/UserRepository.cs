@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using TravelCompanionAPI.Models;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System;
 
 namespace TravelCompanionAPI.Data
 {
@@ -24,6 +25,8 @@ namespace TravelCompanionAPI.Data
     public class UserRepository : IUserRepository
     {
         const string TABLE = "users";
+        const string PTABLE = "pins";
+        const string RTABLE = "user_review";
 
         //TODO: Why two constructors? Do we need config?
         public UserRepository()
@@ -206,6 +209,96 @@ namespace TravelCompanionAPI.Data
 
             connection.Close();
             return true; //TODO: Error handling here.
+        }
+
+        //Register a user's review of a pin - vote values: 0 = down vote, 1 = up vote
+        public void review(int id, int pinid, int vote)
+        {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+
+            //Update the pins table
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "UPDATE " + PTABLE + " SET " + (vote == 1 ? "up_vote = up_vote + 1" : "down_vote = down_vote + 1") + " WHERE id = @Id;";
+                command.Parameters.AddWithValue("@Id", pinid);
+
+                command.ExecuteNonQuery();
+
+            }
+
+            //Update the user_review table
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "INSERT INTO " + RTABLE + " (user_id, pin_id, review) VALUES (@UserId, @PinId, @Review);";
+                command.Parameters.AddWithValue("@UserId", id);
+                command.Parameters.AddWithValue("@PinId", pinid);
+                command.Parameters.AddWithValue("@Review", vote);
+
+                command.ExecuteNonQuery();
+            }
+            connection.Close();
+        }
+
+        //Check to see if user already voted on this pin
+        public bool voted(int uid, int pinid)
+        {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+
+            //Looks for if row exists
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT COUNT(*) FROM " + RTABLE + " WHERE user_id=@UserId AND pin_id=@PinId;";
+                command.Parameters.AddWithValue("@UserId", uid);
+                command.Parameters.AddWithValue("@PinId", pinid);
+
+                int count = Convert.ToInt32(command.ExecuteScalar());
+
+                connection.Close();
+
+                //If row exists, count > 0 so return true, else return false
+                return count > 0;
+            }
+        }
+
+        //Checks if the vote exists, then returns the value of that user's vote. Returns -1 if it doesn't exist.
+        public int getVote(int uid, int pinid)
+        {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+            int review = -1;
+
+            if (voted(uid, pinid))
+            {
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT review FROM " + RTABLE + " WHERE user_id=@UserId AND pin_id=@PinId;";
+                    command.Parameters.AddWithValue("@UserId", uid);
+                    command.Parameters.AddWithValue("@PinId", pinid);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            review = reader.GetInt32("review");
+                        }
+                    }
+
+                    connection.Close();
+                }
+            }
+            else
+            {
+                connection.Close();
+            }
+
+            return review;
         }
     }
 }

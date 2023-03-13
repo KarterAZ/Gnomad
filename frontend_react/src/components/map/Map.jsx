@@ -84,6 +84,7 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
 {
   const THUMBS_UP = "1";
   const THUMBS_DOWN = "-1";
+
   //TODO: Custom marker is starting to get really big, consider making it into a component in it's own class?
   // such as Marker.jsx , could benefit from having it's own .css file.
 
@@ -131,6 +132,7 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
         onClick={() => setShowInfoWindow(!showInfoWindow)}//toggles useState whether to display the InfoWindow upon marker click
       />
       {showInfoWindow && (//Customized InfoWindow, was having too much trouble using google map's 
+
         <div className='info-window'>
           <div className='info-window-header'>
             {/* Favorite Button */}
@@ -200,6 +202,7 @@ export default function Map()
   };
 
   //Function handling onclick events on the map that will result in marker creation
+
   const handleCreatePin = (event) => 
   {
     if (markerCreationEnabled && selectedPinType !== "") 
@@ -235,44 +238,78 @@ export default function Map()
         lat: event.lat,
         lng: event.lng,
         image: pinImage,
+
         type: selectedPinType,
         name: selectedPinName,
         description: selectedPinDescription,
+
       }]);
       setMarkerCreationEnabled(false);
     }
   };
 
-  useEffect(() => 
-  {
-    async function fetchData() 
-    {
-      try 
-      {
-        /*If getting the following errors:
-        //-----------------------------------------------------------------------
-        // getting error "Failed to load resource: net::ERR_CONNECTION_REFUSED" 
-        // also getting "TypeError: Failed to fetch"
-        //-----------------------------------------------------------------------
-        // Make sure to run backend TravelCompanionApi to fix
-        //
-        // Currently returns 401 unauthorized access, need to figure out how to get authorization? api.js? 
-        */
-        const response = await get('pins/all');
-        setMarkers(response.map(marker => (
-        {
+
+  const handleMapChange = ({ center, zoom, bounds }) => {
+
+    const { lat, lng } = center;
+    const { lat: latStart, lng: longStart } = bounds.sw;
+    const latRange = bounds.ne.lat - bounds.sw.lat;
+    const longRange = bounds.ne.lng - bounds.sw.lng;
+    console.log(lat, lng, latRange, longRange);
+    fetchData(lat, lng, latRange, longRange);
+  };
+
+  /*If getting the error:
+  //-----------------------------------------------------------------------
+  // getting error "Failed to load resource: net::ERR_CONNECTION_REFUSED" 
+  //-----------------------------------------------------------------------
+  // Make sure to run backend TravelCompanionApi to fix
+  //TODO: Update switch statement to seperate between customer/free wifi/bathroom when marker resources finalized
+  //TODO: always goes to the default option, fix tag reading from DB.
+  */
+  const fetchData = async (latStart, longStart, latRange, longRange) => {
+    try {
+      const response = await get(`pins/getAllInArea?latStart=${latStart}&longStart=${longStart}&latRange=${latRange}&longRange=${longRange}`);
+      let imageType;
+      //adjusts marker imageType depending on json response 
+      const markers = response.map(marker => {
+        switch (marker.tags[0]) {
+          case 1:
+          case 2:
+            imageType = bathroom;
+            break;
+          case 3:
+            imageType = electric;
+            break;
+          case 4:
+            imageType = fuel;
+            break;
+          case 5:
+            imageType = diesel;
+            break;
+          case 7:
+          case 8:
+            imageType = wifi;
+          default:
+            imageType = pin;
+            break;
+        }
+        return {
           lat: marker.latitude,
           lng: marker.longitude,
-          image: pin,
-        })));
-      } 
-      catch (error) 
-      {
-        console.error(error);
-      }
+          image: imageType,
+          type: marker.title,
+          street: marker.street,
+
+        };
+      });
+      console.log(markers);
+      setMarkers(markers);
+
+    } catch (error) {
+      console.error(error);
     }
-    fetchData();
-  }, []);
+  }
 
   return (
       <div id='wrapper'>
@@ -285,14 +322,17 @@ export default function Map()
             defaultZoom={defaultProps.zoom}
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
           >
-            {markers.map((marker, index) => ( //Renders presetMarkers on the map
+
+
+            {[...markers, ...presetMarkers].map((marker, index) => (//Renders presetMarkers on the map
               <CustomMarker
                 key={index}
                 lat={marker.lat}
                 lng={marker.lng}
                 type={marker.type}
                 name={marker.name}
-                description={marker.description}
+
+                street={marker.street}
                 image={marker.image}
               />
             ))}

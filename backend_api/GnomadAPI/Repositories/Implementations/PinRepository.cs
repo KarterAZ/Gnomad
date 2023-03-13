@@ -59,8 +59,8 @@ namespace TravelCompanionAPI.Data
                         pin = new Pin();
                         pin.Id = reader.GetInt32(0);
                         pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
+                        pin.Longitude = reader.GetFloat(2);
+                        pin.Latitude = reader.GetFloat(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
                     }
@@ -123,8 +123,8 @@ namespace TravelCompanionAPI.Data
                         Pin pin = new Pin();
                         pin.Id = reader.GetInt32(0);
                         pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
+                        pin.Longitude = reader.GetFloat(2);
+                        pin.Latitude = reader.GetFloat(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
 
@@ -187,8 +187,8 @@ namespace TravelCompanionAPI.Data
                         Pin pin = new Pin();
                         pin.Id = reader.GetInt32(0);
                         pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
+                        pin.Longitude = reader.GetFloat(2);
+                        pin.Latitude = reader.GetFloat(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
 
@@ -247,8 +247,8 @@ namespace TravelCompanionAPI.Data
                         Pin pin = new Pin();
                         pin.Id = reader.GetInt32(0);
                         pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
+                        pin.Longitude = reader.GetFloat(2);
+                        pin.Latitude = reader.GetFloat(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
 
@@ -308,8 +308,8 @@ namespace TravelCompanionAPI.Data
                         Pin pin = new Pin();
                         pin.Id = reader.GetInt32(0);
                         pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
+                        pin.Longitude = reader.GetFloat(2);
+                        pin.Latitude = reader.GetFloat(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
 
@@ -506,8 +506,8 @@ namespace TravelCompanionAPI.Data
                         Pin pin = new Pin();
                         pin.Id = reader.GetInt32(0);
                         pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
+                        pin.Longitude = reader.GetFloat(2);
+                        pin.Latitude = reader.GetFloat(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
 
@@ -571,8 +571,8 @@ namespace TravelCompanionAPI.Data
                         Pin pin = new Pin();
                         pin.Id = reader.GetInt32(0);
                         pin.UserId = reader.GetInt32(1);
-                        pin.Longitude = reader.GetInt32(2);
-                        pin.Latitude = reader.GetInt32(3);
+                        pin.Longitude = reader.GetFloat(2);
+                        pin.Latitude = reader.GetFloat(3);
                         pin.Title = reader.GetString(4);
                         pin.Street = reader.GetString(5);
 
@@ -606,6 +606,35 @@ namespace TravelCompanionAPI.Data
             }
             connection.Close();
             return pins;
+        }
+
+        //Gets the up_vote and down_vote values by pin id, then returns the average
+        public int getAverageVote(int pinid)
+        {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+            int voteDifference = 0;
+
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT up_vote, down_vote FROM " + PIN_TABLE + " WHERE id=@PinId;";
+                command.Parameters.AddWithValue("@PinId", pinid);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        int upVote = reader.GetInt32("up_vote");
+                        int downVote = reader.GetInt32("down_vote");
+                        voteDifference = upVote - downVote;
+                    }
+                }
+
+                connection.Close();
+            }
+
+            return voteDifference;
         }
     }
 }
