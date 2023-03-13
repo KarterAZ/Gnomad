@@ -7,6 +7,7 @@
 *
 ************************************************************************************************/
 
+using H3Lib;
 using System;
 using System.Collections.Generic;
 using TravelCompanionAPI.Models;
@@ -24,8 +25,8 @@ namespace TravelCompanionAPI.Data
 
         public List<Cellular> getAll();
 
-        public List<string> getAllH3();
+        public List<string> getAllH3(int offset);
 
-        public List<Tuple<decimal, decimal>> getCoords();
+        public List<decimal> getHexCoords(int pass);
     }
 }

@@ -10,17 +10,12 @@
 import React, { useState, useEffect } from 'react';
 import GoogleMapReact from 'google-map-react';
 
-//import h3 from 'h3-js/legacy';
-
-//import h3, { CoordPair, H3Index, geoToH3, getResolution, cellToLatLng, cellToBoundary } from 'h3-js/legacy';
-//import { h3ToGeo, h3ToGeoBoundry } from "h3-reactnative";
-
 // internal imports.
 import './map.css';
 
 
 // internal imports.
-import { get } from '../../utilities/api/api.js';
+import { get, isAuthenticated } from '../../utilities/api/api.js';
 import Sidebar from '../sidebar/Sidebar'
 
 
@@ -32,7 +27,8 @@ import diesel from '../../images/Diesel.png';
 import wifi from '../../images/WiFi.png';
 import electric from '../../images/Charger.png';
 
-//import getH3All from '../../utilities/api/get_cell_data';
+
+import getAllCoords from '../../utilities/api/get_cell_coords';
 
 
 //can later make the default lat/lng be user's location?
@@ -45,30 +41,35 @@ const defaultProps =
   },
 };
 
-/*const handleApiLoaded = (map, maps) => 
-{
-  const triangleCoords = [
-      { lat: 25.774, lng: -80.19 },
-      { lat: 18.466, lng: -66.118 },
-      { lat: 32.321, lng: -64.757 },
-      { lat: 25.774, lng: -80.19 }
-  ];
 
-  const triangleCoords = getH3All();
+const handleApiLoaded = async(map, maps) => {
+    var colorNum = 0;
+    var color = ["#FF5733", "#FFFC33", "#33FF36", "#33FFF9", "#3393FF", "#3339FF", "#9F33FF", "#FF33CA", "#FF3333", "#440000"]
+    var bermudaTriangles = [];
 
-  var bermudaTriangle = new maps.Polygon(
-    {
-      paths: triangleCoords,
-      strokeColor: "#FF0000",
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: "#FF0000",
-      fillOpacity: 0.35
+    for (let i = 0; i < 242; i++) {
+        var latLngArray = [];
+        var lngArray = await getAllCoords(i);
+
+        for (let ii = 0; ii < lngArray.length; ii += 2) {
+            let gData = new maps.LatLng(parseFloat(lngArray[ii]), parseFloat(lngArray[ii + 1]));
+            latLngArray.push(gData);
+        }
+        var bermudaTriangle = new maps.Polygon({
+            paths: latLngArray,
+            strokeColor: color[colorNum],
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: color[colorNum],
+            fillOpacity: 0.35
+        });
+        bermudaTriangles.push(bermudaTriangle);
+
+        bermudaTriangles[i].setMap(map);
+        colorNum = (colorNum % 10) + 1;
     }
-  );
+}
 
-  bermudaTriangle.setMap(map);
-}*/
 
 //Array of markers that gets used to populate map, eventually will be filled with pin data from database
 const presetMarkers = [
@@ -319,7 +320,9 @@ export default function Map()
             draggable={!markerCreationEnabled}
             bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
             defaultCenter={defaultProps.center}
-            defaultZoom={defaultProps.zoom}
+                      defaultZoom={defaultProps.zoom}
+                  yesIWantToUseGoogleMapApiInternals //this is important!
+                  onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
           >
 
