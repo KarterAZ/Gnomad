@@ -109,7 +109,7 @@ namespace TravelCompanionAPI.Data
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + 
-                                    " WHERE(longitude > @minLong AND longitude < @maxLong AND latitude > @minLat AND latitude < @maxLat);";
+                                    " WHERE(longitude > @minLong AND longitude < @maxLong AND latitude > @minLat AND latitude < @maxLat) LIMIT 100;";
 
                 command.Parameters.AddWithValue("@minLong", minLong);
                 command.Parameters.AddWithValue("@minLat", minLat);
@@ -495,7 +495,7 @@ namespace TravelCompanionAPI.Data
                 command.CommandType = CommandType.Text;
                 //Search the pins table for pins with similar streets.
                 //Set all to lower to dismiss case sensitivity
-                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " WHERE(LOWER(street) LIKE @address);";
+                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " WHERE(LOWER(street) LIKE @address) LIMIT 100;";
                 command.Parameters.AddWithValue("@address", "%" + address.ToLower() + "%");
 
                 //Go through and add pin to pins list
@@ -560,7 +560,7 @@ namespace TravelCompanionAPI.Data
                 command.CommandType = CommandType.Text;
                 //Search the pins table street column for strings with the search string in it.
                 //Set all to lower to dismiss case sensitivity
-                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " WHERE(LOWER(street) LIKE LOWER(@SearchString));";
+                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " WHERE(LOWER(street) LIKE LOWER(@SearchString)) LIMIT 100;";
                 command.Parameters.AddWithValue("@SearchString", "%" + searchString + "%");
 
                 //Go through and add to pin list
