@@ -239,7 +239,6 @@ export default function Map()
         lat: event.lat,
         lng: event.lng,
         image: pinImage,
-
         type: selectedPinType,
         name: selectedPinName,
         description: selectedPinDescription,
@@ -334,7 +333,7 @@ export default function Map()
                 lng={marker.lng}
                 type={marker.type}
                 name={marker.name}
-
+                description={marker.description}
                 street={marker.street}
                 image={marker.image}
               />
