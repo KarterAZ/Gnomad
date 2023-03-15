@@ -46,16 +46,18 @@ const handleApiLoaded = async(map, maps) => {
     var colorNum = 0;
     var color = ["#FF5733", "#FFFC33", "#33FF36", "#33FFF9", "#3393FF", "#3339FF", "#9F33FF", "#FF33CA", "#FF3333", "#440000"]
     var bermudaTriangles = [];
+    var latLngArray = [];
+    var lngArray = [];
 
     for (let i = 0; i < 242; i++) {
-        var latLngArray = [];
-        var lngArray = await getAllCoords(i);
+        latLngArray = [];
+        lngArray = await getAllCoords(i);
 
         for (let ii = 0; ii < lngArray.length; ii += 2) {
-            let gData = new maps.LatLng(parseFloat(lngArray[ii]), parseFloat(lngArray[ii + 1]));
+            let gData = new maps.LatLng(parseFloat(lngArray[ii] + 42), parseFloat(lngArray[ii + 1]) - 122);
             latLngArray.push(gData);
         }
-        var bermudaTriangle = new maps.Polygon({
+        /*var bermudaTriangle = new maps.Polygon({
             paths: latLngArray,
             strokeColor: color[colorNum],
             strokeOpacity: 0.8,
@@ -64,9 +66,21 @@ const handleApiLoaded = async(map, maps) => {
             fillOpacity: 0.35
         });
         bermudaTriangles.push(bermudaTriangle);
-
         bermudaTriangles[i].setMap(map);
+        colorNum = (colorNum % 10) + 1;*/
+        bermudaTriangles.push(new maps.Polygon({
+            paths: latLngArray,
+            strokeColor: color[colorNum],
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: color[colorNum],
+            fillOpacity: 0.35
+        }));
         colorNum = (colorNum % 10) + 1;
+        console.log(i);
+    }
+    for (var ii = 0; ii < bermudaTriangles.length; ii++) {
+        bermudaTriangles[ii].setMap(map);
     }
 }
 

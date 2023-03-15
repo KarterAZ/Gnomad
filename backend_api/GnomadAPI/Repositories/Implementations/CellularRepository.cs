@@ -97,13 +97,13 @@ namespace TravelCompanionAPI.Data
         public List<string> getAllH3(int offset)
         {
             List<string> h3_oregon_data = new List<string>();
-            offset *= 5600;
+            offset *= 7500;
 
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT h3_res9_id FROM " + TABLE + " LIMIT 5600 OFFSET @Offset;";
+                command.CommandText = @"SELECT h3_res9_id FROM " + TABLE + " LIMIT 7500 OFFSET @Offset;";
                 command.Parameters.AddWithValue("@Offset", offset);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
