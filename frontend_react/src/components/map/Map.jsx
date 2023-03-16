@@ -73,15 +73,18 @@ const handleApiLoaded = async(map, maps) => {
 
 //Array of markers that gets used to populate map, eventually will be filled with pin data from database
 const presetMarkers = [
-  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", description: " Brevada", pinType: 2 },
-  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", description: "Pilot", pinType: 4 },
-  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", description: "Oregon Tech", pinType: 2 },
-  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", description: "Oregon Tech Parking Lot F", pinType: 3 },
-  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi", pinType: 8 },
+  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", description: " Brevada" },
+  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", description: "Pilot" },
+  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", description: "Oregon Tech" },
+  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", description: "Oregon Tech Parking Lot F" },
+  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
 ];
-//General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separte versions 
-const CustomMarker = ({ lat, lng, image, type, description, pinType, onClick }) => {
 
+//General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separate versions 
+const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) => 
+{
+  const THUMBS_UP = "1";
+  const THUMBS_DOWN = "-1";
 
   //TODO: Custom marker is starting to get really big, consider making it into a component in it's own class?
   // such as Marker.jsx , could benefit from having it's own .css file.
@@ -246,34 +249,14 @@ export default function Map()
   };
 
 
-  //handles changes to lat/lng depending on position and zoom
   const handleMapChange = ({ center, zoom, bounds }) => {
-    //extract lat/lng out of bounds & center
+
     const { lat, lng } = center;
     const { lat: latStart, lng: longStart } = bounds.sw;
-    //calculating range of lat/lng
     const latRange = bounds.ne.lat - bounds.sw.lat;
     const longRange = bounds.ne.lng - bounds.sw.lng;
-
-
     console.log(lat, lng, latRange, longRange);
     fetchData(lat, lng, latRange, longRange);
-
-    // Remove markers that are not within the current bounds
-   /*
-    for (let i = 0; i < markers.length; i++) {
-      const marker = markers[i];
-      if ((marker.lat < latStart ||
-        marker.lat > latStart + latRange ||
-        marker.lng < longStart ||
-        marker.lng > longStart + longRange)) {
-        // Remove the marker from the map and from the markers array
-        marker.setMap(null); // setMap not a function? Maybe in other react google api? 
-        markers.splice(i, 1);
-        i--;
-      }
-    }
-   */
   };
 
   /*If getting the error:
@@ -282,42 +265,33 @@ export default function Map()
   //-----------------------------------------------------------------------
   // Make sure to run backend TravelCompanionApi to fix
   //TODO: Update switch statement to seperate between customer/free wifi/bathroom when marker resources finalized
+  //TODO: always goes to the default option, fix tag reading from DB.
   */
-
-  //Blueprint for filtering through pins, can add elements in sidebar later
-  const excludedPinTypes = [3, 4, 8]; // array of pin types to exclude
-
   const fetchData = async (latStart, longStart, latRange, longRange) => {
     try {
       const response = await get(`pins/getAllInArea?latStart=${latStart}&longStart=${longStart}&latRange=${latRange}&longRange=${longRange}`);
       let imageType;
-      let pinType;
       //adjusts marker imageType depending on json response 
-      let markers = response.map(marker => {
+      const markers = response.map(marker => {
         switch (marker.tags[0]) {
           case 1:
           case 2:
             imageType = bathroom;
-            pinType = 1;
             break;
           case 3:
             imageType = electric;
-            pinType = 3;
             break;
           case 4:
             imageType = fuel;
-            pinType = 4;
             break;
           case 5:
             imageType = diesel;
-            pinType = 5;
             break;
           case 7:
           case 8:
             imageType = wifi;
-            pinType = 8;
-            break;
           default:
+            imageType = pin;
             break;
         }
         return {
@@ -325,13 +299,10 @@ export default function Map()
           lng: marker.longitude,
           image: imageType,
           type: marker.title,
-          street: marker.title,
-          pinType: pinType, // include the pinType in the marker object
+          street: marker.street,
 
         };
       });
-      //use filtering to demonstrate pins showing up on the map easier, without overloading, temporary.
-      markers = markers.filter(marker => !excludedPinTypes.includes(marker.pinType)); // filter out markers with excluded pin types
       console.log(markers);
       setMarkers(markers);
 
@@ -352,7 +323,6 @@ export default function Map()
                   yesIWantToUseGoogleMapApiInternals //this is important!
                   onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
-            onChange={handleMapChange}
           >
 
 
@@ -374,5 +344,18 @@ export default function Map()
       </div>
   );
 }
-
+/** TODO: Change cursor image upon selection of sidebar pin
+    useEffect(() => {
+      const mapElement = document.getElementById('map');
+      const updateCursorStyle = () => {
+        mapElement.classList.remove(cursorStyle);
+        mapElement.classList.add(cursorStyle);
+      };
+      mapElement.addEventListener('mousemove', updateCursorStyle);
+      return () => {
+        mapElement.removeEventListener('mousemove', updateCursorStyle);
+      };
+    }, [cursorStyle]);
+  */
+  //Populating presetMarkers with data from array/database
 
