@@ -8,24 +8,19 @@
 //################################################################
 
 // internal imports.
-import Sidebar from '../../components/sidebar/Sidebar';
 import Routing from '../../components/routing_info/routing';
 import Directions from '../../components/directions/directions';
 import Map from '../../components/map/Map';
-import { hasLocalData, loadRoutes, loadPins } from '../../utilities/offline_data/offline_data';
+import { hasLocalData, loadRoutes } from '../../utilities/offline_data/offline_data';
 
 import './home.css';
-import { useState } from 'react';
 
 // this function renders the home page of the application.
 export default function HomePage() 
 {
-  const [pins, setPins] = useState([]);
-  const [routes, setRoutes] = useState([]);
-
   const pageLoad = () =>
   {
-
+    loadUserData();
   }
 
   const loadUserData = () =>
@@ -33,7 +28,7 @@ export default function HomePage()
     if (hasLocalData())
     {
       let local_routes = loadRoutes();
-      if (local_routes != undefined)
+      if (local_routes !== undefined)
       {
         
       }

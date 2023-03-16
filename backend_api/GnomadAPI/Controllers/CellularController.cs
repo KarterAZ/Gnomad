@@ -16,11 +16,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Data;
+using H3Lib;
 
 namespace TravelCompanionAPI.Controllers
 {
     /// <summary>
-    /// Default route controller.
+    /// Default cellular controller.
     /// </summary>
     [Route("h3_oregon_data")]
     [ApiController]
@@ -57,20 +58,22 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(cellularList));
         }
 
-        [HttpGet("allH3Id")]
-        public JsonResult getAllH3()
+        [HttpGet("allH3Id/{offset}")]
+        public JsonResult getAllH3(int offset)
         {
-            List<string> h3List = _repo.getAllH3();
+            List<string> h3List = _repo.getAllH3(offset);
 
             return new JsonResult(Ok(h3List));
         }
 
-        [HttpGet("allCoords")]
-        public JsonResult getCoords()
+        [HttpGet("allHexCoords/{pass}")]
+        public JsonResult getHexCoords(int pass)
         {
-            List<Tuple<decimal, decimal>> h3List = _repo.getCoords();
+            List<decimal> h3List = _repo.getHexCoords(pass);
 
-            return new JsonResult(Ok(h3List));
+            decimal[] h3Array = h3List.ToArray();
+
+            return new JsonResult(Ok(h3Array));
         }
     }
 }

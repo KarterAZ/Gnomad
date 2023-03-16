@@ -23,14 +23,14 @@
   flex-direction: column;
 
   width: 100%;
-  max-width: 400px;
+  max-width: 25%;
 
   background-color: #64b6ac;
   background: var(--gradient-background);
 
   overflow: hidden;
 
-  transition: width 0.5s ease-in-out;
+  transition: max-width 0.5s ease-in-out;
 }
 
 #handle {
@@ -70,9 +70,6 @@
 
   padding: 10px;
   color: var(--primary-foreground);
-}
-
-.section {
 }
 
 #user-section {
@@ -181,4 +178,109 @@
 #pins-list::-webkit-scrollbar-thumb {
   background: var(--primary-background-accent);
   border-radius: 10px;
+}
+
+#pin-creator
+{
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+
+  width: 500px;
+  height: 300px;
+
+  padding: 10px;
+  border-radius: 4px;
+
+  background: var(--gradient-background);
+  color: var(--primary-foreground);
+  z-index: 999;
+}
+
+#pin-creator-header
+{
+  display: flex;
+  justify-content: center;
+}
+
+#pin-creator-header h2
+{
+  padding: 0px;
+  margin: 0px;
+}
+
+#pin-creator-body
+{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  height: 100%;
+}
+
+#pin-description-input
+{
+  height: 100%;
+  resize: none;
+}
+
+#pin-description-input-wrapper
+{
+  flex-grow: 1;
+}
+
+.input-section
+{
+  display: flex;
+  flex-direction: column;
+}
+
+.row
+{
+  flex-direction: row;
+}
+
+.gap-10
+{
+  gap: 10px;
+}
+
+#error
+{
+  color: red;
+}
+
+#input-label-wrapper
+{
+  display: flex;
+  flex-direction: row;
+
+  justify-content: space-between;
+}
+
+#pin-type
+{
+  width: auto;
+}
+
+@media only screen and (max-width: 800px) {
+  #sidebar-container {
+    max-width: 50%;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  #sidebar-container {
+    width: 100vw;
+    max-width: 100vw;
+    flex-grow: 2;
+  }
+
+  #pin-creator {
+    height: calc(100% - 20px);
+    width: calc(100% - 20px);
+  }
 }
