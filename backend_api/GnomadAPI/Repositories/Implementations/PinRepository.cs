@@ -609,10 +609,10 @@ namespace TravelCompanionAPI.Data
         }
 
         //Gets the up_vote and down_vote values by pin id, then returns the average
-        public int getAverageVote(int pinid)
+        public double getAverageVote(int pinid)
         {
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
-            int voteDifference = 0;
+            double voteDifference = 0;
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -627,7 +627,7 @@ namespace TravelCompanionAPI.Data
                     {
                         int upVote = reader.GetInt32("up_vote");
                         int downVote = reader.GetInt32("down_vote");
-                        voteDifference = upVote - downVote;
+                        voteDifference = ((upVote + 1.0) / (upVote + downVote + 2.0)) * 5.0;
                     }
                 }
 

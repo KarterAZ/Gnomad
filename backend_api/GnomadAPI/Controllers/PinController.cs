@@ -243,9 +243,9 @@ namespace TravelCompanionAPI.Controllers
 
         //Gets the average review result which is up_vote - down_vote
         [HttpGet("getReview /{pinid}")]
-        public int getReview(int pinid)
+        public double getReview(int pinid)
         {
-            int review = _pin_repo.getAverageVote(pinid);
+            double review = _pin_repo.getAverageVote(pinid);
 
             return review;
         }
