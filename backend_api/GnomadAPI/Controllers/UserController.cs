@@ -101,5 +101,17 @@ namespace TravelCompanionAPI.Controllers
 
             return uVote;
         }
+
+        [HttpPost("cancelVote/{pinid}")]
+        public JsonResult cancelVote(int pinid)
+        {
+            var identity = (User.Identity as ClaimsIdentity);
+
+            User user = new User(identity);
+
+            _user_database.cancelReview(user.Id, pinid);
+
+            return new JsonResult(Ok());
+        }
     }
 }
