@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using TravelCompanionAPI.Models;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Linq;
 //using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace TravelCompanionAPI.Data
@@ -635,6 +636,26 @@ namespace TravelCompanionAPI.Data
             }
 
             return voteDifference;
+        }
+
+        //Global Search function that takes in a string and searches for the string in Names, Addresses, and Cities.
+        public List<Pin> globalSearch(string searchString)
+        {
+            List<Pin> pins = new List<Pin>();
+
+            // Get pins by name
+            pins.AddRange(getByName(searchString));
+
+            // Get pins by address
+            pins.AddRange(getAllByAddress(searchString));
+
+            // Get pins by city
+            pins.AddRange(getByCity(searchString));
+
+            // Remove duplicates
+            pins = pins.Distinct().ToList();
+
+            return pins;
         }
     }
 }

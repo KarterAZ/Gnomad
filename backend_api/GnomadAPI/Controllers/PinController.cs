@@ -249,5 +249,19 @@ namespace TravelCompanionAPI.Controllers
 
             return review;
         }
+
+        [HttpGet("getCity/{searchTerm}")]
+        public JsonResult getGlobal(string searchTerm)
+        {
+
+            List<Pin> pins = _pin_repo.globalSearch(searchTerm);
+
+            if (pins == null)
+            {
+                return new JsonResult(NotFound());
+            }
+
+            return new JsonResult(Ok(pins));
+        }
     }
 }
