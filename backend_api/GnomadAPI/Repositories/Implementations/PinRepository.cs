@@ -644,16 +644,13 @@ namespace TravelCompanionAPI.Data
             List<Pin> pins = new List<Pin>();
 
             // Get pins by name
-            List<Pin> pinsByName = getByName(searchString);
-            pins.AddRange(pinsByName);
+            pins.AddRange(getByName(searchString));
 
             // Get pins by address
-            List<Pin> pinsByAddress = getAllByAddress(searchString);
-            pins.AddRange(pinsByAddress);
+            pins.AddRange(getAllByAddress(searchString));
 
             // Get pins by city
-            List<Pin> pinsByCity = getByCity(searchString);
-            pins.AddRange(pinsByCity);
+            pins.AddRange(getByCity(searchString));
 
             // Remove duplicates
             pins = pins.Distinct().ToList();
