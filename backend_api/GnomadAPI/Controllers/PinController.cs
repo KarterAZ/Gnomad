@@ -250,7 +250,7 @@ namespace TravelCompanionAPI.Controllers
             return review;
         }
 
-        [HttpGet("getCity/{searchTerm}")]
+        [HttpGet("getGlobal/{searchTerm}")]
         public JsonResult getGlobal(string searchTerm)
         {
 
