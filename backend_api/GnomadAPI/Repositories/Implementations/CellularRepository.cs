@@ -119,6 +119,7 @@ namespace TravelCompanionAPI.Data
             return h3_oregon_data;
         }
 
+//TODO: Might go faster if double instead of decimal. Doubt we need THAT much precision?
         public List<decimal> getHexCoords(int pass)
         {
             List<string> h3ids = getAllH3(pass);
@@ -133,7 +134,7 @@ namespace TravelCompanionAPI.Data
                 geoBounds = h3.ToGeoBoundary();
                 geoVerts = geoBounds.Verts;
 
-                for (int i = 0; i < 6; i++)
+                for (int i = 0; i < 6; i++) //Hexagons have 6 sides
                 {
                     coords.Add(geoVerts[i].Latitude);
                     coords.Add(geoVerts[i].Longitude);
