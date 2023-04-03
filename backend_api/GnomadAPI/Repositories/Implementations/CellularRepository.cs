@@ -138,8 +138,8 @@ namespace TravelCompanionAPI.Data
                     coords.Add(geoVerts[i].Latitude);
                     coords.Add(geoVerts[i].Longitude);
                 }
-                coords.Add(geoVerts[0].Latitude);
-                coords.Add(geoVerts[0].Longitude);
+                coords.Add(geoVerts[0].Latitude /*+ 43.8041*/);
+                coords.Add(geoVerts[0].Longitude /*+ 120.5542*/);
                 geoVerts.Clear();
             }
 
