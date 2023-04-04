@@ -16,6 +16,7 @@ using System.Data;
 using H3Lib;
 using H3Lib.Extensions;
 using System.Diagnostics;
+using System.Linq;
 
 namespace TravelCompanionAPI.Data
 {
@@ -127,18 +128,30 @@ namespace TravelCompanionAPI.Data
             H3Index h3;
             GeoBoundary geoBounds;
             List<GeoCoord> geoVerts;
+            List<H3Index> compactedSet = new List<H3Index>();
 
             foreach (string id in h3ids)
             {
                 h3 = id.ToH3Index();
-                geoBounds = h3.ToGeoBoundary(); //Inefficient
+                compactedSet.Add(h3);
+            }
+
+            int res = compactedSet.First().Resolution; //All the same
+            //long max = compactedSet.MaxUncompactSize(res);
+
+            int status;
+            (status, List<H3Index> uncompactedSet) = compactedSet.Uncompact(res);
+
+            foreach (H3Index h3i in uncompactedSet)
+            {
+                geoBounds = h3i.ToGeoBoundary(); //Inefficient
                 geoVerts = geoBounds.Verts;
 
-                if(h3.IsValid())
+                if(h3i.IsValid())
                 {
                     //Pentagons have 5 sides, hexagons have 6.
                     //Pentagons/hexagons are only valid output ;)
-                    int forSize = h3.IsPentagon() ? 5 : 6;
+                    int forSize = h3i.IsPentagon() ? 5 : 6;
 
                     for (int i = 0; i < forSize; i++)
                     {
@@ -154,7 +167,10 @@ namespace TravelCompanionAPI.Data
                 coords.Add(geoVerts[0].Latitude);
                 coords.Add(geoVerts[0].Longitude);
                 geoVerts.Clear();
+
             }
+
+            //Console.WriteLine(max);
 
             return coords;
         }
