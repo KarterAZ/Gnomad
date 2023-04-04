@@ -131,7 +131,7 @@ namespace TravelCompanionAPI.Data
             foreach (string id in h3ids)
             {
                 h3 = id.ToH3Index();
-                geoBounds = h3.ToGeoBoundary();
+                geoBounds = h3.ToGeoBoundary(); //Inefficient
                 geoVerts = geoBounds.Verts;
 
                 if(h3.IsValid())
@@ -151,8 +151,8 @@ namespace TravelCompanionAPI.Data
                     //Commit war crimes (error checking. Possibly explosions.)
                 }
 
-                coords.Add(geoVerts[0].Latitude /*+ 43.8041*/);
-                coords.Add(geoVerts[0].Longitude /*+ 120.5542*/);
+                coords.Add(geoVerts[0].Latitude);
+                coords.Add(geoVerts[0].Longitude);
                 geoVerts.Clear();
             }
 
