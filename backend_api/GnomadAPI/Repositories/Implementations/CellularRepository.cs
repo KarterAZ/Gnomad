@@ -134,11 +134,23 @@ namespace TravelCompanionAPI.Data
                 geoBounds = h3.ToGeoBoundary();
                 geoVerts = geoBounds.Verts;
 
-                for (int i = 0; i < 6; i++) //Hexagons have 6 sides
+                if(h3.IsValid())
                 {
-                    coords.Add(geoVerts[i].Latitude);
-                    coords.Add(geoVerts[i].Longitude);
+                    //Pentagons have 5 sides, hexagons have 6.
+                    //Pentagons/hexagons are only valid output ;)
+                    int forSize = h3.IsPentagon() ? 5 : 6;
+
+                    for (int i = 0; i < forSize; i++)
+                    {
+                        coords.Add(geoVerts[i].Latitude);
+                        coords.Add(geoVerts[i].Longitude);
+                    }
                 }
+                else
+                {
+                    //Commit war crimes (error checking. Possibly explosions.)
+                }
+
                 coords.Add(geoVerts[0].Latitude /*+ 43.8041*/);
                 coords.Add(geoVerts[0].Longitude /*+ 120.5542*/);
                 geoVerts.Clear();
