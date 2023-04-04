@@ -139,10 +139,15 @@ namespace TravelCompanionAPI.Data
             int res = compactedSet.First().Resolution; //All the same
             //long max = compactedSet.MaxUncompactSize(res);
 
-            int status;
+            //For Todd's eyes only O O
+                                   //
+            //                     ___
+            /*int status;
             (status, List<H3Index> uncompactedSet) = compactedSet.Uncompact(res);
+            Console.WriteLine(res);
+            Console.WriteLine(status);*/
 
-            foreach (H3Index h3i in uncompactedSet)
+            foreach (H3Index h3i in compactedSet)
             {
                 geoBounds = h3i.ToGeoBoundary(); //Inefficient
                 geoVerts = geoBounds.Verts;
@@ -162,6 +167,7 @@ namespace TravelCompanionAPI.Data
                 else
                 {
                     //Commit war crimes (error checking. Possibly explosions.)
+                    Console.WriteLine("An error has occurred. H3 isn't valid.");
                 }
 
                 coords.Add(geoVerts[0].Latitude);
