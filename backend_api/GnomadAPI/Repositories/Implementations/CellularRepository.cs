@@ -143,9 +143,9 @@ namespace TravelCompanionAPI.Data
                                    //
             //                     ___
             /*int status;
-            (status, List<H3Index> uncompactedSet) = compactedSet.Uncompact(res);
+            (status, List<H3Index> uncompactedSet) = compactedSet.Uncompact(res);*/
             Console.WriteLine(res);
-            Console.WriteLine(status);*/
+            //Console.WriteLine(status);
 
             foreach (H3Index h3i in compactedSet)
             {
@@ -160,8 +160,8 @@ namespace TravelCompanionAPI.Data
 
                     for (int i = 0; i < forSize; i++)
                     {
-                        coords.Add(geoVerts[i].Latitude);
-                        coords.Add(geoVerts[i].Longitude);
+                        coords.Add(geoVerts[i].Latitude.RadiansToDegrees());
+                        coords.Add(geoVerts[i].Longitude.RadiansToDegrees());
                     }
                 }
                 else
@@ -170,8 +170,8 @@ namespace TravelCompanionAPI.Data
                     Console.WriteLine("An error has occurred. H3 isn't valid.");
                 }
 
-                coords.Add(geoVerts[0].Latitude);
-                coords.Add(geoVerts[0].Longitude);
+                coords.Add(geoVerts[0].Latitude.RadiansToDegrees());
+                coords.Add(geoVerts[0].Longitude.RadiansToDegrees());
                 geoVerts.Clear();
 
             }
