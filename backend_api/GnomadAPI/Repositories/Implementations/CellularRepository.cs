@@ -170,13 +170,12 @@ namespace TravelCompanionAPI.Data
                     Console.WriteLine("An error has occurred. H3 isn't valid.");
                 }
 
+                //Push the first set again to close the hexagon/pentagon
                 coords.Add(geoVerts[0].Latitude.RadiansToDegrees());
                 coords.Add(geoVerts[0].Longitude.RadiansToDegrees());
                 geoVerts.Clear();
 
             }
-
-            //Console.WriteLine(max);
 
             return coords;
         }

@@ -54,20 +54,9 @@ const handleApiLoaded = async(map, maps) => {
         lngArray = await getAllCoords(i);
 
         for (let ii = 0; ii < lngArray.length; ii += 2) {
-            let gData = new maps.LatLng(parseFloat(lngArray[ii] + 43.8041), parseFloat(lngArray[ii + 1]) - 120.5542);
+            let gData = new maps.LatLng(parseFloat(lngArray[ii]), parseFloat(lngArray[ii + 1]));
             latLngArray.push(gData);
         }
-        /*var bermudaTriangle = new maps.Polygon({
-            paths: latLngArray,
-            strokeColor: color[colorNum],
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: color[colorNum],
-            fillOpacity: 0.35
-        });
-        bermudaTriangles.push(bermudaTriangle);
-        bermudaTriangles[i].setMap(map);
-        colorNum = (colorNum % 10) + 1;*/
         bermudaTriangles.push(new maps.Polygon({
             paths: latLngArray,
             strokeColor: color[colorNum],
@@ -76,12 +65,14 @@ const handleApiLoaded = async(map, maps) => {
             fillColor: color[colorNum],
             fillOpacity: 0.35
         }));
+        bermudaTriangles[i].setMap(map);
+
         colorNum = (colorNum % 10) + 1;
         console.log(i);
     }
-    for (var ii = 0; ii < bermudaTriangles.length; ii++) {
+    /*for (var ii = 0; ii < bermudaTriangles.length; ii++) {
         bermudaTriangles[ii].setMap(map);
-    }
+    }*/
 }
 
 
