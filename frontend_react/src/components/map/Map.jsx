@@ -54,7 +54,7 @@ const handleApiLoaded = async(map, maps) => {
         lngArray = await getAllCoords(i);
 
         for (let ii = 0; ii < lngArray.length; ii += 2) {
-            let gData = new maps.LatLng(parseFloat(lngArray[ii] + 42), parseFloat(lngArray[ii + 1]) - 122);
+            let gData = new maps.LatLng(parseFloat(lngArray[ii] + 43.8041), parseFloat(lngArray[ii + 1]) - 120.5542);
             latLngArray.push(gData);
         }
         /*var bermudaTriangle = new maps.Polygon({
