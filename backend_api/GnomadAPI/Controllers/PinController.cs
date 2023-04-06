@@ -243,11 +243,25 @@ namespace TravelCompanionAPI.Controllers
 
         //Gets the average review result which is up_vote - down_vote
         [HttpGet("getReview /{pinid}")]
-        public int getReview(int pinid)
+        public double getReview(int pinid)
         {
-            int review = _pin_repo.getAverageVote(pinid);
+            double review = _pin_repo.getAverageVote(pinid);
 
             return review;
+        }
+
+        [HttpGet("getGlobal/{searchTerm}")]
+        public JsonResult getGlobal(string searchTerm)
+        {
+
+            List<Pin> pins = _pin_repo.globalSearch(searchTerm);
+
+            if (pins == null)
+            {
+                return new JsonResult(NotFound());
+            }
+
+            return new JsonResult(Ok(pins));
         }
     }
 }

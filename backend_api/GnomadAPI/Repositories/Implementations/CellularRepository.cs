@@ -16,6 +16,7 @@ using System.Data;
 using H3Lib;
 using H3Lib.Extensions;
 using System.Diagnostics;
+using System.Linq;
 
 namespace TravelCompanionAPI.Data
 {
@@ -119,6 +120,7 @@ namespace TravelCompanionAPI.Data
             return h3_oregon_data;
         }
 
+//TODO: Might go faster if double instead of decimal. Doubt we need THAT much precision?
         public List<decimal> getHexCoords(int pass)
         {
             List<string> h3ids = getAllH3(pass);
@@ -126,22 +128,55 @@ namespace TravelCompanionAPI.Data
             H3Index h3;
             GeoBoundary geoBounds;
             List<GeoCoord> geoVerts;
+            List<H3Index> compactedSet = new List<H3Index>();
 
             foreach (string id in h3ids)
             {
                 h3 = id.ToH3Index();
-                geoBounds = h3.ToGeoBoundary();
+                compactedSet.Add(h3);
+            }
+
+            int res = compactedSet.First().Resolution; //All the same
+            //long max = compactedSet.MaxUncompactSize(res);
+
+            //For Todd's eyes only O O
+                                   //
+            //                     ___
+            /*int status;
+            (status, List<H3Index> uncompactedSet) = compactedSet.Uncompact(res);*/
+            Console.WriteLine(res);
+            //Console.WriteLine(status);
+
+            foreach (H3Index h3i in compactedSet)
+            {
+                geoBounds = h3i.ToGeoBoundary(); //Inefficient
                 geoVerts = geoBounds.Verts;
 
-                for (int i = 0; i < 6; i++)
+                if(h3i.IsValid())
                 {
-                    coords.Add(geoVerts[i].Latitude);
-                    coords.Add(geoVerts[i].Longitude);
+                    //Pentagons have 5 sides, hexagons have 6.
+                    //Pentagons/hexagons are only valid output ;)
+                    int forSize = h3i.IsPentagon() ? 5 : 6;
+
+                    for (int i = 0; i < forSize; i++)
+                    {
+                        coords.Add(geoVerts[i].Latitude.RadiansToDegrees());
+                        coords.Add(geoVerts[i].Longitude.RadiansToDegrees());
+                    }
                 }
-                coords.Add(geoVerts[0].Latitude);
-                coords.Add(geoVerts[0].Longitude);
+                else
+                {
+                    //Commit war crimes (error checking. Possibly explosions.)
+                    Console.WriteLine("An error has occurred. H3 isn't valid.");
+                }
+
+                coords.Add(geoVerts[0].Latitude.RadiansToDegrees());
+                coords.Add(geoVerts[0].Longitude.RadiansToDegrees());
                 geoVerts.Clear();
+
             }
+
+            //Console.WriteLine(max);
 
             return coords;
         }

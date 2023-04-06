@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using TravelCompanionAPI.Models;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Linq;
 //using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace TravelCompanionAPI.Data
@@ -109,7 +110,7 @@ namespace TravelCompanionAPI.Data
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + 
-                                    " WHERE(longitude > @minLong AND longitude < @maxLong AND latitude > @minLat AND latitude < @maxLat);";
+                                    " WHERE(longitude > @minLong AND longitude < @maxLong AND latitude > @minLat AND latitude < @maxLat) LIMIT 100;";
 
                 command.Parameters.AddWithValue("@minLong", minLong);
                 command.Parameters.AddWithValue("@minLat", minLat);
@@ -495,7 +496,7 @@ namespace TravelCompanionAPI.Data
                 command.CommandType = CommandType.Text;
                 //Search the pins table for pins with similar streets.
                 //Set all to lower to dismiss case sensitivity
-                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " WHERE(LOWER(street) LIKE @address);";
+                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " WHERE(LOWER(street) LIKE @address) LIMIT 100;";
                 command.Parameters.AddWithValue("@address", "%" + address.ToLower() + "%");
 
                 //Go through and add pin to pins list
@@ -560,7 +561,7 @@ namespace TravelCompanionAPI.Data
                 command.CommandType = CommandType.Text;
                 //Search the pins table street column for strings with the search string in it.
                 //Set all to lower to dismiss case sensitivity
-                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " WHERE(LOWER(street) LIKE LOWER(@SearchString));";
+                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " WHERE(LOWER(street) LIKE LOWER(@SearchString)) LIMIT 100;";
                 command.Parameters.AddWithValue("@SearchString", "%" + searchString + "%");
 
                 //Go through and add to pin list
@@ -609,10 +610,10 @@ namespace TravelCompanionAPI.Data
         }
 
         //Gets the up_vote and down_vote values by pin id, then returns the average
-        public int getAverageVote(int pinid)
+        public double getAverageVote(int pinid)
         {
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
-            int voteDifference = 0;
+            double voteDifference = 0;
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -627,7 +628,7 @@ namespace TravelCompanionAPI.Data
                     {
                         int upVote = reader.GetInt32("up_vote");
                         int downVote = reader.GetInt32("down_vote");
-                        voteDifference = upVote - downVote;
+                        voteDifference = ((upVote + 1.0) / (upVote + downVote + 2.0)) * 5.0;
                     }
                 }
 
@@ -635,6 +636,26 @@ namespace TravelCompanionAPI.Data
             }
 
             return voteDifference;
+        }
+
+        //Global Search function that takes in a string and searches for the string in Names, Addresses, and Cities.
+        public List<Pin> globalSearch(string searchString)
+        {
+            List<Pin> pins = new List<Pin>();
+
+            // Get pins by name
+            pins.AddRange(getByName(searchString));
+
+            // Get pins by address
+            pins.AddRange(getAllByAddress(searchString));
+
+            // Get pins by city
+            pins.AddRange(getByCity(searchString));
+
+            // Remove duplicates
+            pins = pins.Distinct().ToList();
+
+            return pins;
         }
     }
 }

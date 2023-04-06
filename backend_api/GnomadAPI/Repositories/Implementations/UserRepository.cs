@@ -300,5 +300,57 @@ namespace TravelCompanionAPI.Data
 
             return review;
         }
+
+        //Cancel a User's Vote
+        public void cancelReview(int id, int pinid)
+        {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+
+            int review = -1;
+
+            // Retrieve the review value from the user_review table
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "SELECT review FROM " + RTABLE + " WHERE user_id = @UserId AND pin_id = @PinId;";
+                command.Parameters.AddWithValue("@UserId", id);
+                command.Parameters.AddWithValue("@PinId", pinid);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        review = reader.GetInt32(0);
+                    }
+                }
+            }
+
+            // Remove the row from the user_review table
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "DELETE FROM " + RTABLE + " WHERE user_id = @UserId AND pin_id = @PinId;";
+                command.Parameters.AddWithValue("@UserId", id);
+                command.Parameters.AddWithValue("@PinId", pinid);
+
+                command.ExecuteNonQuery();
+            }
+
+            // Update the up_vote or down_vote column in the pins table
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "UPDATE " + PTABLE + " SET " + (review == 1 ? "up_vote = up_vote - 1" : "down_vote = down_vote - 1") + " WHERE id = @Id;";
+                command.Parameters.AddWithValue("@Id", pinid);
+
+                command.ExecuteNonQuery();
+            }
+
+            connection.Close();
+        }
     }
+    
 }
