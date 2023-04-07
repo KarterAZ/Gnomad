@@ -35,6 +35,31 @@ namespace TravelCompanionAPI.Data
 
         }
 
+        public void SaveToDatabase(int pass)
+        {
+            //Convert decimal to double for performance reasons.
+            List<decimal> coordinates = getHexCoords(pass);
+            List<double> coords = new List<double>();
+
+            foreach(decimal coord in coordinates)
+            {
+                coords.Add((double)coord);
+            }
+
+            //Save to database
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = DatabaseConnection.getInstance().getConnection();
+                command.CommandType = CommandType.Text;
+                //H3 is used to tell which hexagons go together; mainly lat and long
+                command.CommandText = "INSERT INTO " + TABLE + " VALUES(@H3, @Latitude, @Longitude)";
+                //command.Parameters.AddWithValue("Id", id);
+
+                command.ExecuteNonQuery();
+            }
+            //command.Connection.Close();
+        }
+
         public Cellular getByH3Id(string id)
         {
             Cellular cellular = null;
