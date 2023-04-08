@@ -59,9 +59,9 @@ namespace TravelCompanionAPI.Controllers
         }
 
         [HttpGet("allH3Id/{offset}")]
-        public JsonResult getAllH3(int offset)
+        public JsonResult getAllH3()
         {
-            List<string> h3List = _repo.getAllH3(offset);
+            List<string> h3List = _repo.getAllH3();
 
             return new JsonResult(Ok(h3List));
         }

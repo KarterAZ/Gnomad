@@ -28,6 +28,7 @@ namespace TravelCompanionAPI.Data
     public class CellularRepository : ICellularRepository
     {
         const string TABLE = "h3_oregon_data";
+        const string NEWTABLE = "oregon_cellular_coords";
 
         //TODO: do we need config?
         public CellularRepository(IConfiguration config)
@@ -35,9 +36,9 @@ namespace TravelCompanionAPI.Data
 
         }
 
-        public void SaveToDatabase(int pass)
+        public void SaveToDatabase()
         {
-            List<string> h3ids = getAllH3(pass);
+            List<string> h3ids = getAllH3();
             List<double> coords = new List<double>();
             H3Index h3;
             GeoBoundary geoBounds;
@@ -76,14 +77,18 @@ namespace TravelCompanionAPI.Data
                         command.Connection = DatabaseConnection.getInstance().getConnection();
                         command.CommandType = CommandType.Text;
 
+                        command.CommandText = "INSERT INTO " + NEWTABLE + " VALUES(0, @centerLatitude, @centerLongitude, @latitude1, @longitude1, @latitude2, @longitude2, @latitude3, @longitude3, @latitude4, @longitude4, @latitude5, @longitude5, @latitude6, @longitude6)";
+
                         if(forSize == 6) //If Hexagon, no NULL values
                         {
-                            command.CommandText = "INSERT INTO " + TABLE + " VALUES(@centerLatitude, @centerLongitude, @latitude1, @longitude1, @latitude2, @longitude2, @latitude3, @longitude3, @latitude4, @longitude4, @latitude5, @longitude5, @latitude6, @longitude6)";
                             command.Parameters.AddWithValue("@latitude6", coords[10]);
                             command.Parameters.AddWithValue("@longitude6", coords[11]);
                         }
                         else
-                            command.CommandText = "INSERT INTO " + TABLE + " VALUES(@centerLatitude, @centerLongitude, @latitude1, @longitude1, @latitude2, @longitude2, @latitude3, @longitude3, @latitude4, @longitude4, @latitude5, @longitude5)";
+                        {
+                            command.Parameters.AddWithValue("@latitude6", null);
+                            command.Parameters.AddWithValue("@longitude6", null);
+                        }
                         
                         command.Parameters.AddWithValue("@centerLatitude", center.Latitude);
                         command.Parameters.AddWithValue("@centerLongitude", center.Longitude);
@@ -175,17 +180,15 @@ namespace TravelCompanionAPI.Data
             return h3_oregon_data;
         }
 
-        public List<string> getAllH3(int offset)
+        public List<string> getAllH3()
         {
             List<string> h3_oregon_data = new List<string>();
-            offset *= 5600;
 
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT h3_res9_id FROM " + TABLE + " LIMIT 5600 OFFSET @Offset;";
-                command.Parameters.AddWithValue("@Offset", offset);
+                command.CommandText = @"SELECT h3_res9_id FROM " + TABLE + ";";
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -203,7 +206,7 @@ namespace TravelCompanionAPI.Data
         //TODO: Might go faster if double instead of decimal. Doubt we need THAT much precision?
         public List<decimal> getHexCoords(int pass)
         {
-            List<string> h3ids = getAllH3(pass);
+            List<string> h3ids = getAllH3();
             List<decimal> coords = new List<decimal>();
             H3Index h3;
             GeoBoundary geoBounds;
