@@ -21,6 +21,8 @@ namespace TravelCompanionAPI.Data
         //Declares getByH3Id, getAll
         //******************************************************************************
 
+        public void SaveToDatabase();
+
         public Cellular getByH3Id(string id);
 
         public List<Cellular> getAll();

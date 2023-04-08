@@ -36,6 +36,15 @@ namespace TravelCompanionAPI.Controllers
             _repo = repo;
         }
 
+        [HttpGet("saveToDatabase")]
+        public JsonResult saveData()
+        {
+
+            _repo.SaveToDatabase();
+
+            return new JsonResult(Ok());
+        }
+
         [HttpGet("getById")]
         public JsonResult get(string id)
         {
