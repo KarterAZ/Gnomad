@@ -29,7 +29,7 @@ namespace TravelCompanionAPI.Data
     {
         const string TABLE = "h3_oregon_data";
 
-//TODO: do we need config?
+        //TODO: do we need config?
         public CellularRepository(IConfiguration config)
         {
 
@@ -37,27 +37,82 @@ namespace TravelCompanionAPI.Data
 
         public void SaveToDatabase(int pass)
         {
-            //Convert decimal to double for performance reasons.
-            List<decimal> coordinates = getHexCoords(pass);
+            List<string> h3ids = getAllH3(pass);
             List<double> coords = new List<double>();
+            H3Index h3;
+            GeoBoundary geoBounds;
+            GeoCoord center;
+            List<GeoCoord> geoVerts;
+            List<H3Index> compactedSet = new List<H3Index>();
 
-            foreach(decimal coord in coordinates)
+            //Compacted set means fewest possible hex/pentagaons to fill area perfectly
+            foreach (string id in h3ids)
             {
-                coords.Add((double)coord);
+                h3 = id.ToH3Index();
+                compactedSet.Add(h3);
             }
 
-            //Save to database
-            using (MySqlCommand command = new MySqlCommand())
+            foreach (H3Index h3i in compactedSet)
             {
-                command.Connection = DatabaseConnection.getInstance().getConnection();
-                command.CommandType = CommandType.Text;
-                //H3 is used to tell which hexagons go together; mainly lat and long
-                command.CommandText = "INSERT INTO " + TABLE + " VALUES(@H3, @Latitude, @Longitude)";
-                //command.Parameters.AddWithValue("Id", id);
+                center = h3i.ToGeoCoord();
+                geoBounds = h3i.ToGeoBoundary();
+                geoVerts = geoBounds.Verts;
 
-                command.ExecuteNonQuery();
+                if (h3i.IsValid())
+                {
+                    //Pentagons have 5 sides, hexagons have 6.
+                    //Pentagons/hexagons are only valid output ;)
+                    int forSize = h3i.IsPentagon() ? 5 : 6;
+
+                    for (int i = 0; i < forSize; i++)
+                    {
+                        coords.Add((double)geoVerts[i].Latitude.RadiansToDegrees());
+                        coords.Add((double)geoVerts[i].Longitude.RadiansToDegrees());
+                    }
+
+                    //Add line to database
+                    using (MySqlCommand command = new MySqlCommand())
+                    {
+                        command.Connection = DatabaseConnection.getInstance().getConnection();
+                        command.CommandType = CommandType.Text;
+
+                        if(forSize == 6) //If Hexagon, no NULL values
+                        {
+                            command.CommandText = "INSERT INTO " + TABLE + " VALUES(@centerLatitude, @centerLongitude, @latitude1, @longitude1, @latitude2, @longitude2, @latitude3, @longitude3, @latitude4, @longitude4, @latitude5, @longitude5, @latitude6, @longitude6)";
+                            command.Parameters.AddWithValue("@latitude6", coords[10]);
+                            command.Parameters.AddWithValue("@longitude6", coords[11]);
+                        }
+                        else
+                            command.CommandText = "INSERT INTO " + TABLE + " VALUES(@centerLatitude, @centerLongitude, @latitude1, @longitude1, @latitude2, @longitude2, @latitude3, @longitude3, @latitude4, @longitude4, @latitude5, @longitude5)";
+                        
+                        command.Parameters.AddWithValue("@centerLatitude", center.Latitude);
+                        command.Parameters.AddWithValue("@centerLongitude", center.Longitude);
+                        command.Parameters.AddWithValue("@latitude1", coords[0]);
+                        command.Parameters.AddWithValue("@longitude1", coords[1]);
+                        command.Parameters.AddWithValue("@latitude2", coords[2]);
+                        command.Parameters.AddWithValue("@longitude2", coords[3]);
+                        command.Parameters.AddWithValue("@latitude3", coords[4]);
+                        command.Parameters.AddWithValue("@longitude3", coords[5]);
+                        command.Parameters.AddWithValue("@latitude4", coords[6]);
+                        command.Parameters.AddWithValue("@longitude4", coords[7]);
+                        command.Parameters.AddWithValue("@latitude5", coords[8]);
+                        command.Parameters.AddWithValue("@longitude5", coords[9]);
+
+                        command.ExecuteNonQuery();
+                    }
+                    //command.Connection.Close();
+
+                    //Clear list
+                    coords.Clear();
+                }
+                else
+                {
+                    //Commit war crimes (error checking. Possibly explosions.)
+                    Console.WriteLine("An error has occurred. H3 isn't valid.");
+                }
+
+                geoVerts.Clear();
             }
-            //command.Connection.Close();
         }
 
         public Cellular getByH3Id(string id)
@@ -145,7 +200,7 @@ namespace TravelCompanionAPI.Data
             return h3_oregon_data;
         }
 
-//TODO: Might go faster if double instead of decimal. Doubt we need THAT much precision?
+        //TODO: Might go faster if double instead of decimal. Doubt we need THAT much precision?
         public List<decimal> getHexCoords(int pass)
         {
             List<string> h3ids = getAllH3(pass);
@@ -161,23 +216,20 @@ namespace TravelCompanionAPI.Data
                 compactedSet.Add(h3);
             }
 
-            int res = compactedSet.First().Resolution; //All the same
             //long max = compactedSet.MaxUncompactSize(res);
 
             //For Todd's eyes only O O
-                                   //
+            //
             //                     ___
             /*int status;
             (status, List<H3Index> uncompactedSet) = compactedSet.Uncompact(res);*/
-            Console.WriteLine(res);
-            //Console.WriteLine(status);
 
             foreach (H3Index h3i in compactedSet)
             {
                 geoBounds = h3i.ToGeoBoundary(); //Inefficient
                 geoVerts = geoBounds.Verts;
 
-                if(h3i.IsValid())
+                if (h3i.IsValid())
                 {
                     //Pentagons have 5 sides, hexagons have 6.
                     //Pentagons/hexagons are only valid output ;)
