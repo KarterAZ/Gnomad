@@ -179,5 +179,53 @@ namespace TravelCompanionAPI.Data
 
             return coords;
         }
+
+        public void hexToDatabase()
+        {
+            List<string> h3ids = getAllH3(0);
+            List<decimal> coords = new List<decimal>();
+            H3Index h3;
+            GeoBoundary geoBounds;
+            List<GeoCoord> geoVerts;
+            List<H3Index> compactedSet = new List<H3Index>();
+
+            for (int i = 1; h3ids.Count > 0; i++)
+            {
+
+                foreach (string id in h3ids)
+                {
+                    h3 = id.ToH3Index();
+                    compactedSet.Add(h3);
+                }
+
+                foreach (H3Index h3i in compactedSet)
+                {
+                    geoBounds = h3i.ToGeoBoundary();
+                    geoVerts = geoBounds.Verts;
+
+                    if (h3i.IsValid())
+                    {
+                        //Pentagons have 5 sides, hexagons have 6.
+                        //Pentagons/hexagons are only valid output ;)
+                        int forSize = h3i.IsPentagon() ? 5 : 6;
+
+                        for (int ii = 0; ii < forSize; ii++)
+                        {
+                            //needs to write to database
+                            coords.Add(geoVerts[ii].Latitude.RadiansToDegrees());
+                            coords.Add(geoVerts[ii].Longitude.RadiansToDegrees());
+                        }
+                    }
+                    else
+                    {
+                        //Commit war crimes (error checking. Possibly explosions.)
+                        Console.WriteLine("An error has occurred. H3 isn't valid.");
+                    }
+
+                    geoVerts.Clear();
+                }
+                h3ids = getAllH3(i);
+            }
+        }
     }
 }
