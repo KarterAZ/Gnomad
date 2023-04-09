@@ -32,7 +32,7 @@ import getAllCoords from '../../utilities/api/get_cell_coords';
 
 
 //can later make the default lat/lng be user's location?
-const defaultProps = 
+const defaultProps =
 {
   zoom: 6,
   center: {
@@ -42,32 +42,32 @@ const defaultProps =
 };
 
 
-const handleApiLoaded = async(map, maps) => {
-    var colorNum = 0;
-    var color = ["#FF5733", "#FFFC33", "#33FF36", "#33FFF9", "#3393FF", "#3339FF", "#9F33FF", "#FF33CA", "#FF3333", "#440000"]
-    var bermudaTriangles = [];
+const handleApiLoaded = async (map, maps) => {
+  var colorNum = 0;
+  var color = ["#FF5733", "#FFFC33", "#33FF36", "#33FFF9", "#3393FF", "#3339FF", "#9F33FF", "#FF33CA", "#FF3333", "#440000"]
+  var bermudaTriangles = [];
 
-    for (let i = 0; i < 242; i++) {
-        var latLngArray = [];
-        var lngArray = await getAllCoords(i);
+  for (let i = 0; i < 242; i++) {
+    var latLngArray = [];
+    var lngArray = await getAllCoords(i);
 
-        for (let ii = 0; ii < lngArray.length; ii += 2) {
-            let gData = new maps.LatLng(parseFloat(lngArray[ii]), parseFloat(lngArray[ii + 1]));
-            latLngArray.push(gData);
-        }
-  var bermudaTriangle = new maps.Polygon({
-            paths: latLngArray,
-            strokeColor: color[colorNum],
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-            fillColor: color[colorNum],
-    fillOpacity: 0.35
-  });
-        bermudaTriangles.push(bermudaTriangle);
+    for (let ii = 0; ii < lngArray.length; ii += 2) {
+      let gData = new maps.LatLng(parseFloat(lngArray[ii]), parseFloat(lngArray[ii + 1]));
+      latLngArray.push(gData);
+    }
+    var bermudaTriangle = new maps.Polygon({
+      paths: latLngArray,
+      strokeColor: color[colorNum],
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: color[colorNum],
+      fillOpacity: 0.35
+    });
+    bermudaTriangles.push(bermudaTriangle);
 
-        bermudaTriangles[i].setMap(map);
-        colorNum = (colorNum % 10) + 1;
-}
+    bermudaTriangles[i].setMap(map);
+    colorNum = (colorNum % 10) + 1;
+  }
 }
 
 
@@ -81,8 +81,7 @@ const presetMarkers = [
   { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi", pinType: 8 },
 ];
 //General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separte versions 
-const CustomMarker = ({ lat, lng, image, type, name, description, pinType, onClick }) => 
-{
+const CustomMarker = ({ lat, lng, image, type, name, description, pinType, onClick }) => {
   const THUMBS_UP = "1";
   const THUMBS_DOWN = "-1";
 
@@ -101,14 +100,11 @@ const CustomMarker = ({ lat, lng, image, type, name, description, pinType, onCli
   //Initially had an incrementer/decrementer but this version just stores one state
   //of the user, eventually needs to be connected to the database to get a finalized
   //reputation count on each marker
-  const handleReputationClick = (value) => 
-  {
-    if (reputation === null) 
-    {
+  const handleReputationClick = (value) => {
+    if (reputation === null) {
       setReputation(value)
     }
-    else 
-    {
+    else {
       //if currentRep is equal to value reset reputation value to null, else assign value
       setReputation((currentReputation) =>
         currentReputation === value ? null : value
@@ -117,8 +113,7 @@ const CustomMarker = ({ lat, lng, image, type, name, description, pinType, onCli
   };
 
   //Toggles state between true/false 
-  const handleFavoriteClick = () => 
-  {
+  const handleFavoriteClick = () => {
     setIsFavorite((currentIsFavorite) => !currentIsFavorite);
   }
 
@@ -141,7 +136,7 @@ const CustomMarker = ({ lat, lng, image, type, name, description, pinType, onCli
               <button className='header-button' onClick={handleFavoriteClick}>
                 {isFavorite ? "❤️" : "🖤"}
               </button>
-          </div>
+            </div>
 
             <div className='pin-title'>{type}</div>
 
@@ -150,17 +145,17 @@ const CustomMarker = ({ lat, lng, image, type, name, description, pinType, onCli
                 className='header-button'
                 disabled={reputation === THUMBS_UP}
                 onClick={() => handleReputationClick(THUMBS_UP)}
-                >
-                  👍
-                </button>
+              >
+                👍
+              </button>
               <button
                 className='header-button'
                 disabled={reputation === THUMBS_DOWN}
                 onClick={() => handleReputationClick(THUMBS_DOWN)}
-                >
-                  👎
-                </button>
-              </div>
+              >
+                👎
+              </button>
+            </div>
           </div>
 
           <div className='info-window-body'>
@@ -181,8 +176,7 @@ const CustomMarker = ({ lat, lng, image, type, name, description, pinType, onCli
   );
 };
 
-export default function Map() 
-{
+export default function Map() {
   //State declared for storing markers
   const [markers, setMarkers] = useState(presetMarkers);
 
@@ -194,8 +188,7 @@ export default function Map()
   const [selectedPinType, setSelectedPinType] = useState("");
 
   //Function that toggles the sidebar's create pin option
-  const toggleMarkerCreation = (pinName, pinDescription, pinType) => 
-  {
+  const toggleMarkerCreation = (pinName, pinDescription, pinType) => {
     setMarkerCreationEnabled(!markerCreationEnabled);
     setSelectedPinName(pinName);
     setSelectedPinDescription(pinDescription);
@@ -204,13 +197,10 @@ export default function Map()
 
   //Function handling onclick events on the map that will result in marker creation
 
-  const handleCreatePin = (event) => 
-  {
-    if (markerCreationEnabled && selectedPinType !== "") 
-    {
+  const handleCreatePin = (event) => {
+    if (markerCreationEnabled && selectedPinType !== "") {
       let pinImage = '';
-      switch (selectedPinType) 
-      {
+      switch (selectedPinType) {
         case 'Pin':
           pinImage = pin;
           break;
@@ -234,7 +224,7 @@ export default function Map()
       }
 
       //Adds marker to array that gets rendered (Eventually will have to add a pin to the database)
-      setMarkers([...markers, 
+      setMarkers([...markers,
       {
         lat: event.lat,
         lng: event.lng,
@@ -262,20 +252,20 @@ export default function Map()
     fetchData(lat, lng, latRange, longRange);
 
     // Remove markers that are not within the current bounds
-   /*
-    for (let i = 0; i < markers.length; i++) {
-      const marker = markers[i];
-      if ((marker.lat < latStart ||
-        marker.lat > latStart + latRange ||
-        marker.lng < longStart ||
-        marker.lng > longStart + longRange)) {
-        // Remove the marker from the map and from the markers array
-        marker.setMap(null); // setMap not a function? Maybe in other react google api? 
-        markers.splice(i, 1);
-        i--;
-      }
-    }
-   */
+    /*
+     for (let i = 0; i < markers.length; i++) {
+       const marker = markers[i];
+       if ((marker.lat < latStart ||
+         marker.lat > latStart + latRange ||
+         marker.lng < longStart ||
+         marker.lng > longStart + longRange)) {
+         // Remove the marker from the map and from the markers array
+         marker.setMap(null); // setMap not a function? Maybe in other react google api? 
+         markers.splice(i, 1);
+         i--;
+       }
+     }
+    */
   };
 
   /*If getting the error:
@@ -290,7 +280,7 @@ export default function Map()
   //Blueprint for filtering through pins, can add elements in sidebar later
   //TODO: Make excludedPinTypes dynamic when sidebar has pin filtering. Currently used to reduce severe clutter.
   const excludedPinTypes = [3, 4, 8]; // array of pin types to exclude.
-  
+
 
   const fetchData = async (latStart, longStart, latRange, longRange) => {
     try {
@@ -337,36 +327,36 @@ export default function Map()
   }
 
   return (
-      <div id='wrapper'>
-          <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
-        <div id='map'>
-          <GoogleMapReact
-            draggable={!markerCreationEnabled}
-            bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
-            defaultCenter={defaultProps.center}
-            defaultZoom={defaultProps.zoom}
-                  yesIWantToUseGoogleMapApiInternals //this is important!
-                  onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-            onClick={markerCreationEnabled ? handleCreatePin : undefined}
-            onChange={handleMapChange}
-          >
+    <div id='wrapper'>
+      <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
+      <div id='map'>
+        <GoogleMapReact
+          draggable={!markerCreationEnabled}
+          bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
+          defaultCenter={defaultProps.center}
+          defaultZoom={defaultProps.zoom}
+          yesIWantToUseGoogleMapApiInternals //this is important!
+          onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
+          onClick={markerCreationEnabled ? handleCreatePin : undefined}
+          onChange={handleMapChange}
+        >
 
 
-            {[...markers, ...presetMarkers].map((marker, index) => (//Renders presetMarkers on the map
-              <CustomMarker
-                key={index}
-                lat={marker.lat}
-                lng={marker.lng}
-                type={marker.type}
-                name={marker.name}
-                description={marker.description}
-                street={marker.street}
-                image={marker.image}
-              />
-            ))}
+          {[...markers, ...presetMarkers].map((marker, index) => (//Renders presetMarkers on the map
+            <CustomMarker
+              key={index}
+              lat={marker.lat}
+              lng={marker.lng}
+              type={marker.type}
+              name={marker.name}
+              description={marker.description}
+              street={marker.street}
+              image={marker.image}
+            />
+          ))}
 
-          </GoogleMapReact>
-        </div >
+        </GoogleMapReact>
+      </div >
     </div>
   );
 }
