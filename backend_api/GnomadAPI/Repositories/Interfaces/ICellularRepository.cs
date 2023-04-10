@@ -21,11 +21,13 @@ namespace TravelCompanionAPI.Data
         //Declares getByH3Id, getAll
         //******************************************************************************
 
+        public void SaveToDatabase();
+
         public Cellular getByH3Id(string id);
 
         public List<Cellular> getAll();
 
-        public List<string> getAllH3(int offset);
+        public List<string> getAllH3();
 
         public List<decimal> getHexCoords(int pass);
     }
