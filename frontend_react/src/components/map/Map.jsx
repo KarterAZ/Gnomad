@@ -30,9 +30,8 @@ import electric from '../../images/Charger.png';
 
 import getAllCoords from '../../utilities/api/get_cell_coords';
 
-
-//can later make the default lat/lng be user's location?
-const defaultProps =
+// can later make the default lat/lng be user's location?
+const defaultProps = 
 {
   zoom: 6,
   center: {
@@ -41,11 +40,11 @@ const defaultProps =
   },
 };
 
-
-const handleApiLoaded = async (map, maps) => {
-  var colorNum = 0;
-  var color = ["#FF5733", "#FFFC33", "#33FF36", "#33FFF9", "#3393FF", "#3339FF", "#9F33FF", "#FF33CA", "#FF3333", "#440000"]
-  var bermudaTriangles = [];
+// fills in the cell coverage.
+const handleApiLoaded = async(map, maps) => {
+    var colorNum = 0;
+    var color = ["#FF5733", "#FFFC33", "#33FF36", "#33FFF9", "#3393FF", "#3339FF", "#9F33FF", "#FF33CA", "#FF3333", "#440000"]
+    var bermudaTriangles = [];
 
   for (let i = 0; i < 242; i++) {
     var latLngArray = [];
@@ -71,75 +70,84 @@ const handleApiLoaded = async (map, maps) => {
 }
 
 
-//Array of markers that gets used to populate map, eventually will be filled with pin data from database
-//Just an example hard coded array that can be used for experimenting. 
+// array of markers that gets used to populate map, eventually will be filled with pin data from database.
 const presetMarkers = [
-  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", description: " Brevada", pinType: 2 },
-  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", description: "Pilot", pinType: 4 },
-  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", description: "Oregon Tech", pinType: 2 },
-  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", description: "Oregon Tech Parking Lot F", pinType: 3 },
-  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi", pinType: 8 },
+  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", description: "Brevada" },
+  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", description: "Pilot" },
+  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", description: "Oregon Tech" },
+  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", description: "Oregon Tech Parking Lot F" },
+  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
 ];
-//General format all pins will follow, made dynamic by adding image data member instead of having 3-4 separte versions 
-const CustomMarker = ({ lat, lng, image, type, name, description, pinType, onClick }) => {
+
+// general format all pins will follow, made dynamic by adding image data member instead of having 3-4 separate versions.
+const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) => 
+{
+  // named constants for the rating values.
   const THUMBS_UP = "1";
   const THUMBS_DOWN = "-1";
 
-  //TODO: Custom marker is starting to get really big, consider making it into a component in it's own class?
+  // TODO: custom marker is starting to get really big, consider making it into a component in it's own class?
   // such as Marker.jsx , could benefit from having it's own .css file.
 
-  //State declared for InfoWindow displaying
+  // state declared for InfoWindow displaying.
   const [showInfoWindow, setShowInfoWindow] = useState(false);
 
-  //State declared for reputation thumbs up (1) down (-1) No selection (null)
+  // state declared for reputation thumbs up (1) down (-1) No selection (null).
   const [reputation, setReputation] = useState(null);
 
-  //State declared for setting marker as a favorite true/false
+  // state declared for setting marker as a favorite true/false.
   const [isFavorite, setIsFavorite] = useState(false);
 
-  //Initially had an incrementer/decrementer but this version just stores one state
-  //of the user, eventually needs to be connected to the database to get a finalized
-  //reputation count on each marker
-  const handleReputationClick = (value) => {
-    if (reputation === null) {
+  // initially had an incrementer/decrementer but this version just stores one state
+  // of the user, eventually needs to be connected to the database to get a finalized
+  // reputation count on each marker.
+  const handleReputationClick = (value) => 
+  {
+    if (reputation === null) 
+    {
       setReputation(value)
-    }
-    else {
-      //if currentRep is equal to value reset reputation value to null, else assign value
+    } 
+    else 
+    {
+      // if currentRep is equal to value reset reputation value to null, else assign value.
       setReputation((currentReputation) =>
         currentReputation === value ? null : value
       );
     }
   };
 
-  //Toggles state between true/false 
-  const handleFavoriteClick = () => {
+  // toggles favorite state between true/false on click. 
+  const handleFavoriteClick = () => 
+  {
     setIsFavorite((currentIsFavorite) => !currentIsFavorite);
   }
 
   return (
     <div className='marker-container'>
-      <img //area responsible for marker image  
+      <img // area responsible for marker image. 
         className='marker'
         src={image}
         alt="marker"
         lat={lat}
         lng={lng}
-        onClick={() => setShowInfoWindow(!showInfoWindow)}//toggles useState whether to display the InfoWindow upon marker click
+        onClick={() => setShowInfoWindow(!showInfoWindow)} 
+        // toggles useState whether to display the InfoWindow upon marker click.
       />
-      {showInfoWindow && (//Customized InfoWindow, was having too much trouble using google map's 
-
+      {showInfoWindow && ( 
+        // customized InfoWindow, was having too much trouble using google map's (plus ours looks nicer).
         <div className='info-window'>
           <div className='info-window-header'>
-            {/* Favorite Button */}
+            {/* favorite button */}
             <div className='header-button-wrapper'>
               <button className='header-button' onClick={handleFavoriteClick}>
                 {isFavorite ? "❤️" : "🖤"}
               </button>
             </div>
 
+            {/* show pin type as the title */}
             <div className='pin-title'>{type}</div>
 
+            {/* header with reputation */}
             <div className='header-button-wrapper'>
               <button
                 className='header-button'
@@ -157,7 +165,7 @@ const CustomMarker = ({ lat, lng, image, type, name, description, pinType, onCli
               </button>
             </div>
           </div>
-
+          {/* show name and description */}
           <div className='info-window-body'>
             <div>{name}</div>
             <div>{description}</div>
@@ -166,7 +174,7 @@ const CustomMarker = ({ lat, lng, image, type, name, description, pinType, onCli
           <div className='info-window-reputation'>
             <div style={{ marginBottom: '10px' }}>
               Reputation: {" "}
-              {/*Conditional: if null "None" | else if 1 thumbsUp | else -1 thumbsDown */}
+              {/* conditional: if null "None" | else if 1 thumbsUp | else -1 thumbsDown */}
               {reputation === null ? "None" : reputation === THUMBS_UP ? "👍" : "👎"}
             </div>
           </div>
@@ -176,29 +184,32 @@ const CustomMarker = ({ lat, lng, image, type, name, description, pinType, onCli
   );
 };
 
-export default function Map() {
-  //State declared for storing markers
+export default function Map() 
+{
+  // state declared for storing markers.
   const [markers, setMarkers] = useState(presetMarkers);
 
-  //State declared for enabling/disabling marker creation on click with sidebar
+  // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
   const [selectedPinName, setSelectedPinName] = useState("");
   const [selectedPinDescription, setSelectedPinDescription] = useState("");
   const [selectedPinType, setSelectedPinType] = useState("");
 
-  //Function that toggles the sidebar's create pin option
-  const toggleMarkerCreation = (pinName, pinDescription, pinType) => {
+  // function that toggles the sidebar's create pin option.
+  const toggleMarkerCreation = (pinName, pinDescription, pinType) => 
+  {
     setMarkerCreationEnabled(!markerCreationEnabled);
     setSelectedPinName(pinName);
     setSelectedPinDescription(pinDescription);
     setSelectedPinType(pinType);
   };
 
-  //Function handling onclick events on the map that will result in marker creation
-
-  const handleCreatePin = (event) => {
-    if (markerCreationEnabled && selectedPinType !== "") {
+  // function handling onclick events on the map that will result in marker creation.
+  const handleCreatePin = (event) => 
+  {
+    if (markerCreationEnabled && selectedPinType !== "") 
+    {
       let pinImage = '';
       switch (selectedPinType) {
         case 'Pin':
@@ -223,8 +234,8 @@ export default function Map() {
           pinImage = pin;
       }
 
-      //Adds marker to array that gets rendered (Eventually will have to add a pin to the database)
-      setMarkers([...markers,
+      // adds marker to array that gets rendered (Eventually will have to add a pin to the database).
+      setMarkers([...markers, 
       {
         lat: event.lat,
         lng: event.lng,
@@ -238,7 +249,7 @@ export default function Map() {
     }
   };
 
-  //handles changes to lat/lng depending on position and zoom
+  // handles changes to lat/lng depending on position and zoom
   const handleMapChange = ({ center, zoom, bounds }) => {
     //extract lat/lng out of bounds & center
     const { lat, lng } = center;
@@ -246,7 +257,6 @@ export default function Map() {
     //calculating range of lat/lng
     const latRange = bounds.ne.lat - bounds.sw.lat;
     const longRange = bounds.ne.lng - bounds.sw.lng;
-
 
     console.log(lat, lng, latRange, longRange);
     fetchData(lat, lng, latRange, longRange);
@@ -268,13 +278,13 @@ export default function Map() {
     */
   };
 
-  /*If getting the error:
-  //-----------------------------------------------------------------------
-  // getting error "Failed to load resource: net::ERR_CONNECTION_REFUSED" 
-  //-----------------------------------------------------------------------
+  /* If getting the error:
+  // -----------------------------------------------------------------------
+  //  getting error "Failed to load resource: net::ERR_CONNECTION_REFUSED" 
+  // -----------------------------------------------------------------------
   // Make sure to run backend TravelCompanionApi to fix
-  //TODO: Update switch statement to seperate between customer/free wifi/bathroom when marker resources finalized
-  //TODO: always goes to the default option, fix tag reading from DB.
+  // TODO: Update switch statement to separate between customer/free wifi/bathroom when marker resources finalized
+  // TODO: always goes to the default option, fix tag reading from DB.
   */
 
   //Blueprint for filtering through pins, can add elements in sidebar later
@@ -286,7 +296,7 @@ export default function Map() {
     try {
       const response = await get(`pins/getAllInArea?latStart=${latStart}&longStart=${longStart}&latRange=${latRange}&longRange=${longRange}`);
       let imageType;
-      //adjusts marker imageType depending on json response 
+      // adjusts marker imageType depending on json response .
       const markers = response.map(marker => {
         switch (marker.tags[0]) {
           case 1:
@@ -318,6 +328,7 @@ export default function Map() {
 
         };
       });
+      // TODO: fix this function and remove debugging statement below.
       console.log(markers);
       setMarkers(markers);
 
@@ -360,7 +371,7 @@ export default function Map() {
     </div>
   );
 }
-/** TODO: Change cursor image upon selection of sidebar pin
+/* TODO: Change cursor image upon selection of sidebar pin
     useEffect(() => {
       const mapElement = document.getElementById('map');
       const updateCursorStyle = () => {

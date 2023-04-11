@@ -12,12 +12,12 @@ import { post } from './api';
 import { session_store, session_get } from '../session_storage';
 import { setCookie } from '../cookies';
 
+// named constant to keep track of storage key.
+const logged_in_key = 'logged_in';
+
 // this function makes a post request to user/login
 // the user from the database is returned with correct
 // user id.
-
-const logged_in_key = 'logged_in';
-
 export default async function login(token)
 {
     console.log(token);
@@ -34,6 +34,7 @@ export default async function login(token)
         session_store(logged_in_key, true);
     }
 
+    // return the user
     return user;
 }
 
