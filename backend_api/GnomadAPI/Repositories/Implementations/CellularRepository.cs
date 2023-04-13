@@ -17,6 +17,7 @@ using H3Lib;
 using H3Lib.Extensions;
 using System.Diagnostics;
 using System.Linq;
+using System.Drawing;
 
 namespace TravelCompanionAPI.Data
 {
@@ -28,6 +29,7 @@ namespace TravelCompanionAPI.Data
     public class CellularRepository : ICellularRepository
     {
         const string TABLE = "h3_oregon_data";
+        const string CoordTable = "oregon_cellular_coords";
 
 //TODO: do we need config?
         public CellularRepository(IConfiguration config)
@@ -120,7 +122,37 @@ namespace TravelCompanionAPI.Data
             return h3_oregon_data;
         }
 
-//TODO: Might go faster if double instead of decimal. Doubt we need THAT much precision?
+        public (List<float>, List<float>) getAllCoords()
+        {
+            List<float> lat_coord_data = new List<float>();
+            List<float> lng_coord_data = new List<float>();
+
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = DatabaseConnection.getInstance().getConnection();
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT latitude1, longitude1, latitude2, longitude2, latitude3, longitude3, latitude4, longitude4, "
+                    + "latitude5, longitude5, latitude6, longitude6 FROM " + CoordTable + ";";
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        for (int i = 3; i <= 15; i+=2)
+                        {
+                            float lat_coord = reader.GetFloat(i);
+                            float lng_coord = reader.GetFloat(i+1);
+                            lat_coord_data.Add(lat_coord);
+                            lng_coord_data.Add(lng_coord);
+                        }
+                    }
+                }
+            }
+
+            return (lat_coord_data, lng_coord_data);
+        }
+
+        //TODO: Might go faster if double instead of decimal. Doubt we need THAT much precision?
         public List<decimal> getHexCoords(int pass)
         {
             List<string> h3ids = getAllH3(pass);
@@ -149,7 +181,7 @@ namespace TravelCompanionAPI.Data
 
             foreach (H3Index h3i in compactedSet)
             {
-                geoBounds = h3i //Inefficient
+                geoBounds = h3i.ToGeoBoundary(); //Inefficient
                 geoVerts = geoBounds.Verts;
 
                 if(h3i.IsValid())

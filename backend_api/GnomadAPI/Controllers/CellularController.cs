@@ -66,6 +66,14 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(h3List));
         }
 
+        [HttpGet("allH3Id/{offset}")]
+        public (JsonResult, JsonResult) getAllCoords()
+        {
+            (List<float> latList, List<float> lngList) = _repo.getAllCoords();
+
+            return (new JsonResult(Ok(latList)), new JsonResult(Ok(lngList)));
+        }
+
         [HttpGet("allHexCoords/{pass}")]
         public JsonResult getHexCoords(int pass)
         {

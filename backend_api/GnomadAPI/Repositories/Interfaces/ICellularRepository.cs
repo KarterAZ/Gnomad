@@ -27,6 +27,8 @@ namespace TravelCompanionAPI.Data
 
         public List<string> getAllH3(int offset);
 
+        public (List<float>, List<float>) getAllCoords();
+
         public List<decimal> getHexCoords(int pass);
     }
 }
