@@ -138,10 +138,10 @@ namespace TravelCompanionAPI.Data
                 {
                     while (reader.Read())
                     {
-                        for (int i = 3; i <= 15; i+=2)
+                        for (int i = 3; i <= 15; i += 2)
                         {
                             float lat_coord = reader.GetFloat(i);
-                            float lng_coord = reader.GetFloat(i+1);
+                            float lng_coord = reader.GetFloat(i + 1);
                             lat_coord_data.Add(lat_coord);
                             lng_coord_data.Add(lng_coord);
                         }
@@ -150,6 +150,34 @@ namespace TravelCompanionAPI.Data
             }
 
             return (lat_coord_data, lng_coord_data);
+        }
+
+        public List<int> getIdsInRange(float latMin, float lngMin, float latMax, float lngMax)
+        {
+            List<int> in_range = new List<int>();
+
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = DatabaseConnection.getInstance().getConnection();
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT id, centerLongitude, centerLatitude FROM " + CoordTable +
+                    "WHERE centerLongitude > @lngMin, centerLatitude > @latMin, centerLongitude < @lngMax, centerLatitude < @latMax;";
+                command.Parameters.AddWithValue("lngMin", lngMin);
+                command.Parameters.AddWithValue("lngMax", lngMax);
+                command.Parameters.AddWithValue("latMin", latMin);
+                command.Parameters.AddWithValue("latMax", latMax);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        int id = reader.GetInt32(0);
+                        in_range.Add(id);
+                    }
+                }
+            }
+
+            return in_range;
         }
 
         //TODO: Might go faster if double instead of decimal. Doubt we need THAT much precision?

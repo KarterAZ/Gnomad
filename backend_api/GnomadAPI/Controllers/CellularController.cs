@@ -66,6 +66,14 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(h3List));
         }
 
+        [HttpGet("allInRange/{latMin, lngMin, latMax, lngMax}")]
+        public JsonResult getIdsInRange(float latMin, float lngMin, float latMax, float lngMax)
+        {
+            List<int> inRange = _repo.getIdsInRange(latMin, lngMin, latMax, lngMax);
+
+            return new JsonResult(Ok(inRange));
+        }
+
         [HttpGet("allH3Id/{offset}")]
         public (JsonResult, JsonResult) getAllCoords()
         {
