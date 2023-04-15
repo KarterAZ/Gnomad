@@ -90,8 +90,8 @@ namespace TravelCompanionAPI.Data
                             command.Parameters.AddWithValue("@longitude6", null);
                         }
                         
-                        command.Parameters.AddWithValue("@centerLatitude", center.Latitude);
-                        command.Parameters.AddWithValue("@centerLongitude", center.Longitude);
+                        command.Parameters.AddWithValue("@centerLatitude", center.Latitude.RadiansToDegrees()); //RadiansToDegrees() not on when script first ran.
+                        command.Parameters.AddWithValue("@centerLongitude", center.Longitude.RadiansToDegrees()); //RadiansToDegrees() not on when script first ran.
                         command.Parameters.AddWithValue("@latitude1", coords[0]);
                         command.Parameters.AddWithValue("@longitude1", coords[1]);
                         command.Parameters.AddWithValue("@latitude2", coords[2]);
