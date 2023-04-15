@@ -55,12 +55,12 @@ namespace TravelCompanionAPI.Data
 
             foreach (H3Index h3i in compactedSet)
             {
-                center = h3i.ToGeoCoord();
-                geoBounds = h3i.ToGeoBoundary();
-                geoVerts = geoBounds.Verts;
-
                 if (h3i.IsValid())
                 {
+                    center = h3i.ToGeoCoord();
+                    geoBounds = h3i.ToGeoBoundary();
+                    geoVerts = geoBounds.Verts;
+                
                     //Pentagons have 5 sides, hexagons have 6.
                     //Pentagons/hexagons are only valid output ;)
                     int forSize = h3i.IsPentagon() ? 5 : 6;
@@ -104,19 +104,19 @@ namespace TravelCompanionAPI.Data
                         command.Parameters.AddWithValue("@longitude5", coords[9]);
 
                         command.ExecuteNonQuery();
+
+                        command.Connection.Close();
                     }
-                    //command.Connection.Close();
 
                     //Clear list
                     coords.Clear();
+                    geoVerts.Clear();
                 }
                 else
                 {
                     //Commit war crimes (error checking. Possibly explosions.)
                     Console.WriteLine("An error has occurred. H3 isn't valid.");
                 }
-
-                geoVerts.Clear();
             }
         }
 
@@ -144,9 +144,9 @@ namespace TravelCompanionAPI.Data
                         cellular.H3id = reader.GetString(4);
                     }
                 }
-            }
 
-            //command.Connection.Close();
+                command.Connection.Close();
+            }
 
             return cellular;
         }
@@ -175,6 +175,8 @@ namespace TravelCompanionAPI.Data
                         h3_oregon_data.Add(cellular);
                     }
                 }
+
+                command.Connection.Close();
             }
 
             return h3_oregon_data;
@@ -188,7 +190,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT h3_res9_id FROM " + TABLE + ";";
+                command.CommandText = @"SELECT h3_res9_id FROM " + TABLE + ";"; //LIMIT 15000000 OFFSET <get from database>
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -198,6 +200,8 @@ namespace TravelCompanionAPI.Data
                         h3_oregon_data.Add(cellular);
                     }
                 }
+
+                command.Connection.Close();
             }
 
             return h3_oregon_data;

@@ -84,10 +84,7 @@ namespace TravelCompanionAPI.Controllers
         {
             List<Pin> pins;
 
-            if (latStart != 0 && longStart != 0 && latRange != 0 && longRange != 0)
-                pins = _pin_repo.getAllInArea(latStart, longStart, latRange, longRange);
-            else
-                pins = _pin_repo.getAllInArea();
+            pins = _pin_repo.getAllInArea(latStart, longStart, latRange, longRange);
 
             if (pins == null)
             {
@@ -200,9 +197,14 @@ namespace TravelCompanionAPI.Controllers
         /// A JsonResult of Ok(pins), where pins are the asked for pins
         ///</returns>
         [HttpPost("getAllPinsByTag")]
-        public JsonResult getAllPinsByTag(List<int> tags)
+        public JsonResult getAllPinsByTag(List<int> tags, double latStart = 0, double longStart = 0, double latRange = 1, double longRange = 1)
         {
-            List<Pin> pins = _pin_repo.getAllByTag(tags);
+            List<Pin> pins;
+
+            if(latStart == 0 && longStart == 0 && latRange == 0 && longRange == 0)
+                pins = _pin_repo.getAllByTag(tags); //Defaults to oregon
+            else
+                pins = _pin_repo.getAllByTag(tags, latStart, longStart, latRange, longRange);
 
             return new JsonResult(Ok(pins));
         }
@@ -221,6 +223,7 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(pins));
         }
 
+        /// <summary>
         /// Gets a pin based on city search term
         /// </summary>
         /// <returns>
@@ -241,7 +244,12 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(pins));
         }
 
-        //Gets the average review result which is up_vote - down_vote
+        /// <summary>
+        /// Gets the average review result which is up_vote - down_vote
+        /// </summary>
+        /// <returns>
+        /// Returns the review
+        ///</returns>
         [HttpGet("getReview /{pinid}")]
         public double getReview(int pinid)
         {
@@ -250,11 +258,41 @@ namespace TravelCompanionAPI.Controllers
             return review;
         }
 
+        /// <summary>
+        /// Gets a list of pins from a search term.
+        /// </summary>
+        /// <returns>
+        /// Returns a JsonResult with the pins.
+        ///</returns>
         [HttpGet("getGlobal/{searchTerm}")]
         public JsonResult getGlobal(string searchTerm)
         {
 
             List<Pin> pins = _pin_repo.globalSearch(searchTerm);
+
+            if (pins == null)
+            {
+                return new JsonResult(NotFound());
+            }
+
+            return new JsonResult(Ok(pins));
+        }
+
+        /// <summary>
+        /// Gets all of the pins that a specific user has placed.
+        /// </summary>
+        /// <returns>
+        /// Returns a JsonResult of NotFound() if no pins, or Ok(pins) if there are pins.
+        ///</returns>
+        [HttpGet("getUserStickers/{user}")] //TODO: Can't users change this? Verify user.
+        public JsonResult getUserStickers(int uid, double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0)
+        {
+            List<Pin> pins;
+
+            if(latStart == 0 && longStart == 0 && latRange == 0 && longRange == 0)
+                pins = _pin_repo.getStickers(uid); //Defaults to oregon
+            else
+                pins = _pin_repo.getStickers(uid, latStart, longStart, latRange, longRange);
 
             if (pins == null)
             {

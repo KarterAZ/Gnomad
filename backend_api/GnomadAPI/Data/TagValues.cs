@@ -25,7 +25,8 @@ namespace TravelCompanionAPI.Data
             Diesel = 5,
             FreeWiFi = 6,
             CustomerOnlyWiFi = 7,
-            Electric = 8
+            Electric = 8,
+            Sticker = 9
         }
     }
 
