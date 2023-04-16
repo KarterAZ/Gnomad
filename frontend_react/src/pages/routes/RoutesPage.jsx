@@ -9,15 +9,18 @@ import { useEffect, useState } from 'react';
 import './routes.css';
 import PinsList from '../../components/pins_list/PinsList';
 import Pin from '../../data/pin';
+import searchPins from '../../utilities/api/search_pins';
 
 // this function renders the routes page.
 export default function RoutesPage()
 {
-    
+    // state variables for the routes page.
     const [globalPins, setGlobalPins] = useState([]);
     const [routePins, setRoutePins] = useState([]);
     const [activePin, setActivePin] = useState(null);
     const [pinCount, setPinCount] = useState(0);
+    const [globalSearchTerm, setGlobalSearchTerm] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
 
     const addPin = () =>
     {
@@ -47,6 +50,21 @@ export default function RoutesPage()
     {
     }
 
+    const searchGlobal = async () =>
+    {
+        console.log(globalSearchTerm);
+        if (globalSearchTerm !== '')
+        {
+            let result = await searchPins(globalSearchTerm);
+            let pins_list = result.map((pin) => 
+            {
+                return new Pin(pin.id, pin.userId, pin.longitude, pin.latitude, pin.title, pin.street, pin.tags);
+            });
+            //console.log(pins_list);
+            //console.log(globalPins);
+            setGlobalPins(pins_list);
+        }
+    }
     useEffect(()=>
     {
         let pin = new Pin(0, 0, 10, 20, 'Pin Title', 'Street', []);
@@ -68,8 +86,8 @@ export default function RoutesPage()
                         <div className='input-section-wrapper'>
                             <label>Search for Pins:</label>
                             <div className='search-wrapper'>
-                                <input className='text-input' type='text'></input>
-                                <button className='search-button'><Icon icon={baselineSearch} width="20" height="20"/></button>
+                                <input className='text-input' type='text' onChange={(event) => { setGlobalSearchTerm(event.target.value)}}></input>
+                                <button className='search-button'><Icon icon={baselineSearch} width="20" height="20" onClick={searchGlobal}/></button>
                             </div>
                         </div>
                         <PinsList pins={globalPins} onClick={globalPinClick}></PinsList>
