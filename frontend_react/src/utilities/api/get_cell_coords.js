@@ -10,11 +10,12 @@
 // internal imports.
 import { get, isAuthenticated} from './api';
 
-export default async function getAllCoords(pass) {
+export default async function getAllCoords(latMin, lngMin, latMax, lngMax) {
 
     if (!isAuthenticated()) return null;
 
-    const response = await get('h3_oregon_data/allHexCoords/' + String(pass));
+    const responseLat, responseLng;
+    (responseLat, responseLng) = await get('h3_oregon_data/allCoords/' + String(latMin) + ', ' + String(lngMin) + ', ' + String(latMax) + ', ' + String(lngMax));
 
-    return response;
+    return (responseLat, responseLng);
 }

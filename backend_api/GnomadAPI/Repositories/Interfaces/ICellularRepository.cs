@@ -27,7 +27,7 @@ namespace TravelCompanionAPI.Data
 
         public List<string> getAllH3(int offset);
 
-        public (List<float>, List<float>) getAllCoords();
+        public (List<float>, List<float>) getAllCoords(float latMin, float lngMin, float latMax, float lngMax);
 
         public List<int> getIdsInRange(float latMin, float lngMin, float latMax, float lngMax);
 

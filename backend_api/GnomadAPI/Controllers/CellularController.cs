@@ -74,10 +74,10 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(inRange));
         }
 
-        [HttpGet("allH3Id/{offset}")]
-        public (JsonResult, JsonResult) getAllCoords()
+        [HttpGet("allCoords/{latMin, lngMin, latMax, lngMax}")]
+        public (JsonResult, JsonResult) getAllCoords(float latMin, float lngMin, float latMax, float lngMax)
         {
-            (List<float> latList, List<float> lngList) = _repo.getAllCoords();
+            (List<float> latList, List<float> lngList) = _repo.getAllCoords(latMin, lngMin, latMax, lngMax);
 
             return (new JsonResult(Ok(latList)), new JsonResult(Ok(lngList)));
         }

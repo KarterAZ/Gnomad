@@ -122,7 +122,7 @@ namespace TravelCompanionAPI.Data
             return h3_oregon_data;
         }
 
-        public (List<float>, List<float>) getAllCoords()
+        public (List<float>, List<float>) getAllCoords(float latMin, float lngMin, float latMax, float lngMax)
         {
             List<float> lat_coord_data = new List<float>();
             List<float> lng_coord_data = new List<float>();
@@ -131,8 +131,13 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT latitude1, longitude1, latitude2, longitude2, latitude3, longitude3, latitude4, longitude4, "
-                    + "latitude5, longitude5, latitude6, longitude6 FROM " + CoordTable + ";";
+                command.CommandText = @"SELECT centerLongitude, centerLatitude, latitude1, longitude1, latitude2, longitude2, "
+                    + "latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + CoordTable
+                    + "WHERE centerLongitude > @lngMin, centerLatitude > @latMin, centerLongitude < @lngMax, centerLatitude < @latMax;";
+                command.Parameters.AddWithValue("lngMin", lngMin);
+                command.Parameters.AddWithValue("lngMax", lngMax);
+                command.Parameters.AddWithValue("latMin", latMin);
+                command.Parameters.AddWithValue("latMax", latMax);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
