@@ -362,47 +362,47 @@ const Map = () => {
   }
   
   
-    return (
-      <div id='wrapper'>
-        <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
-        <div id='map'>
-          <LoadScript googleMapsApiKey="AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o">
-            <GoogleMap
-              mapContainerStyle={containerStyle}
-              center={defaultProps.center}
-              zoom={defaultProps.zoom}
-              draggable={!markerCreationEnabled}
+  return (
+    <div id='wrapper'>
+      <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
+      <div id='map'>
+        <LoadScript googleMapsApiKey="AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o">
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={defaultProps.center}
+            zoom={defaultProps.zoom}
+            draggable={!markerCreationEnabled}
 
-              onGoogleApiLoaded={({ map, maps }) => 
-              {
-                console.log("Google Maps API loaded successfully!");
-                console.log("Map object:", map);
-                console.log("Maps object:", maps);
-                handleApiLoaded(map, maps)
-              }}
+            onGoogleApiLoaded={({ map, maps }) => 
+            {
+              console.log("Google Maps API loaded successfully!");
+              console.log("Map object:", map);
+              console.log("Maps object:", maps);
+              handleApiLoaded(map, maps)
+            }}
 
-              onClick={markerCreationEnabled ? handleCreatePin : undefined}
-              onChange={handleMapChange}
-            >
-              <Marker
-                icon={pin}
-                position={position}
+            onClick={markerCreationEnabled ? handleCreatePin : undefined}
+            onChange={handleMapChange}
+          >
+            <Marker
+              icon={pin}
+              position={position}
+            />
+
+            {[...markers, ...presetMarkers].map((marker, index) =>
+            {
+              return (
+              <CustomMarker
+                key={index}
+                lat={marker.lat}
+                lng={marker.lng}
+                type={marker.type}
+                name={marker.name}
+                description={marker.description}
+                street={marker.street}
+                image={marker.image}
               />
-
-              {[...markers, ...presetMarkers].map((marker, index) =>
-              {
-                return (
-                <CustomMarker
-                  key={index}
-                  lat={marker.lat}
-                  lng={marker.lng}
-                  type={marker.type}
-                  name={marker.name}
-                  description={marker.description}
-                  street={marker.street}
-                  image={marker.image}
-                />
-                );
+              );
             })}
           </GoogleMap>
         </LoadScript>
