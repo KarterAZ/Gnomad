@@ -8,7 +8,7 @@
 //################################################################
 
 import React, { useState, useEffect } from 'react';
-import GoogleMapReact from 'google-map-react';
+import { GoogleMap, LoadScript } from '@react-google-maps/api';
 
 // internal imports.
 import './map.css';
@@ -184,14 +184,14 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
   );
 };
 
-export default function Map() 
-{
-  // state declared for storing markers.
+const Map = () => {
+  //State declared for storing markers
   const [markers, setMarkers] = useState(presetMarkers);
 
   // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
+  //States declared for Pin Names, Descriptions, and Types.
   const [selectedPinName, setSelectedPinName] = useState("");
   const [selectedPinDescription, setSelectedPinDescription] = useState("");
   const [selectedPinType, setSelectedPinType] = useState("");
@@ -234,8 +234,8 @@ export default function Map()
           pinImage = pin;
       }
 
-      // adds marker to array that gets rendered (Eventually will have to add a pin to the database).
-      setMarkers([...markers, 
+      //Adds marker to array that gets rendered (TODO: Eventually will have to add a pin to the database)
+      setMarkers([...markers,
       {
         lat: event.lat,
         lng: event.lng,
@@ -290,8 +290,6 @@ export default function Map()
   //Blueprint for filtering through pins, can add elements in sidebar later
   //TODO: Make excludedPinTypes dynamic when sidebar has pin filtering. Currently used to reduce severe clutter.
   const excludedPinTypes = [3, 4, 8]; // array of pin types to exclude.
-
-
   const fetchData = async (latStart, longStart, latRange, longRange) => {
     try {
       const response = await get(`pins/getAllInArea?latStart=${latStart}&longStart=${longStart}&latRange=${latRange}&longRange=${longRange}`);
@@ -337,41 +335,51 @@ export default function Map()
     }
   }
 
-  return (
-    <div id='wrapper'>
-      <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
-      <div id='map'>
-        <GoogleMapReact
-          draggable={!markerCreationEnabled}
-          bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
-          defaultCenter={defaultProps.center}
-          defaultZoom={defaultProps.zoom}
-          yesIWantToUseGoogleMapApiInternals //this is important!
-          onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-          onClick={markerCreationEnabled ? handleCreatePin : undefined}
-          onChange={handleMapChange}
-        >
+  
+    return (
+
+      <div id='wrapper'>
+        <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
+        <div id='map'>
+          <LoadScript googleMapsApiKey="AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o">
+            <GoogleMap
+              draggable={!markerCreationEnabled}
+              //bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
+              defaultCenter={defaultProps.center}
+              defaultZoom={defaultProps.zoom}
+              yesIWantToUseGoogleMapApiInternals //this is important!
+              onGoogleApiLoaded={({ map, maps }) => {
+                console.log("Google Maps API loaded successfully!");
+                console.log("Map object:", map);
+                console.log("Maps object:", maps);
+                handleApiLoaded(map, maps)
+              }
+              }
+              onClick={markerCreationEnabled ? handleCreatePin : undefined}
+              onChange={handleMapChange}
+            >
 
 
-          {[...markers, ...presetMarkers].map((marker, index) => (//Renders presetMarkers on the map
-            <CustomMarker
-              key={index}
-              lat={marker.lat}
-              lng={marker.lng}
-              type={marker.type}
-              name={marker.name}
-              description={marker.description}
-              street={marker.street}
-              image={marker.image}
-            />
-          ))}
-
-        </GoogleMapReact>
-      </div >
+              {[...markers, ...presetMarkers].map((marker, index) => (//Renders presetMarkers on the map
+                <CustomMarker
+                  key={index}
+                  lat={marker.lat}
+                  lng={marker.lng}
+                  type={marker.type}
+                  name={marker.name}
+                  description={marker.description}
+                  street={marker.street}
+                  image={marker.image}
+                />
+              ))}
+          </GoogleMap>
+        </LoadScript>
+      </div>
     </div>
   );
-}
-/* TODO: Change cursor image upon selection of sidebar pin
+};
+export default Map;
+/** TODO: Change cursor image upon selection of sidebar pin
     useEffect(() => {
       const mapElement = document.getElementById('map');
       const updateCursorStyle = () => {
