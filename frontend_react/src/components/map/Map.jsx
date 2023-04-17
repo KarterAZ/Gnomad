@@ -8,7 +8,7 @@
 //################################################################
 
 import React, { useState, useEffect } from 'react';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
 // internal imports.
 import './map.css';
@@ -122,14 +122,18 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
     setIsFavorite((currentIsFavorite) => !currentIsFavorite);
   }
 
+  const position = {
+    lat: lat,
+    lng: lng
+  }
+
   return (
     <div className='marker-container'>
       <img // area responsible for marker image. 
         className='marker'
         src={image}
         alt="marker"
-        lat={lat}
-        lng={lng}
+        position={position}
         onClick={() => setShowInfoWindow(!showInfoWindow)} 
         // toggles useState whether to display the InfoWindow upon marker click.
       />
@@ -184,6 +188,16 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
   );
 };
 
+const center = {
+  lat: -3.745,
+  lng: -38.523
+};
+
+const containerStyle = {
+  width: '100%',
+  height: '100%'
+};
+
 const Map = () => {
   //State declared for storing markers
   const [markers, setMarkers] = useState(presetMarkers);
@@ -208,6 +222,8 @@ const Map = () => {
   // function handling onclick events on the map that will result in marker creation.
   const handleCreatePin = (event) => 
   {
+    console.log(event);
+
     if (markerCreationEnabled && selectedPinType !== "") 
     {
       let pinImage = '';
@@ -235,16 +251,22 @@ const Map = () => {
       }
 
       //Adds marker to array that gets rendered (TODO: Eventually will have to add a pin to the database)
-      setMarkers([...markers,
+      let marker = 
       {
-        lat: event.lat,
-        lng: event.lng,
+        lat: event.latLng.lat(),
+        lng: event.latLng.lng(),
         image: pinImage,
         type: selectedPinType,
         name: selectedPinName,
         description: selectedPinDescription,
 
-      }]);
+      }
+
+      setMarkers([...markers,
+        marker
+      ]);
+
+      console.log(marker);
       setMarkerCreationEnabled(false);
     }
   };
@@ -327,7 +349,6 @@ const Map = () => {
         };
       });
       // TODO: fix this function and remove debugging statement below.
-      console.log(markers);
       setMarkers(markers);
 
     } catch (error) {
@@ -335,32 +356,42 @@ const Map = () => {
     }
   }
 
+  const position = {
+    lat: 37.772,
+    lng: -122.214
+  }
+  
   
     return (
-
       <div id='wrapper'>
         <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
         <div id='map'>
           <LoadScript googleMapsApiKey="AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o">
             <GoogleMap
+              mapContainerStyle={containerStyle}
+              center={defaultProps.center}
+              zoom={defaultProps.zoom}
               draggable={!markerCreationEnabled}
-              //bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
-              defaultCenter={defaultProps.center}
-              defaultZoom={defaultProps.zoom}
-              yesIWantToUseGoogleMapApiInternals //this is important!
-              onGoogleApiLoaded={({ map, maps }) => {
+
+              onGoogleApiLoaded={({ map, maps }) => 
+              {
                 console.log("Google Maps API loaded successfully!");
                 console.log("Map object:", map);
                 console.log("Maps object:", maps);
                 handleApiLoaded(map, maps)
-              }
-              }
+              }}
+
               onClick={markerCreationEnabled ? handleCreatePin : undefined}
               onChange={handleMapChange}
             >
+              <Marker
+                icon={pin}
+                position={position}
+              />
 
-
-              {[...markers, ...presetMarkers].map((marker, index) => (//Renders presetMarkers on the map
+              {[...markers, ...presetMarkers].map((marker, index) =>
+              {
+                return (
                 <CustomMarker
                   key={index}
                   lat={marker.lat}
@@ -371,14 +402,15 @@ const Map = () => {
                   street={marker.street}
                   image={marker.image}
                 />
-              ))}
+                );
+            })}
           </GoogleMap>
         </LoadScript>
       </div>
     </div>
   );
 };
-export default Map;
+export default React.memo(Map);
 /** TODO: Change cursor image upon selection of sidebar pin
     useEffect(() => {
       const mapElement = document.getElementById('map');
