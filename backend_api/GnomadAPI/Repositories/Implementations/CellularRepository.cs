@@ -157,6 +157,38 @@ namespace TravelCompanionAPI.Data
             return (lat_coord_data, lng_coord_data);
         }
 
+        public List<float> getAllCoordsSingle(float latMin, float lngMin, float latMax, float lngMax)
+        {
+            List<float> latLng_coord_data = new List<float>();
+
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = DatabaseConnection.getInstance().getConnection();
+                command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT centerLongitude, centerLatitude, latitude1, longitude1, latitude2, longitude2, "
+                    + "latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + CoordTable
+                    + "WHERE centerLongitude > @lngMin, centerLatitude > @latMin, centerLongitude < @lngMax, centerLatitude < @latMax;";
+                command.Parameters.AddWithValue("lngMin", lngMin);
+                command.Parameters.AddWithValue("lngMax", lngMax);
+                command.Parameters.AddWithValue("latMin", latMin);
+                command.Parameters.AddWithValue("latMax", latMax);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        for (int i = 3; i <= 15; i++)
+                        {
+                            float coord = reader.GetFloat(i);
+                            latLng_coord_data.Add(coord);
+                        }
+                    }
+                }
+            }
+
+            return latLng_coord_data;
+        }
+
         public List<int> getIdsInRange(float latMin, float lngMin, float latMax, float lngMax)
         {
             List<int> in_range = new List<int>();
