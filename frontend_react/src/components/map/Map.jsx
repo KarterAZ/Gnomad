@@ -258,6 +258,11 @@ export default function Map()
     const latRange = bounds.ne.lat - bounds.sw.lat;
     const longRange = bounds.ne.lng - bounds.sw.lng;
 
+    // ensure lat and lng are within their limits
+    //lat = Math.max(Math.min(lat, 90), -90);
+    //lng = ((lng - longStart) % 360 + 360) % 360 + longStart;
+    //lng = Math.max(Math.min(lng, 180), -180);
+
     console.log(lat, lng, latRange, longRange);
     fetchData(lat, lng, latRange, longRange);
 
