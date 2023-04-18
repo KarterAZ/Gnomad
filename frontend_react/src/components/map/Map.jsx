@@ -187,7 +187,7 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
 export default function Map() 
 {
   // state declared for storing markers.
-  const [markers, setMarkers] = useState(presetMarkers);
+  const [markers, setMarkers] = useState();
 
   // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
