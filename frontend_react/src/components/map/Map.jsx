@@ -187,7 +187,7 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
 export default function Map() 
 {
   // state declared for storing markers.
-  const [markers, setMarkers] = useState();
+  const [markers, setMarkers] = useState([]);
 
   // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
@@ -252,16 +252,16 @@ export default function Map()
   // handles changes to lat/lng depending on position and zoom
   const handleMapChange = ({ center, zoom, bounds }) => {
     //extract lat/lng out of bounds & center
-    const { lat, lng } = center;
+    let { lat, lng } = center;
     const { lat: latStart, lng: longStart } = bounds.sw;
     //calculating range of lat/lng
     const latRange = bounds.ne.lat - bounds.sw.lat;
     const longRange = bounds.ne.lng - bounds.sw.lng;
 
     // ensure lat and lng are within their limits
-    //lat = Math.max(Math.min(lat, 90), -90);
-    //lng = ((lng - longStart) % 360 + 360) % 360 + longStart;
-    //lng = Math.max(Math.min(lng, 180), -180);
+    lat = Math.max(Math.min(lat, 90), -90);
+    lng = ((lng - longStart) % 360 + 360) % 360 + longStart;
+    lng = Math.max(Math.min(lng, 180), -180);
 
     console.log(lat, lng, latRange, longRange);
     fetchData(lat, lng, latRange, longRange);
