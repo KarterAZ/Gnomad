@@ -253,11 +253,18 @@ export default function Map()
   const handleMapChange = ({ center, zoom, bounds }) => {
     //extract lat/lng out of bounds & center
     let { lat, lng } = center;
-    const { lat: latStart, lng: longStart } = bounds.sw;
+    const { lat: latStart, lng: lngStart } = bounds.sw;
 
     // ensure lat and lng are within their limits
     lat = Math.max(Math.min(lat, 90), -90);
-    lng = ((lng - lngStart + 540) % 360 - 180);
+    lng = ((lng - lngStart + 540) % 360 - 180 + 360) % 360 - 180;
+
+    // calculate the adjusted lng value when crossing the -180/180 boundary
+  if (lng < -180) {
+    lng += 360;
+  } else if (lng > 180) {
+    lng -= 360;
+  }
 
     // update center and bounds with the adjusted lat and lng values
     center = {lat, lng};
@@ -268,13 +275,13 @@ export default function Map()
       },
       ne: {
         lat: Math.max(Math.min(bounds.ne.lat, 90), -90),
-        lng: ((lngStart + 360 - lng + 540) % 360 + 360) % 360 - 180
-      }
+        lng: ((lngStart + 360 - lng + 540) % 360 + 360) % 360 - 180,
+      },
     };
     
     //calculating range of lat/lng
     const latRange = bounds.ne.lat - bounds.sw.lat;
-    const longRange = bounds.ne.lng - bounds.sw.lng;
+    const longRange = ((bounds.ne.lng - bounds.sw.lng) % 360 + 360) % 360-180;;
 
     console.log(lat, lng, latRange, longRange);
     console.log(center, bounds);
