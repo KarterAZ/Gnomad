@@ -29,11 +29,8 @@ namespace TravelCompanionAPI.Data
     public class CellularRepository : ICellularRepository
     {
         const string TABLE = "h3_oregon_data";
-<<<<<<< HEAD
-        const string CoordTable = "oregon_cellular_coords";
-=======
-        const string NEWTABLE = "oregon_cellular_coords";
->>>>>>> main
+
+        const string COORDTABLE = "oregon_cellular_coords";
 
         //TODO: do we need config?
         public CellularRepository(IConfiguration config)
@@ -82,7 +79,7 @@ namespace TravelCompanionAPI.Data
                         command.Connection = DatabaseConnection.getInstance().getConnection();
                         command.CommandType = CommandType.Text;
 
-                        command.CommandText = "INSERT INTO " + NEWTABLE + " VALUES(0, @centerLatitude, @centerLongitude, @latitude1, @longitude1, @latitude2, @longitude2, @latitude3, @longitude3, @latitude4, @longitude4, @latitude5, @longitude5, @latitude6, @longitude6)";
+                        command.CommandText = "INSERT INTO " + COORDTABLE + " VALUES(0, @centerLatitude, @centerLongitude, @latitude1, @longitude1, @latitude2, @longitude2, @latitude3, @longitude3, @latitude4, @longitude4, @latitude5, @longitude5, @latitude6, @longitude6)";
 
                         if(forSize == 6) //If Hexagon, no NULL values
                         {
@@ -190,21 +187,13 @@ namespace TravelCompanionAPI.Data
         public List<string> getAllH3()
         {
             List<string> h3_oregon_data = new List<string>();
-<<<<<<< HEAD
-            offset *= 7500;
-=======
->>>>>>> main
 
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-<<<<<<< HEAD
-                command.CommandText = @"SELECT h3_res9_id FROM " + TABLE + " LIMIT 7500 OFFSET @Offset;";
-                command.Parameters.AddWithValue("@Offset", offset);
-=======
+
                 command.CommandText = @"SELECT h3_res9_id FROM " + TABLE + ";"; //LIMIT 15000000 OFFSET <get from database>
->>>>>>> main
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -231,7 +220,7 @@ namespace TravelCompanionAPI.Data
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT centerLongitude, centerLatitude, latitude1, longitude1, latitude2, longitude2, "
-                    + "latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + CoordTable
+                    + "latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + COORDTABLE
                     + "WHERE centerLongitude > @lngMin, centerLatitude > @latMin, centerLongitude < @lngMax, centerLatitude < @latMax;";
                 command.Parameters.AddWithValue("lngMin", lngMin);
                 command.Parameters.AddWithValue("lngMax", lngMax);
@@ -265,7 +254,7 @@ namespace TravelCompanionAPI.Data
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT centerLongitude, centerLatitude, latitude1, longitude1, latitude2, longitude2, "
-                    + "latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + CoordTable
+                    + "latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + COORDTABLE
                     + "WHERE centerLongitude > @lngMin, centerLatitude > @latMin, centerLongitude < @lngMax, centerLatitude < @latMax;";
                 command.Parameters.AddWithValue("lngMin", lngMin);
                 command.Parameters.AddWithValue("lngMax", lngMax);
@@ -296,7 +285,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT id, centerLongitude, centerLatitude FROM " + CoordTable +
+                command.CommandText = @"SELECT id, centerLongitude, centerLatitude FROM " + COORDTABLE +
                     "WHERE centerLongitude > @lngMin, centerLatitude > @latMin, centerLongitude < @lngMax, centerLatitude < @latMax;";
                 command.Parameters.AddWithValue("lngMin", lngMin);
                 command.Parameters.AddWithValue("lngMax", lngMax);

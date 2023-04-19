@@ -75,7 +75,7 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(h3List));
         }
 
-        [HttpGet("allInRange/{latMin, lngMin, latMax, lngMax}")]
+        [HttpGet("allInRange/{latMin}/{lngMin}/{latMax}/{lngMax}")]
         public JsonResult getIdsInRange(float latMin, float lngMin, float latMax, float lngMax)
         {
             List<int> inRange = _repo.getIdsInRange(latMin, lngMin, latMax, lngMax);
@@ -83,7 +83,7 @@ namespace TravelCompanionAPI.Controllers
             return new JsonResult(Ok(inRange));
         }
 
-        [HttpGet("allCoords/{latMin, lngMin, latMax, lngMax}")]
+        [HttpGet("allCoords/{latMin}/{lngMin}/{latMax}/{lngMax}")]
         public (JsonResult, JsonResult) getAllCoords(float latMin, float lngMin, float latMax, float lngMax)
         {
             (List<float> latList, List<float> lngList) = _repo.getAllCoords(latMin, lngMin, latMax, lngMax);
@@ -91,7 +91,7 @@ namespace TravelCompanionAPI.Controllers
             return (new JsonResult(Ok(latList)), new JsonResult(Ok(lngList)));
         }
 
-        [HttpGet("allCoords/{latMin, lngMin, latMax, lngMax}")]
+        [HttpGet("allCoords/{latMin}/{lngMin}/{latMax}/{lngMax}")]
         public JsonResult getAllCoordsSingle(float latMin, float lngMin, float latMax, float lngMax)
         {
             List<float> latLngList = _repo.getAllCoordsSingle(latMin, lngMin, latMax, lngMax);
