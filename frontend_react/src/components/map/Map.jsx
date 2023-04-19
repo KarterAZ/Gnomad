@@ -254,9 +254,27 @@ export default function Map()
     //extract lat/lng out of bounds & center
     let { lat, lng } = center;
     const { lat: latStart, lng: lngStart } = bounds.sw;
+    console.log('----------------------------');
+    console.log('Lat:', lat);
+    console.log('Lng:', lng);
+
+    let temp = Math.abs(Math.floor(lng / 180));
+
+    console.log(temp);
+
+    if (lng > 180)
+    {
+      lng %= 180;
+      lng *= Math.pow(-1, temp);
+    }
+    else if (lng < -180)
+    {
+      lng %= 180;
+      lng *= Math.pow(-1, temp - 1);
+    }
 
     // ensure lat and lng are within their limits
-    lat = Math.max(Math.min(lat, 90), -90);
+    /*lat = Math.max(Math.min(lat, 90), -90);
     lng = ((lng - lngStart + 540) % 360 - 180 + 360) % 360 - 180;
 
     // calculate the adjusted lng value when crossing the -180/180 boundary
@@ -277,15 +295,17 @@ export default function Map()
         lat: Math.max(Math.min(bounds.ne.lat, 90), -90),
         lng: ((lngStart + 360 - lng + 540) % 360 + 360) % 360 - 180,
       },
-    };
+    };*/
     
     //calculating range of lat/lng
     const latRange = bounds.ne.lat - bounds.sw.lat;
-    const longRange = ((bounds.ne.lng - bounds.sw.lng) % 360 + 360) % 360-180;;
+    const longRange = bounds.ne.lng - bounds.sw.lng;
 
-    console.log(lat, lng, latRange, longRange);
-    console.log(center, bounds);
-    fetchData(lat, lng, latRange, longRange);
+    console.log('Lat:', lat);
+    console.log('Lng:', lng);
+
+    //console.log(center, bounds);
+    //fetchData(lat, lng, latRange, longRange);
 
     // Remove markers that are not within the current bounds
     /*
