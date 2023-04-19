@@ -36,6 +36,15 @@ namespace TravelCompanionAPI.Controllers
             _repo = repo;
         }
 
+        [HttpGet("saveToDatabase")]
+        public JsonResult saveData()
+        {
+
+            _repo.SaveToDatabase();
+
+            return new JsonResult(Ok());
+        }
+
         [HttpGet("getById")]
         public JsonResult get(string id)
         {
@@ -59,9 +68,9 @@ namespace TravelCompanionAPI.Controllers
         }
 
         [HttpGet("allH3Id/{offset}")]
-        public JsonResult getAllH3(int offset)
+        public JsonResult getAllH3()
         {
-            List<string> h3List = _repo.getAllH3(offset);
+            List<string> h3List = _repo.getAllH3();
 
             return new JsonResult(Ok(h3List));
         }

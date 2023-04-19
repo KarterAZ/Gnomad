@@ -29,12 +29,100 @@ namespace TravelCompanionAPI.Data
     public class CellularRepository : ICellularRepository
     {
         const string TABLE = "h3_oregon_data";
+<<<<<<< HEAD
         const string CoordTable = "oregon_cellular_coords";
+=======
+        const string NEWTABLE = "oregon_cellular_coords";
+>>>>>>> main
 
-//TODO: do we need config?
+        //TODO: do we need config?
         public CellularRepository(IConfiguration config)
         {
 
+        }
+
+        public void SaveToDatabase()
+        {
+            List<string> h3ids = getAllH3();
+            List<double> coords = new List<double>();
+            H3Index h3;
+            GeoBoundary geoBounds;
+            GeoCoord center;
+            List<GeoCoord> geoVerts;
+            List<H3Index> compactedSet = new List<H3Index>();
+
+            //Compacted set means fewest possible hex/pentagaons to fill area perfectly
+            foreach (string id in h3ids)
+            {
+                h3 = id.ToH3Index();
+                compactedSet.Add(h3);
+            }
+
+            foreach (H3Index h3i in compactedSet)
+            {
+                if (h3i.IsValid())
+                {
+                    center = h3i.ToGeoCoord();
+                    geoBounds = h3i.ToGeoBoundary();
+                    geoVerts = geoBounds.Verts;
+                
+                    //Pentagons have 5 sides, hexagons have 6.
+                    //Pentagons/hexagons are only valid output ;)
+                    int forSize = h3i.IsPentagon() ? 5 : 6;
+
+                    for (int i = 0; i < forSize; i++)
+                    {
+                        coords.Add((double)geoVerts[i].Latitude.RadiansToDegrees());
+                        coords.Add((double)geoVerts[i].Longitude.RadiansToDegrees());
+                    }
+
+                    //Add line to database
+                    using (MySqlCommand command = new MySqlCommand())
+                    {
+                        command.Connection = DatabaseConnection.getInstance().getConnection();
+                        command.CommandType = CommandType.Text;
+
+                        command.CommandText = "INSERT INTO " + NEWTABLE + " VALUES(0, @centerLatitude, @centerLongitude, @latitude1, @longitude1, @latitude2, @longitude2, @latitude3, @longitude3, @latitude4, @longitude4, @latitude5, @longitude5, @latitude6, @longitude6)";
+
+                        if(forSize == 6) //If Hexagon, no NULL values
+                        {
+                            command.Parameters.AddWithValue("@latitude6", coords[10]);
+                            command.Parameters.AddWithValue("@longitude6", coords[11]);
+                        }
+                        else
+                        {
+                            command.Parameters.AddWithValue("@latitude6", null);
+                            command.Parameters.AddWithValue("@longitude6", null);
+                        }
+                        
+                        command.Parameters.AddWithValue("@centerLatitude", center.Latitude.RadiansToDegrees()); //RadiansToDegrees() not on when script first ran.
+                        command.Parameters.AddWithValue("@centerLongitude", center.Longitude.RadiansToDegrees()); //RadiansToDegrees() not on when script first ran.
+                        command.Parameters.AddWithValue("@latitude1", coords[0]);
+                        command.Parameters.AddWithValue("@longitude1", coords[1]);
+                        command.Parameters.AddWithValue("@latitude2", coords[2]);
+                        command.Parameters.AddWithValue("@longitude2", coords[3]);
+                        command.Parameters.AddWithValue("@latitude3", coords[4]);
+                        command.Parameters.AddWithValue("@longitude3", coords[5]);
+                        command.Parameters.AddWithValue("@latitude4", coords[6]);
+                        command.Parameters.AddWithValue("@longitude4", coords[7]);
+                        command.Parameters.AddWithValue("@latitude5", coords[8]);
+                        command.Parameters.AddWithValue("@longitude5", coords[9]);
+
+                        command.ExecuteNonQuery();
+
+                        command.Connection.Close();
+                    }
+
+                    //Clear list
+                    coords.Clear();
+                    geoVerts.Clear();
+                }
+                else
+                {
+                    //Commit war crimes (error checking. Possibly explosions.)
+                    Console.WriteLine("An error has occurred. H3 isn't valid.");
+                }
+            }
         }
 
         public Cellular getByH3Id(string id)
@@ -61,9 +149,9 @@ namespace TravelCompanionAPI.Data
                         cellular.H3id = reader.GetString(4);
                     }
                 }
-            }
 
-            //command.Connection.Close();
+                command.Connection.Close();
+            }
 
             return cellular;
         }
@@ -92,22 +180,31 @@ namespace TravelCompanionAPI.Data
                         h3_oregon_data.Add(cellular);
                     }
                 }
+
+                command.Connection.Close();
             }
 
             return h3_oregon_data;
         }
 
-        public List<string> getAllH3(int offset)
+        public List<string> getAllH3()
         {
             List<string> h3_oregon_data = new List<string>();
+<<<<<<< HEAD
             offset *= 7500;
+=======
+>>>>>>> main
 
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
+<<<<<<< HEAD
                 command.CommandText = @"SELECT h3_res9_id FROM " + TABLE + " LIMIT 7500 OFFSET @Offset;";
                 command.Parameters.AddWithValue("@Offset", offset);
+=======
+                command.CommandText = @"SELECT h3_res9_id FROM " + TABLE + ";"; //LIMIT 15000000 OFFSET <get from database>
+>>>>>>> main
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
@@ -117,6 +214,8 @@ namespace TravelCompanionAPI.Data
                         h3_oregon_data.Add(cellular);
                     }
                 }
+
+                command.Connection.Close();
             }
 
             return h3_oregon_data;
@@ -220,7 +319,7 @@ namespace TravelCompanionAPI.Data
         //TODO: Might go faster if double instead of decimal. Doubt we need THAT much precision?
         public List<decimal> getHexCoords(int pass)
         {
-            List<string> h3ids = getAllH3(pass);
+            List<string> h3ids = getAllH3();
             List<decimal> coords = new List<decimal>();
             H3Index h3;
             GeoBoundary geoBounds;
@@ -233,23 +332,20 @@ namespace TravelCompanionAPI.Data
                 compactedSet.Add(h3);
             }
 
-            int res = compactedSet.First().Resolution; //All the same
             //long max = compactedSet.MaxUncompactSize(res);
 
             //For Todd's eyes only O O
-                                   //
+            //
             //                     ___
             /*int status;
             (status, List<H3Index> uncompactedSet) = compactedSet.Uncompact(res);*/
-            Console.WriteLine(res);
-            //Console.WriteLine(status);
 
             foreach (H3Index h3i in compactedSet)
             {
                 geoBounds = h3i.ToGeoBoundary(); //Inefficient
                 geoVerts = geoBounds.Verts;
 
-                if(h3i.IsValid())
+                if (h3i.IsValid())
                 {
                     //Pentagons have 5 sides, hexagons have 6.
                     //Pentagons/hexagons are only valid output ;)

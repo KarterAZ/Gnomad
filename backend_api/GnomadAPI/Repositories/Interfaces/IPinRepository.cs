@@ -33,7 +33,7 @@ namespace TravelCompanionAPI.Data
 
         public List<Pin> getAllInArea(double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0);
     
-        public List<Pin> getAllByTag(List<int> tags);
+        public List<Pin> getAllByTag(List<int> tags, double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0);
 
         public List<Pin> getAllByAddress(string address);
 
@@ -45,5 +45,6 @@ namespace TravelCompanionAPI.Data
 
         public List<Pin> globalSearch(string searchString);
 
+        public List<Pin> getStickers(int uid, double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0);
     }
 }

@@ -413,20 +413,17 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + " WHERE longitude = @Longitude AND latitude = @Latitude;";
+                command.CommandText = @"SELECT COUNT(id) FROM " + PIN_TABLE + " WHERE longitude = @Longitude AND latitude = @Latitude;";
                 command.Parameters.AddWithValue("@Longitude", data.Longitude);
                 command.Parameters.AddWithValue("@Latitude", data.Latitude);
 
-                //TODO: return count with query, and just check if > 0. Check UserRepo for example code
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
-                    while (reader.Read())
+                    reader.Read(); //Only executes once, since just count.
+
+                    if (int.Parse(reader.GetString(0)) >= 1)
                     {
-                        if (data.Longitude == int.Parse(reader.GetString(0)) && data.Latitude == int.Parse(reader.GetString(1)))
-                        {
-                            exists = true;
-                            break;
-                        }
+                        exists = true;
                     }
                 }
             }
@@ -453,11 +450,15 @@ namespace TravelCompanionAPI.Data
         /// <returns>
         /// A list of pins
         /// </returns>
-        public List<Pin> getAllByTag(List<int> tags)
+        public List<Pin> getAllByTag(List<int> tags, double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0)
         {
             List<Pin> pins;
             List<Pin> deleteList = new List<Pin>();
-            pins = getAll(); //TODO: change to getAllInArea() and get area data passed into funtion
+
+            if(latStart == 0 && longStart == 0 && latRange == 0 && longRange == 0)
+                pins = getAllInArea(); //Defaults to Oregon
+            else
+                pins = getAllInArea(latStart, longStart, latRange, longRange);
 
             //Checks if pin is valid, adds to deleteList
             foreach(Pin pin in pins)
@@ -515,6 +516,7 @@ namespace TravelCompanionAPI.Data
                         pins.Add(pin);
                     }
                 }
+                connection.Close();
             }
 
             //Add tag to the pins in the pin list
@@ -580,6 +582,7 @@ namespace TravelCompanionAPI.Data
                         pins.Add(pin);
                     }
                 }
+                connection.Close();
             }
             //Add tag to the pins in the pin list
             using (MySqlCommand command = new MySqlCommand())
@@ -656,6 +659,30 @@ namespace TravelCompanionAPI.Data
             pins = pins.Distinct().ToList();
 
             return pins;
+        }
+
+        //Gets the stickers for the currently logged-in user
+        public List<Pin> getStickers(int uid, double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0)
+        {
+            //TODO: User validation -- make sure the uid matches the current user.
+
+            List<Pin> stickers;
+
+            if(latStart == 0 && longStart == 0 && latRange == 0 && longRange == 0)
+                stickers = getAllByTag(new List<int>(){Convert.ToInt32(TagValues.tags.Sticker)}); //Defaults to Oregon
+            else
+                stickers = getAllByTag(new List<int>(){Convert.ToInt32(TagValues.tags.Sticker)}, latStart, longStart, latRange, longRange);
+
+            for(int ii = stickers.Count-1; ii >= 0; ii--)
+            {
+                //If wrong user, remove from list.
+                if(stickers.ElementAt(ii).UserId != uid)
+                {
+                    stickers.RemoveAt(ii);
+                }
+            }
+
+            return stickers;
         }
     }
 }
