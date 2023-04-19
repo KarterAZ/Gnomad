@@ -254,16 +254,30 @@ export default function Map()
     //extract lat/lng out of bounds & center
     let { lat, lng } = center;
     const { lat: latStart, lng: longStart } = bounds.sw;
+
+    // ensure lat and lng are within their limits
+    lat = Math.max(Math.min(lat, 90), -90);
+    lng = ((lng - lngStart + 540) % 360 - 180);
+
+    // update center and bounds with the adjusted lat and lng values
+    center = {lat, lng};
+    bounds = {
+      sw: {
+        lat: Math.max(Math.min(bounds.sw.lat, 90), -90),
+        lng: ((lngStart - lng + 540) % 360 + 360) % 360 - 180
+      },
+      ne: {
+        lat: Math.max(Math.min(bounds.ne.lat, 90), -90),
+        lng: ((lngStart + 360 - lng + 540) % 360 + 360) % 360 - 180
+      }
+    };
+    
     //calculating range of lat/lng
     const latRange = bounds.ne.lat - bounds.sw.lat;
     const longRange = bounds.ne.lng - bounds.sw.lng;
 
-    // ensure lat and lng are within their limits
-    lat = Math.max(Math.min(lat, 90), -90);
-    lng = ((lng - longStart) % 360 + 360) % 360 + longStart;
-    lng = Math.max(Math.min(lng, 180), -180);
-
     console.log(lat, lng, latRange, longRange);
+    console.log(center, bounds);
     fetchData(lat, lng, latRange, longRange);
 
     // Remove markers that are not within the current bounds
