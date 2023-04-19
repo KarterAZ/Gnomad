@@ -83,7 +83,7 @@ namespace TravelCompanionAPI.Controllers
         }
 
         [HttpGet("allCoords/{latMin, lngMin, latMax, lngMax}")]
-        public (JsonResult, JsonResult) getAllCoordsSingle(float latMin, float lngMin, float latMax, float lngMax)
+        public JsonResult getAllCoordsSingle(float latMin, float lngMin, float latMax, float lngMax)
         {
             List<float> latLngList = _repo.getAllCoordsSingle(latMin, lngMin, latMax, lngMax);
 
