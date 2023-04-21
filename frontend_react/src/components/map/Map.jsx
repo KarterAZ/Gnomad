@@ -49,7 +49,7 @@ const handleApiLoaded = async(map, maps) => {
     var latArray = [];
     var lngArray = [];
 
-    (latArray, lngArray) = await getAllCoords(bounds.ne.lat, bounds.ne.lng, bounds.sw.lat, bounds.sw.lng);
+    [latArray, lngArray] = await getAllCoords(bounds.ne.lat, bounds.ne.lng, bounds.sw.lat, bounds.sw.lng);
     for (let i = 0; i < lngArray.length; i++) {
         let gData = new maps.LatLng(parseFloat(latArray[i]), parseFloat(lngArray[i]));
         latLngArray.push(gData);
