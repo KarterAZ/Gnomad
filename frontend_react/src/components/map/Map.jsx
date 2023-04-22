@@ -31,7 +31,7 @@ import electric from '../../images/Charger.png';
 import getAllCoords from '../../utilities/api/get_cell_coords';
 
 // can later make the default lat/lng be user's location?
-const defaultProps = 
+const defaultProps =
 {
   zoom: 6,
   center: {
@@ -41,10 +41,10 @@ const defaultProps =
 };
 
 // fills in the cell coverage.
-const handleApiLoaded = async(map, maps) => {
-    var colorNum = 0;
-    var color = ["#FF5733", "#FFFC33", "#33FF36", "#33FFF9", "#3393FF", "#3339FF", "#9F33FF", "#FF33CA", "#FF3333", "#440000"]
-    var bermudaTriangles = [];
+const handleApiLoaded = async (map, maps) => {
+  var colorNum = 0;
+  var color = ["#FF5733", "#FFFC33", "#33FF36", "#33FFF9", "#3393FF", "#3339FF", "#9F33FF", "#FF33CA", "#FF3333", "#440000"]
+  var bermudaTriangles = [];
 
   for (let i = 0; i < 242; i++) {
     var latLngArray = [];
@@ -80,8 +80,7 @@ const presetMarkers = [
 ];
 
 // general format all pins will follow, made dynamic by adding image data member instead of having 3-4 separate versions.
-const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) => 
-{
+const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) => {
   // named constants for the rating values.
   const THUMBS_UP = "1";
   const THUMBS_DOWN = "-1";
@@ -101,14 +100,11 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
   // initially had an incrementer/decrementer but this version just stores one state
   // of the user, eventually needs to be connected to the database to get a finalized
   // reputation count on each marker.
-  const handleReputationClick = (value) => 
-  {
-    if (reputation === null) 
-    {
+  const handleReputationClick = (value) => {
+    if (reputation === null) {
       setReputation(value)
-    } 
-    else 
-    {
+    }
+    else {
       // if currentRep is equal to value reset reputation value to null, else assign value.
       setReputation((currentReputation) =>
         currentReputation === value ? null : value
@@ -117,8 +113,7 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
   };
 
   // toggles favorite state between true/false on click. 
-  const handleFavoriteClick = () => 
-  {
+  const handleFavoriteClick = () => {
     setIsFavorite((currentIsFavorite) => !currentIsFavorite);
   }
 
@@ -134,10 +129,10 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
         src={image}
         alt="marker"
         position={position}
-        onClick={() => setShowInfoWindow(!showInfoWindow)} 
-        // toggles useState whether to display the InfoWindow upon marker click.
+        onClick={() => setShowInfoWindow(!showInfoWindow)}
+      // toggles useState whether to display the InfoWindow upon marker click.
       />
-      {showInfoWindow && ( 
+      {showInfoWindow && (
         // customized InfoWindow, was having too much trouble using google map's (plus ours looks nicer).
         <div className='info-window'>
           <div className='info-window-header'>
@@ -211,8 +206,7 @@ const Map = () => {
   const [selectedPinType, setSelectedPinType] = useState("");
 
   // function that toggles the sidebar's create pin option.
-  const toggleMarkerCreation = (pinName, pinDescription, pinType) => 
-  {
+  const toggleMarkerCreation = (pinName, pinDescription, pinType) => {
     setMarkerCreationEnabled(!markerCreationEnabled);
     setSelectedPinName(pinName);
     setSelectedPinDescription(pinDescription);
@@ -220,12 +214,10 @@ const Map = () => {
   };
 
   // function handling onclick events on the map that will result in marker creation.
-  const handleCreatePin = (event) => 
-  {
+  const handleCreatePin = (event) => {
     console.log(event);
 
-    if (markerCreationEnabled && selectedPinType !== "") 
-    {
+    if (markerCreationEnabled && selectedPinType !== "") {
       let pinImage = '';
       switch (selectedPinType) {
         case 'Pin':
@@ -251,7 +243,7 @@ const Map = () => {
       }
 
       //Adds marker to array that gets rendered (TODO: Eventually will have to add a pin to the database)
-      let marker = 
+      let marker =
       {
         lat: event.latLng.lat(),
         lng: event.latLng.lng(),
@@ -360,8 +352,8 @@ const Map = () => {
     lat: 37.772,
     lng: -122.214
   }
-  
-  
+
+
   return (
     <div id='wrapper'>
       <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
@@ -373,8 +365,7 @@ const Map = () => {
             zoom={defaultProps.zoom}
             draggable={!markerCreationEnabled}
 
-            onGoogleApiLoaded={({ map, maps }) => 
-            {
+            onGoogleApiLoaded={({ map, maps }) => {
               console.log("Google Maps API loaded successfully!");
               console.log("Map object:", map);
               console.log("Maps object:", maps);
@@ -387,23 +378,28 @@ const Map = () => {
             <Marker
               icon={pin}
               position={position}
-            />
 
-            {[...markers, ...presetMarkers].map((marker, index) =>
-            {
-              return (
-              <CustomMarker
+            />
+            
+            {[...presetMarkers].map((marker, index) => (
+               //...markers, removed for meantime
+              // TODO: caledSize: new window.google.maps.Size(50, 50), uses hard fixed pixels,
+              // tried a few different ways to get screen size and scale it to a % of it but breaks  
+              <Marker
+                icon={{
+                  // url works? path: doesnt?
+                  url: marker.image,
+                  scaledSize: new window.google.maps.Size(60, 60),
+  
+                }}
                 key={index}
-                lat={marker.lat}
-                lng={marker.lng}
-                type={marker.type}
-                name={marker.name}
-                description={marker.description}
-                street={marker.street}
-                image={marker.image}
+                position={{
+                  lat: marker.lat,
+                  lng: marker.lng
+                }}
               />
-              );
-            })}
+              
+            ))}
           </GoogleMap>
         </LoadScript>
       </div>
