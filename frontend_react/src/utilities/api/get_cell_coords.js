@@ -14,7 +14,10 @@ export default async function getAllCoords(latMin, lngMin, latMax, lngMax) {
 
     //if (!isAuthenticated()) return null;
 
-    const responseLatLng = await get('h3_oregon_data/allCoords/{' + String(latMin) + '}/{' + String(lngMin) + '}/{' +
+    //const responseLatLng = await get('h3_oregon_data/allCoords/{' + String(latMin) + '}/{' + String(lngMin) + '}/{' +
+    //    String(latMax) + '}/{' + String(lngMax) + '}');
+
+    const responseLatLng = await get('h3_oregon_data/allCoordsSingle/{' + String(latMin) + '}/{' + String(lngMin) + '}/{' +
         String(latMax) + '}/{' + String(lngMax) + '}');
 
     return responseLatLng;
