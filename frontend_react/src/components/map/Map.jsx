@@ -79,8 +79,9 @@ const presetMarkers = [
   { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
 ];
 
-// general format all pins will follow, made dynamic by adding image data member instead of having 3-4 separate versions.
-const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) => {
+// can still utilize our own infowindow, dont need to use google map's, realistically most of this code is just for infowindow
+// renamed and repurposed.
+const MyInfoWindow = ({ lat, lng, image, type, name, description, onClick }) => {
   // named constants for the rating values.
   const THUMBS_UP = "1";
   const THUMBS_DOWN = "-1";
@@ -116,7 +117,8 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) => 
   const handleFavoriteClick = () => {
     setIsFavorite((currentIsFavorite) => !currentIsFavorite);
   }
-
+  //REQUIRED TO FORMAT LIKE THIS
+  // or else it will not load from lat/lng, needs position 
   const position = {
     lat: lat,
     lng: lng
@@ -205,6 +207,12 @@ const Map = () => {
   const [selectedPinDescription, setSelectedPinDescription] = useState("");
   const [selectedPinType, setSelectedPinType] = useState("");
 
+  //States for getting onclick interactions with google maps markers & our custom infowindow
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [showInfoWindow, setShowInfoWindow] = useState(false);
+
+
+
   // function that toggles the sidebar's create pin option.
   const toggleMarkerCreation = (pinName, pinDescription, pinType) => {
     setMarkerCreationEnabled(!markerCreationEnabled);
@@ -275,21 +283,6 @@ const Map = () => {
     console.log(lat, lng, latRange, longRange);
     fetchData(lat, lng, latRange, longRange);
 
-    // Remove markers that are not within the current bounds
-    /*
-     for (let i = 0; i < markers.length; i++) {
-       const marker = markers[i];
-       if ((marker.lat < latStart ||
-         marker.lat > latStart + latRange ||
-         marker.lng < longStart ||
-         marker.lng > longStart + longRange)) {
-         // Remove the marker from the map and from the markers array
-         marker.setMap(null); // setMap not a function? Maybe in other react google api? 
-         markers.splice(i, 1);
-         i--;
-       }
-     }
-    */
   };
 
   /* If getting the error:
@@ -340,7 +333,7 @@ const Map = () => {
 
         };
       });
-      // TODO: fix this function and remove debugging statement below.
+
       setMarkers(markers);
 
     } catch (error) {
@@ -375,31 +368,41 @@ const Map = () => {
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
             onChange={handleMapChange}
           >
-            <Marker
-              icon={pin}
-              position={position}
 
-            />
-            
             {[...presetMarkers].map((marker, index) => (
-               //...markers, removed for meantime
-              // TODO: caledSize: new window.google.maps.Size(50, 50), uses hard fixed pixels,
+              //...markers, removed for meantime
+              // TODO: caledSize: new window. .maps.Size(50, 50), uses hard fixed pixels,
               // tried a few different ways to get screen size and scale it to a % of it but breaks  
               <Marker
                 icon={{
                   // url works? path: doesnt?
                   url: marker.image,
                   scaledSize: new window.google.maps.Size(60, 60),
-  
+
                 }}
                 key={index}
                 position={{
                   lat: marker.lat,
                   lng: marker.lng
                 }}
+                onClick={() => {
+                  setSelectedMarker(marker);
+                  setShowInfoWindow(true);
+                }}
+
               />
-              
             ))}
+            
+            {selectedMarker && showInfoWindow && (
+              <MyInfoWindow //remove this entire section if you want it to render, my savepoint for me to switch to another pc.
+                position={{
+                  lat: selectedMarker.lat,
+                  lng: selectedMarker.lng,
+                }}
+                onCloseClick={() => setShowInfoWindow(false)}
+              >
+              </MyInfoWindow>
+            )}
           </GoogleMap>
         </LoadScript>
       </div>
@@ -407,18 +410,3 @@ const Map = () => {
   );
 };
 export default React.memo(Map);
-/** TODO: Change cursor image upon selection of sidebar pin
-    useEffect(() => {
-      const mapElement = document.getElementById('map');
-      const updateCursorStyle = () => {
-        mapElement.classList.remove(cursorStyle);
-        mapElement.classList.add(cursorStyle);
-      };
-      mapElement.addEventListener('mousemove', updateCursorStyle);
-      return () => {
-        mapElement.removeEventListener('mousemove', updateCursorStyle);
-      };
-    }, [cursorStyle]);
-  */
-  //Populating presetMarkers with data from array/database
-
