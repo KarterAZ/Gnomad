@@ -8,7 +8,7 @@
 //################################################################
 
 import React, { useState, useEffect } from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker, MarkerClusterer } from '@react-google-maps/api';
 
 // internal imports.
 import './map.css';
@@ -39,6 +39,15 @@ const defaultProps =
     lng: -121.78,
   },
 };
+
+//marker cluster options
+const options = {
+  imagePath:
+  '../../images/Pin.png',
+}
+
+
+
 
 // fills in the cell coverage.
 const handleApiLoaded = async (map, maps) => {
@@ -71,17 +80,24 @@ const handleApiLoaded = async (map, maps) => {
 
 
 // array of markers that gets used to populate map, eventually will be filled with pin data from database.
+//used to test marker operations/google maps without having to render entire
 const presetMarkers = [
   { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", description: "Brevada" },
   { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", description: "Pilot" },
   { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", description: "Oregon Tech" },
   { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", description: "Oregon Tech Parking Lot F" },
   { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
+
+  { lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", description: "testing"}
+
+
+
+
 ];
 
 // can still utilize our own infowindow, dont need to use google map's, realistically most of this code is just for infowindow
 // renamed and repurposed.
-const MyInfoWindow = ({ lat, lng, image, type, name, description, onClick }) => {
+const MyInfoWindow = ({ lat, lng, image, type, name, description }) => {
   // named constants for the rating values.
   const THUMBS_UP = "1";
   const THUMBS_DOWN = "-1";
@@ -131,7 +147,7 @@ const MyInfoWindow = ({ lat, lng, image, type, name, description, onClick }) => 
         src={image}
         alt="marker"
         position={position}
-        onClick={() => setShowInfoWindow(!showInfoWindow)}
+      // onClick={() => setShowInfoWindow(!showInfoWindow)}
       // toggles useState whether to display the InfoWindow upon marker click.
       />
       {showInfoWindow && (
@@ -368,41 +384,32 @@ const Map = () => {
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
             onChange={handleMapChange}
           >
-
-            {[...presetMarkers].map((marker, index) => (
-              //...markers, removed for meantime
-              // TODO: caledSize: new window. .maps.Size(50, 50), uses hard fixed pixels,
-              // tried a few different ways to get screen size and scale it to a % of it but breaks  
-              <Marker
-                icon={{
-                  // url works? path: doesnt?
-                  url: marker.image,
-                  scaledSize: new window.google.maps.Size(60, 60),
-
-                }}
-                key={index}
-                position={{
-                  lat: marker.lat,
-                  lng: marker.lng
-                }}
-                onClick={() => {
-                  setSelectedMarker(marker);
-                  setShowInfoWindow(true);
-                }}
-
-              />
-            ))}
-            
-            {selectedMarker && showInfoWindow && (
-              <MyInfoWindow //remove this entire section if you want it to render, my savepoint for me to switch to another pc.
-                position={{
-                  lat: selectedMarker.lat,
-                  lng: selectedMarker.lng,
-                }}
-                onCloseClick={() => setShowInfoWindow(false)}
-              >
-              </MyInfoWindow>
-            )}
+              <MarkerClusterer options={{ maxZoom: 10 }}>
+              {(clusterer) =>
+                [...presetMarkers].map((marker, index) => (
+                  //...markers, removsed for meantime
+                  // TODO: caledSize: new window. .maps.Size(50, 50), uses hard fixed pixels,
+                  // tried a few different ways to get screen size and scale it to a % of it but breaks  
+                  <Marker
+                    icon={{
+                      // url works? path: doesnt?
+                      url: marker.image,
+                      scaledSize: new window.google.maps.Size(60, 60),
+                    }}
+                    key={index}
+                    position={{
+                      lat: marker.lat,
+                      lng: marker.lng
+                    }}
+                    onClick={() => {
+                      setSelectedMarker(marker);
+                      setShowInfoWindow(true);
+                    }}
+                    clusterer={clusterer} // Add the clusterer prop to each marker
+                  />
+                ))
+              }
+            </MarkerClusterer>
           </GoogleMap>
         </LoadScript>
       </div>
