@@ -48,10 +48,20 @@ const handleApiLoaded = async(map, maps) => {
     var latLngArray = [];
     var latArray = [];
     var lngArray = [];
+    var retArray = [];
 
-    [latArray, lngArray] = await getAllCoords(bounds.ne.lat, bounds.ne.lng, bounds.sw.lat, bounds.sw.lng);
+    var bounds = map.getBounds();
+    var ne = bounds.getNorthEast();
+    var sw = bounds.getSouthWest();
+    /*[latArray, lngArray] = await getAllCoords(bounds.ne.lat, bounds.ne.lng, bounds.sw.lat, bounds.sw.lng);
     for (let i = 0; i < lngArray.length; i++) {
         let gData = new maps.LatLng(parseFloat(latArray[i]), parseFloat(lngArray[i]));
+        latLngArray.push(gData);
+    }*/
+
+    retArray = await getAllCoords(ne.lat(), ne.lng(), sw.lat(), sw.lng());
+    for (let i = 0; i < lngArray.length; i+=2) {
+        let gData = new maps.LatLng(parseFloat(latArray[i]), parseFloat(lngArray[i+1]));
         latLngArray.push(gData);
     }
     bermudaTriangles.push(new maps.Polygon({

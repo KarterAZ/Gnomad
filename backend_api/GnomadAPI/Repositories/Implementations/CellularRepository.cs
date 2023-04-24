@@ -255,7 +255,7 @@ namespace TravelCompanionAPI.Data
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT centerLongitude, centerLatitude, latitude1, longitude1, latitude2, longitude2, "
                     + "latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + COORDTABLE
-                    + "WHERE centerLongitude > @lngMin, centerLatitude > @latMin, centerLongitude < @lngMax, centerLatitude < @latMax;";
+                    + " WHERE centerLongitude > @lngMin, centerLatitude > @latMin, centerLongitude < @lngMax, centerLatitude < @latMax;";
                 command.Parameters.AddWithValue("lngMin", lngMin);
                 command.Parameters.AddWithValue("lngMax", lngMax);
                 command.Parameters.AddWithValue("latMin", latMin);
@@ -286,7 +286,7 @@ namespace TravelCompanionAPI.Data
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT id, centerLongitude, centerLatitude FROM " + COORDTABLE +
-                    "WHERE centerLongitude > @lngMin, centerLatitude > @latMin, centerLongitude < @lngMax, centerLatitude < @latMax;";
+                    "WHERE centerLongitude > @lngMin, centerLatitude > @latMin, centerLongitude < @lngMax, centerLatitude < @latMax LIMIT 5000;";
                 command.Parameters.AddWithValue("lngMin", lngMin);
                 command.Parameters.AddWithValue("lngMax", lngMax);
                 command.Parameters.AddWithValue("latMin", latMin);
