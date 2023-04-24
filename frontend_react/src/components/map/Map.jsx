@@ -18,7 +18,7 @@ import './map.css';
 import { get, isAuthenticated } from '../../utilities/api/api.js';
 import Sidebar from '../sidebar/Sidebar'
 
-
+import event from '../../utilities/event';
 import pin from '../../images/Pin.png';
 import bathroom from '../../images/Restroom.png';
 import fuel from '../../images/Gas.png';
@@ -236,6 +236,11 @@ export default function Map()
     setSelectedPinDescription(pinDescription);
     setSelectedPinType(pinType);
   };
+
+  event.on('create-pin', (data) =>
+  {
+    toggleMarkerCreation(data.pin.name, data.pin.description, data.pin.type)
+  });
 
   // function handling onclick events on the map that will result in marker creation.
   const handleCreatePin = (event) => 
