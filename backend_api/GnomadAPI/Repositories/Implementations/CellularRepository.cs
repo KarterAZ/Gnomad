@@ -215,6 +215,11 @@ namespace TravelCompanionAPI.Data
             List<float> lat_coord_data = new List<float>();
             List<float> lng_coord_data = new List<float>();
 
+            lngMin = lngMin * ((float)Math.PI / 180);
+            lngMax = lngMax * ((float)Math.PI / 180);
+            latMin = latMin * ((float)Math.PI / 180);
+            latMax = latMax * ((float)Math.PI / 180);
+
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
@@ -249,13 +254,21 @@ namespace TravelCompanionAPI.Data
         {
             List<float> latLng_coord_data = new List<float>();
 
+            lngMin = lngMin * ((float)Math.PI / 180);
+            lngMax = lngMax * ((float)Math.PI / 180);
+            latMin = latMin * ((float)Math.PI / 180);
+            latMax = latMax * ((float)Math.PI / 180);
+
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT centerLongitude, centerLatitude, latitude1, longitude1, latitude2, longitude2, "
-                    + "latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + COORDTABLE
-                    + " WHERE centerLongitude > @lngMin, centerLatitude > @latMin, centerLongitude < @lngMax, centerLatitude < @latMax;";
+                command.CommandText = @"SELECT centerLongitude, centerLatitude, latitude1, longitude1, latitude2, longitude2,"
+                    + " latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + COORDTABLE
+                    + " WHERE centerLongitude BETWEEN @lngMax and @lngMin and"
+                    + " centerLatitude BETWEEN @latMax and  @latMin;";
+                    //+ " WHERE centerLongitude > @lngMin and centerLatitude < @latMin and" 
+                    //+ " centerLongitude < @lngMax and centerLatitude > @latMax;";
                 command.Parameters.AddWithValue("lngMin", lngMin);
                 command.Parameters.AddWithValue("lngMax", lngMax);
                 command.Parameters.AddWithValue("latMin", latMin);
@@ -265,7 +278,7 @@ namespace TravelCompanionAPI.Data
                 {
                     while (reader.Read())
                     {
-                        for (int i = 3; i <= 15; i++)
+                        for (int i = 2; i < 14; i++)
                         {
                             float coord = reader.GetFloat(i);
                             latLng_coord_data.Add(coord);
