@@ -76,10 +76,13 @@ const handleApiLoaded = async(map, maps) => {
             fillOpacity: 0.35
         }));
         latLngArray = [];
+        bermudaTriangles[0].setMap(map);
+        bermudaTriangles = [];
     }
 
-    for (var ii = 0; ii < bermudaTriangles.length; ii++) {
-        bermudaTriangles[ii].setMap(map);
+    //for (var ii = 0; ii < bermudaTriangles.length; ii++) {
+      //  bermudaTriangles[ii].setMap(map);
+    //}
     //bermudaTriangles[0].setMap(map);
 
     /*for (let i = 0; i < 242; i++) {
