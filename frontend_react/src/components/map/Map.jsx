@@ -62,18 +62,10 @@ const handleApiLoaded = async(map, maps) => {
 
     retArray = await getAllCoords(ne.lat(), ne.lng(), sw.lat(), sw.lng());
     for (let i = 0; i < retArray.length; i += 12) {
-        let gData = new maps.LatLng(parseFloat(retArray[i]), parseFloat(retArray[i + 1]));
-        latLngArray.push(gData);
-        let gData = new maps.LatLng(parseFloat(retArray[i + 2]), parseFloat(retArray[i + 3]));
-        latLngArray.push(gData);
-        let gData = new maps.LatLng(parseFloat(retArray[i + 4]), parseFloat(retArray[i + 5]));
-        latLngArray.push(gData);
-        let gData = new maps.LatLng(parseFloat(retArray[i + 6]), parseFloat(retArray[i + 7]));
-        latLngArray.push(gData);
-        let gData = new maps.LatLng(parseFloat(retArray[i + 8]), parseFloat(retArray[i + 9]));
-        latLngArray.push(gData);
-        let gData = new maps.LatLng(parseFloat(retArray[i + 10]), parseFloat(retArray[i + 11]));
-        latLngArray.push(gData);
+        for (let ii = 0; ii < 11; ii += 2) {
+            let gData = new maps.LatLng(parseFloat(retArray[i + ii]), parseFloat(retArray[i + ii + 1]));
+            latLngArray.push(gData);
+        }
 
         bermudaTriangles.push(new maps.Polygon({
             paths: latLngArray,
