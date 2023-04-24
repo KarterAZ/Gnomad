@@ -266,8 +266,7 @@ namespace TravelCompanionAPI.Data
                 command.CommandType = CommandType.Text;
                 command.CommandText = @"SELECT centerLongitude, centerLatitude, latitude1, longitude1, latitude2, longitude2,"
                     + " latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + COORDTABLE
-                    + " WHERE centerLongitude BETWEEN @lngMax and @lngMin and"
-                    + " centerLatitude BETWEEN @latMax and  @latMin;";
+                    + " WHERE centerLongitude BETWEEN @lngMax and @lngMin and centerLatitude BETWEEN @latMax and @latMin;";
                 command.Parameters.AddWithValue("lngMin", lngMin);
                 command.Parameters.AddWithValue("lngMax", lngMax);
                 command.Parameters.AddWithValue("latMin", latMin);
