@@ -294,7 +294,7 @@ export default function Map()
   };
 
   // handles changes to lat/lng depending on position and zoom
-  const handleMapChange = ({ center, zoom, bounds }) => {
+  const handleMapChange = async({ center, zoom, bounds, map, maps }) => {
     //extract lat/lng out of bounds & center
     let { lat, lng } = center;
     const { lat: latStart, lng: lngStart } = bounds.sw;
@@ -309,6 +309,29 @@ export default function Map()
     console.log('Lat:', lat);
     console.log('Lng:', lng);
     fetchData(lat, lng, latRange, longRange);
+
+    var latLngArray = [];
+    var retArray = [];
+
+    var bounds2 = map.getBounds();
+    var ne2 = bounds2.getNorthEast();
+    var sw2 = bounds2.getSouthWest();
+
+    retArray = await getAllCoords(ne2.lat(), ne2.lng(), sw2.lat(), sw2.lng());
+    for (let i = 0; i < retArray.length; i += 2) {
+        let gData = new maps.LatLng(parseFloat(retArray[i]), parseFloat(retArray[i + 1]));
+        latLngArray.push(gData);
+    }
+
+    var bermudaTriangle = new maps.Polygon({
+        paths: latLngArray,
+        strokeColor: "#33FF36",
+        strokeOpacity: 0.8,
+        strokeWeight: 2,
+        fillColor: color[colorNum],
+        fillOpacity: 0.35
+    });
+    bermudaTriangle.setMap(map);
 
     // Remove markers that are not within the current bounds
     /*
@@ -396,7 +419,7 @@ export default function Map()
           defaultCenter={defaultProps.center}
           defaultZoom={defaultProps.zoom}
           yesIWantToUseGoogleMapApiInternals //this is important!
-          onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
+          //onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
           onClick={markerCreationEnabled ? handleCreatePin : undefined}
           onChange={handleMapChange}
         >
