@@ -18,7 +18,7 @@ import './map.css';
 import { get, isAuthenticated } from '../../utilities/api/api.js';
 import Sidebar from '../sidebar/Sidebar'
 
-
+import event from '../../utilities/event';
 import pin from '../../images/Pin.png';
 import bathroom from '../../images/Restroom.png';
 import fuel from '../../images/Gas.png';
@@ -217,6 +217,7 @@ const Map = () => {
   //State declared for storing markers
   const [markers, setMarkers] = useState(presetMarkers);
 
+
   // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
@@ -239,6 +240,11 @@ const Map = () => {
     setSelectedPinDescription(pinDescription);
     setSelectedPinType(pinType);
   };
+
+  event.on('create-pin', (data) =>
+  {
+    toggleMarkerCreation(data.pin.name, data.pin.description, data.pin.type)
+  });
 
   // function handling onclick events on the map that will result in marker creation.
   const handleCreatePin = (event) => {
@@ -293,13 +299,18 @@ const Map = () => {
   // handles changes to lat/lng depending on position and zoom
   const handleMapChange = ({ center, zoom, bounds }) => {
     //extract lat/lng out of bounds & center
-    const { lat, lng } = center;
-    const { lat: latStart, lng: longStart } = bounds.sw;
-    //calculating range of lat/lng
+    let { lat, lng } = center;
+    const { lat: latStart, lng: lngStart } = bounds.sw;
+    
+    // set lng to a valid coordinate
+    lng = ((lng + 180) % 360 + 360) % 360 - 180;
+    
+    // set the ranges
     const latRange = bounds.ne.lat - bounds.sw.lat;
     const longRange = bounds.ne.lng - bounds.sw.lng;
 
-    console.log(lat, lng, latRange, longRange);
+    console.log('Lat:', lat);
+    console.log('Lng:', lng);
     fetchData(lat, lng, latRange, longRange);
 
   };

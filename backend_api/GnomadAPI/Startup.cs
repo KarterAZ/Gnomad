@@ -158,6 +158,7 @@ namespace TravelCompanionAPI
             services.AddSingleton<TagRepository>();
             //Adds a singleton to CellularRepository
             services.AddSingleton<CellularRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
