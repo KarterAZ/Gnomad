@@ -8,7 +8,7 @@
 //################################################################
 
 import React, { useState, useEffect } from 'react';
-import GoogleMapReact from 'google-map-react';
+import { GoogleMap, LoadScript, Marker, MarkerClusterer, DirectionsService } from '@react-google-maps/api';
 
 // internal imports.
 import './map.css';
@@ -31,7 +31,7 @@ import electric from '../../images/Charger.png';
 import getAllCoords from '../../utilities/api/get_cell_coords';
 
 // can later make the default lat/lng be user's location?
-const defaultProps = 
+const defaultProps =
 {
   zoom: 6,
   center: {
@@ -40,11 +40,20 @@ const defaultProps =
   },
 };
 
+//marker cluster options
+const options = {
+  imagePath:
+    '../../images/Pin.png',
+}
+
+
+
+
 // fills in the cell coverage.
-const handleApiLoaded = async(map, maps) => {
-    var colorNum = 0;
-    var color = ["#FF5733", "#FFFC33", "#33FF36", "#33FFF9", "#3393FF", "#3339FF", "#9F33FF", "#FF33CA", "#FF3333", "#440000"]
-    var bermudaTriangles = [];
+const handleApiLoaded = async (map, maps) => {
+  var colorNum = 0;
+  var color = ["#FF5733", "#FFFC33", "#33FF36", "#33FFF9", "#3393FF", "#3339FF", "#9F33FF", "#FF33CA", "#FF3333", "#440000"]
+  var bermudaTriangles = [];
 
   for (let i = 0; i < 242; i++) {
     var latLngArray = [];
@@ -71,17 +80,24 @@ const handleApiLoaded = async(map, maps) => {
 
 
 // array of markers that gets used to populate map, eventually will be filled with pin data from database.
+//used to test marker operations/google maps without having to render entire
 const presetMarkers = [
   { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", description: "Brevada" },
   { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", description: "Pilot" },
   { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", description: "Oregon Tech" },
   { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", description: "Oregon Tech Parking Lot F" },
   { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
+
+  { lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", description: "testing" }, //extra added to test markercluster
+
+
+
+
 ];
 
-// general format all pins will follow, made dynamic by adding image data member instead of having 3-4 separate versions.
-const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) => 
-{
+// can still utilize our own infowindow, dont need to use google map's, realistically most of this code is just for infowindow
+// renamed and repurposed.
+const MyInfoWindow = ({ lat, lng, image, type, name, description, toggleWindow }) => {
   // named constants for the rating values.
   const THUMBS_UP = "1";
   const THUMBS_DOWN = "-1";
@@ -90,7 +106,7 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
   // such as Marker.jsx , could benefit from having it's own .css file.
 
   // state declared for InfoWindow displaying.
-  const [showInfoWindow, setShowInfoWindow] = useState(false);
+  const [showInfoWindow, setShowInfoWindow] = useState(toggleWindow);
 
   // state declared for reputation thumbs up (1) down (-1) No selection (null).
   const [reputation, setReputation] = useState(null);
@@ -101,14 +117,11 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
   // initially had an incrementer/decrementer but this version just stores one state
   // of the user, eventually needs to be connected to the database to get a finalized
   // reputation count on each marker.
-  const handleReputationClick = (value) => 
-  {
-    if (reputation === null) 
-    {
+  const handleReputationClick = (value) => {
+    if (reputation === null) {
       setReputation(value)
-    } 
-    else 
-    {
+    }
+    else {
       // if currentRep is equal to value reset reputation value to null, else assign value.
       setReputation((currentReputation) =>
         currentReputation === value ? null : value
@@ -117,23 +130,29 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
   };
 
   // toggles favorite state between true/false on click. 
-  const handleFavoriteClick = () => 
-  {
+  const handleFavoriteClick = () => {
     setIsFavorite((currentIsFavorite) => !currentIsFavorite);
   }
+  //REQUIRED TO FORMAT LIKE THIS
+  // or else it will not load from lat/lng, needs position 
+  
+  const position = {
+    lat: lat,
+    lng: lng,
+  }
+ 
 
   return (
     <div className='marker-container'>
       <img // area responsible for marker image. 
         className='marker'
         src={image}
-        alt="marker"
-        lat={lat}
-        lng={lng}
-        onClick={() => setShowInfoWindow(!showInfoWindow)} 
-        // toggles useState whether to display the InfoWindow upon marker click.
+        alt="marker"  
+        position={position}
+      // onClick={() => setShowInfoWindow(!showInfoWindow)}
+      // toggles useState whether to display the InfoWindow upon marker click.
       />
-      {showInfoWindow && ( 
+      {showInfoWindow && (
         // customized InfoWindow, was having too much trouble using google map's (plus ours looks nicer).
         <div className='info-window'>
           <div className='info-window-header'>
@@ -184,21 +203,38 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
   );
 };
 
-export default function Map() 
-{
-  // state declared for storing markers.
-  const [markers, setMarkers] = useState([]);
+const center = {
+  lat: -3.745,
+  lng: -38.523
+};
+
+const containerStyle = {
+  width: '100%',
+  height: '100%'
+};
+
+const Map = () => {
+  //State declared for storing markers
+  const [markers, setMarkers] = useState(presetMarkers);
+
 
   // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
+  //States declared for Pin Names, Descriptions, and Types.
   const [selectedPinName, setSelectedPinName] = useState("");
   const [selectedPinDescription, setSelectedPinDescription] = useState("");
   const [selectedPinType, setSelectedPinType] = useState("");
 
+  //States for getting onclick interactions with google maps markers & our custom infowindow
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [showInfoWindow, setShowInfoWindow] = useState(false);
+
+  //const [directionsResponse, setDirectionsResponse] = useState(null);
+
+
   // function that toggles the sidebar's create pin option.
-  const toggleMarkerCreation = (pinName, pinDescription, pinType) => 
-  {
+  const toggleMarkerCreation = (pinName, pinDescription, pinType) => {
     setMarkerCreationEnabled(!markerCreationEnabled);
     setSelectedPinName(pinName);
     setSelectedPinDescription(pinDescription);
@@ -211,10 +247,10 @@ export default function Map()
   });
 
   // function handling onclick events on the map that will result in marker creation.
-  const handleCreatePin = (event) => 
-  {
-    if (markerCreationEnabled && selectedPinType !== "") 
-    {
+  const handleCreatePin = (event) => {
+    console.log(event);
+
+    if (markerCreationEnabled && selectedPinType !== "") {
       let pinImage = '';
       switch (selectedPinType) {
         case 'Pin':
@@ -239,17 +275,23 @@ export default function Map()
           pinImage = pin;
       }
 
-      // adds marker to array that gets rendered (Eventually will have to add a pin to the database).
-      setMarkers([...markers, 
+      //Adds marker to array that gets rendered (TODO: Eventually will have to add a pin to the database)
+      let marker =
       {
-        lat: event.lat,
-        lng: event.lng,
+        lat: event.latLng.lat(),
+        lng: event.latLng.lng(),
         image: pinImage,
         type: selectedPinType,
         name: selectedPinName,
         description: selectedPinDescription,
 
-      }]);
+      }
+
+      setMarkers([...markers,
+        marker
+      ]);
+
+      console.log(marker);
       setMarkerCreationEnabled(false);
     }
   };
@@ -271,21 +313,6 @@ export default function Map()
     console.log('Lng:', lng);
     fetchData(lat, lng, latRange, longRange);
 
-    // Remove markers that are not within the current bounds
-    /*
-     for (let i = 0; i < markers.length; i++) {
-       const marker = markers[i];
-       if ((marker.lat < latStart ||
-         marker.lat > latStart + latRange ||
-         marker.lng < longStart ||
-         marker.lng > longStart + longRange)) {
-         // Remove the marker from the map and from the markers array
-         marker.setMap(null); // setMap not a function? Maybe in other react google api? 
-         markers.splice(i, 1);
-         i--;
-       }
-     }
-    */
   };
 
   /* If getting the error:
@@ -300,8 +327,6 @@ export default function Map()
   //Blueprint for filtering through pins, can add elements in sidebar later
   //TODO: Make excludedPinTypes dynamic when sidebar has pin filtering. Currently used to reduce severe clutter.
   const excludedPinTypes = [3, 4, 8]; // array of pin types to exclude.
-
-
   const fetchData = async (latStart, longStart, latRange, longRange) => {
     try {
       const response = await get(`pins/getAllInArea?latStart=${latStart}&longStart=${longStart}&latRange=${latRange}&longRange=${longRange}`);
@@ -338,8 +363,7 @@ export default function Map()
 
         };
       });
-      // TODO: fix this function and remove debugging statement below.
-      console.log(markers);
+
       setMarkers(markers);
 
     } catch (error) {
@@ -347,52 +371,108 @@ export default function Map()
     }
   }
 
+  const position = {
+    lat: 37.772,
+    lng: -122.214
+  }
+
+
   return (
     <div id='wrapper'>
       <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
       <div id='map'>
-        <GoogleMapReact
-          draggable={!markerCreationEnabled}
-          bootstrapURLKeys={{ key: 'AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o' }}
-          defaultCenter={defaultProps.center}
-          defaultZoom={defaultProps.zoom}
-          yesIWantToUseGoogleMapApiInternals //this is important!
-          onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
-          onClick={markerCreationEnabled ? handleCreatePin : undefined}
-          onChange={handleMapChange}
-        >
+        <LoadScript googleMapsApiKey="AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o">
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={defaultProps.center}
+            zoom={defaultProps.zoom}
+            draggable={!markerCreationEnabled}
 
+            onGoogleApiLoaded={({ map, maps }) => {
+              console.log("Google Maps API loaded successfully!");
+              console.log("Map object:", map);
+              console.log("Maps object:", maps);
+              handleApiLoaded(map, maps)
+            }}
 
-          {[...markers, ...presetMarkers].map((marker, index) => (//Renders presetMarkers on the map
-            <CustomMarker
-              key={index}
-              lat={marker.lat}
-              lng={marker.lng}
-              type={marker.type}
-              name={marker.name}
-              description={marker.description}
-              street={marker.street}
-              image={marker.image}
-            />
-          ))}
-
-        </GoogleMapReact>
-      </div >
+            onClick={markerCreationEnabled ? handleCreatePin : undefined}
+            onChange={handleMapChange}
+          >
+            <MarkerClusterer options={{ maxZoom: 14 }}>
+              {(clusterer) =>
+                [...presetMarkers].map((marker, index) =>
+                (
+                  //...markers, removsed for meantime
+                  // TODO: caledSize: new window. .maps.Size(50, 50), uses hard fixed pixels,
+                  // tried a few different ways to get screen size and scale it to a % of it but breaks  
+                  <Marker
+                    icon=
+                    {{
+                      // url works? path: doesnt?
+                      url: marker.image,
+                      scaledSize: new window.google.maps.Size(60, 60),
+                    }}
+                    key={index}
+                    position=
+                    {{
+                      lat: marker.lat,
+                      lng: marker.lng
+                    }}
+                    onClick={() => {
+                      setSelectedMarker(marker);
+                      console.log(selectedMarker); //is returning correct marker
+                      setShowInfoWindow(!showInfoWindow);
+                      console.log(showInfoWindow);
+                    }}
+                    clusterer={clusterer} // Add the clusterer prop to each marker
+                  >
+            
+                  </Marker>
+                ))
+              }
+            </MarkerClusterer>
+          </GoogleMap>
+        </LoadScript>
+      </div>
     </div>
   );
-}
-/* TODO: Change cursor image upon selection of sidebar pin
-    useEffect(() => {
-      const mapElement = document.getElementById('map');
-      const updateCursorStyle = () => {
-        mapElement.classList.remove(cursorStyle);
-        mapElement.classList.add(cursorStyle);
-      };
-      mapElement.addEventListener('mousemove', updateCursorStyle);
-      return () => {
-        mapElement.removeEventListener('mousemove', updateCursorStyle);
-      };
-    }, [cursorStyle]);
-  */
-  //Populating presetMarkers with data from array/database
+};
+export default React.memo(Map);
 
+
+/* Need to integrate callback functions, can put this snippet between the 
+// MarkerCluster and Googlemap component on the bottom once done
+  <DirectionsService
+      options=
+      {{
+          origin: { lat: presetMarkers[0].lat, lng: presetMarkers[0].lng },
+          destination: { lat: presetMarkers[5].lat, lng: presetMarkers[5].lng },
+          travelMode: 'DRIVING',
+      }}
+          callback={(result) => 
+          {
+            if (result !== null)
+            {
+              setDirectionsResponse(result); 
+            }
+          }}
+    />
+*/
+
+/* goes before marker closes & after clusterer = {cluterer} >
+  {selectedMarker && showInfoWindow &&
+                      (
+                        <MyInfoWindow
+                          lat={selectedMarker.lat}
+                          lng={selectedMarker.lng}
+                          image={selectedMarker.image}
+                          type={selectedMarker.type}
+                          name={selectedMarker.name}
+                          description={selectedMarker.description}
+                          toggleWindow={showInfoWindow}
+                        >
+                        </MyInfoWindow>
+                      )}
+
+
+*/
