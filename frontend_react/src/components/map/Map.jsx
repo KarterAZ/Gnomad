@@ -412,29 +412,14 @@ const Map = () => {
                       console.log(selectedMarker); //is returning correct marker
                       setShowInfoWindow(!showInfoWindow);
                       console.log(showInfoWindow);
-
                     }}
                     clusterer={clusterer} // Add the clusterer prop to each marker
                   >
-                    {selectedMarker && showInfoWindow &&
-                      (
-                        <MyInfoWindow
-
-                          lat={selectedMarker.lat}
-                          lng={selectedMarker.lng}
-                          image={selectedMarker.image}
-                          type={selectedMarker.type}
-                          name={selectedMarker.name}
-                          description={selectedMarker.description}
-                          toggleWindow={showInfoWindow}
-                        >
-                        </MyInfoWindow>
-                      )}
+            
                   </Marker>
                 ))
               }
             </MarkerClusterer>
-
           </GoogleMap>
         </LoadScript>
       </div>
@@ -461,4 +446,22 @@ export default React.memo(Map);
             }
           }}
     />
+*/
+
+/* goes before marker closes & after clusterer = {cluterer} >
+  {selectedMarker && showInfoWindow &&
+                      (
+                        <MyInfoWindow
+                          lat={selectedMarker.lat}
+                          lng={selectedMarker.lng}
+                          image={selectedMarker.image}
+                          type={selectedMarker.type}
+                          name={selectedMarker.name}
+                          description={selectedMarker.description}
+                          toggleWindow={showInfoWindow}
+                        >
+                        </MyInfoWindow>
+                      )}
+
+
 */
