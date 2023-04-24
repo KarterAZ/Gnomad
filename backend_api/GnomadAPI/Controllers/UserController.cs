@@ -14,6 +14,7 @@ using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Data;
 using System.Security.Claims;
 
+
 namespace TravelCompanionAPI.Controllers
 {
     [Route("user")]
@@ -84,7 +85,11 @@ namespace TravelCompanionAPI.Controllers
 
             User user = new User(identity);
 
-            _user_database.review(user.Id, pinid, vote);
+            int uid = -1;
+
+            uid = _user_database.getId(user);
+
+            _user_database.review(uid, pinid, vote);
             
             return new JsonResult(Ok());
         }
@@ -97,7 +102,11 @@ namespace TravelCompanionAPI.Controllers
 
             User user = new User(identity);
 
-            int uVote = _user_database.getVote(user.Id, pinid);
+            int uid = -1;
+
+            uid = _user_database.getId(user);
+
+            int uVote = _user_database.getVote(uid, pinid);
 
             return uVote;
         }
@@ -109,7 +118,11 @@ namespace TravelCompanionAPI.Controllers
 
             User user = new User(identity);
 
-            _user_database.cancelReview(user.Id, pinid);
+            int uid = -1;
+
+            uid = _user_database.getId(user);
+
+            _user_database.cancelReview(uid, pinid);
 
             return new JsonResult(Ok());
         }

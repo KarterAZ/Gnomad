@@ -354,6 +354,7 @@ namespace TravelCompanionAPI.Data
         /// <returns>
         /// A boolean value, true if entered successfully.
         /// </returns>
+        /// TODO: User Verification
         public bool add(Pin pin)
         {
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
