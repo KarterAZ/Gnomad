@@ -8,7 +8,7 @@
 //################################################################
 
 import React, { useState, useEffect } from 'react';
-import { GoogleMap, LoadScript, Marker, MarkerClusterer } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker, MarkerClusterer, DirectionsService } from '@react-google-maps/api';
 
 // internal imports.
 import './map.css';
@@ -43,7 +43,7 @@ const defaultProps =
 //marker cluster options
 const options = {
   imagePath:
-  '../../images/Pin.png',
+    '../../images/Pin.png',
 }
 
 
@@ -88,7 +88,7 @@ const presetMarkers = [
   { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", description: "Oregon Tech Parking Lot F" },
   { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
 
-  { lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", description: "testing"}
+  { lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", description: "testing" }, //extra added to test markercluster
 
 
 
@@ -97,7 +97,7 @@ const presetMarkers = [
 
 // can still utilize our own infowindow, dont need to use google map's, realistically most of this code is just for infowindow
 // renamed and repurposed.
-const MyInfoWindow = ({ lat, lng, image, type, name, description }) => {
+const MyInfoWindow = ({ lat, lng, image, type, name, description, toggleWindow }) => {
   // named constants for the rating values.
   const THUMBS_UP = "1";
   const THUMBS_DOWN = "-1";
@@ -106,7 +106,7 @@ const MyInfoWindow = ({ lat, lng, image, type, name, description }) => {
   // such as Marker.jsx , could benefit from having it's own .css file.
 
   // state declared for InfoWindow displaying.
-  const [showInfoWindow, setShowInfoWindow] = useState(false);
+  const [showInfoWindow, setShowInfoWindow] = useState(toggleWindow);
 
   // state declared for reputation thumbs up (1) down (-1) No selection (null).
   const [reputation, setReputation] = useState(null);
@@ -135,17 +135,19 @@ const MyInfoWindow = ({ lat, lng, image, type, name, description }) => {
   }
   //REQUIRED TO FORMAT LIKE THIS
   // or else it will not load from lat/lng, needs position 
+  
   const position = {
     lat: lat,
-    lng: lng
+    lng: lng,
   }
+ 
 
   return (
     <div className='marker-container'>
       <img // area responsible for marker image. 
         className='marker'
         src={image}
-        alt="marker"
+        alt="marker"  
         position={position}
       // onClick={() => setShowInfoWindow(!showInfoWindow)}
       // toggles useState whether to display the InfoWindow upon marker click.
@@ -227,6 +229,7 @@ const Map = () => {
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [showInfoWindow, setShowInfoWindow] = useState(false);
 
+  //const [directionsResponse, setDirectionsResponse] = useState(null);
 
 
   // function that toggles the sidebar's create pin option.
@@ -384,32 +387,54 @@ const Map = () => {
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
             onChange={handleMapChange}
           >
-              <MarkerClusterer options={{ maxZoom: 10 }}>
+            <MarkerClusterer options={{ maxZoom: 14 }}>
               {(clusterer) =>
-                [...presetMarkers].map((marker, index) => (
+                [...presetMarkers].map((marker, index) =>
+                (
                   //...markers, removsed for meantime
                   // TODO: caledSize: new window. .maps.Size(50, 50), uses hard fixed pixels,
                   // tried a few different ways to get screen size and scale it to a % of it but breaks  
                   <Marker
-                    icon={{
+                    icon=
+                    {{
                       // url works? path: doesnt?
                       url: marker.image,
                       scaledSize: new window.google.maps.Size(60, 60),
                     }}
                     key={index}
-                    position={{
+                    position=
+                    {{
                       lat: marker.lat,
                       lng: marker.lng
                     }}
                     onClick={() => {
                       setSelectedMarker(marker);
-                      setShowInfoWindow(true);
+                      console.log(selectedMarker); //is returning correct marker
+                      setShowInfoWindow(!showInfoWindow);
+                      console.log(showInfoWindow);
+
                     }}
                     clusterer={clusterer} // Add the clusterer prop to each marker
-                  />
+                  >
+                    {selectedMarker && showInfoWindow &&
+                      (
+                        <MyInfoWindow
+
+                          lat={selectedMarker.lat}
+                          lng={selectedMarker.lng}
+                          image={selectedMarker.image}
+                          type={selectedMarker.type}
+                          name={selectedMarker.name}
+                          description={selectedMarker.description}
+                          toggleWindow={showInfoWindow}
+                        >
+                        </MyInfoWindow>
+                      )}
+                  </Marker>
                 ))
               }
             </MarkerClusterer>
+
           </GoogleMap>
         </LoadScript>
       </div>
@@ -417,3 +442,23 @@ const Map = () => {
   );
 };
 export default React.memo(Map);
+
+
+/* Need to integrate callback functions, can put this snippet between the 
+// MarkerCluster and Googlemap component on the bottom once done
+  <DirectionsService
+      options=
+      {{
+          origin: { lat: presetMarkers[0].lat, lng: presetMarkers[0].lng },
+          destination: { lat: presetMarkers[5].lat, lng: presetMarkers[5].lng },
+          travelMode: 'DRIVING',
+      }}
+          callback={(result) => 
+          {
+            if (result !== null)
+            {
+              setDirectionsResponse(result); 
+            }
+          }}
+    />
+*/
