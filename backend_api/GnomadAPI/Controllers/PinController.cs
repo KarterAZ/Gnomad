@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using TravelCompanionAPI.Models;
 using TravelCompanionAPI.Fuel;
 using TravelCompanionAPI.Data;
+using System.Security.Claims;
 
 namespace TravelCompanionAPI.Controllers
 {
@@ -26,6 +27,7 @@ namespace TravelCompanionAPI.Controllers
     {
         //The repository obtained through dependency injection.
         private IPinRepository _pin_repo;
+        private IUserRepository _user_repo;
 
         /// <summary>
         /// Constructor that takes in repo through dependecy injection
@@ -33,9 +35,10 @@ namespace TravelCompanionAPI.Controllers
         /// <returns>
         /// Sets repository to PinTableModifier (defined in setup.cs)
         ///</returns>
-        public PinController(IPinRepository pin_repo)
+        public PinController(IPinRepository pin_repo, IUserRepository user_repo)
         {
             _pin_repo = pin_repo;
+            _user_repo = user_repo;
         }
 
         /// <summary>
@@ -123,6 +126,14 @@ namespace TravelCompanionAPI.Controllers
         [HttpPost("create")]
         public JsonResult create(Pin pin)
         {
+            var identity = (User.Identity as ClaimsIdentity);
+
+            User user = new User(identity);
+
+            int uid = -1;
+
+            uid = _user_repo.getId(user);
+
             _pin_repo.add(pin);
 
             return new JsonResult(Ok(pin));

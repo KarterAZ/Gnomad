@@ -91,7 +91,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT id, email, profile_photo_url, first_name, last_name FROM " + TABLE + " WHERE email = @Email;";
+                command.CommandText = @"SELECT id FROM " + TABLE + " WHERE email = @Email;";
                 command.Parameters.AddWithValue("@Email", user.Email);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
