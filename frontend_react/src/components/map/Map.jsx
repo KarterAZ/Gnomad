@@ -46,22 +46,23 @@ const handleApiLoaded = async(map, maps) => {
     var color = ["#FF5733", "#FFFC33", "#33FF36", "#33FFF9", "#3393FF", "#3339FF", "#9F33FF", "#FF33CA", "#FF3333", "#440000"]
     var bermudaTriangles = [];
     var latLngArray = [];
-    var latArray = [];
-    var lngArray = [];
+    //var latArray = [];
+    //var lngArray = [];
     var retArray = [];
 
     var bounds = map.getBounds();
     var ne = bounds.getNorthEast();
     var sw = bounds.getSouthWest();
-    /*[latArray, lngArray] = await getAllCoords(bounds.ne.lat, bounds.ne.lng, bounds.sw.lat, bounds.sw.lng);
+
+    /*[latArray, lngArray] = await getAllCoords(ne.lat(), ne.lng(), sw.lat(), sw.lng());
     for (let i = 0; i < lngArray.length; i++) {
         let gData = new maps.LatLng(parseFloat(latArray[i]), parseFloat(lngArray[i]));
         latLngArray.push(gData);
     }*/
 
     retArray = await getAllCoords(ne.lat(), ne.lng(), sw.lat(), sw.lng());
-    for (let i = 0; i < lngArray.length; i+=2) {
-        let gData = new maps.LatLng(parseFloat(latArray[i]), parseFloat(lngArray[i+1]));
+    for (let i = 0; i < retArray.length; i+=2) {
+        let gData = new maps.LatLng(parseFloat(retArray[i]), parseFloat(retArray[i+1]));
         latLngArray.push(gData);
     }
     bermudaTriangles.push(new maps.Polygon({

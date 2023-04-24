@@ -224,9 +224,10 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT centerLongitude, centerLatitude, latitude1, longitude1, latitude2, longitude2, "
-                    + "latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + COORDTABLE
-                    + "WHERE centerLongitude > @lngMin, centerLatitude > @latMin, centerLongitude < @lngMax, centerLatitude < @latMax;";
+                command.CommandText = @"SELECT centerLongitude, centerLatitude, latitude1, longitude1, latitude2, longitude2,"
+                    + " latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + COORDTABLE
+                    + " WHERE centerLongitude BETWEEN @lngMax and @lngMin and"
+                    + " centerLatitude BETWEEN @latMax and  @latMin LIMIT 5000;";
                 command.Parameters.AddWithValue("lngMin", lngMin);
                 command.Parameters.AddWithValue("lngMax", lngMax);
                 command.Parameters.AddWithValue("latMin", latMin);
@@ -236,7 +237,7 @@ namespace TravelCompanionAPI.Data
                 {
                     while (reader.Read())
                     {
-                        for (int i = 3; i <= 15; i += 2)
+                        for (int i = 2; i < 14; i += 2)
                         {
                             float lat_coord = reader.GetFloat(i);
                             float lng_coord = reader.GetFloat(i + 1);
@@ -266,9 +267,7 @@ namespace TravelCompanionAPI.Data
                 command.CommandText = @"SELECT centerLongitude, centerLatitude, latitude1, longitude1, latitude2, longitude2,"
                     + " latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + COORDTABLE
                     + " WHERE centerLongitude BETWEEN @lngMax and @lngMin and"
-                    + " centerLatitude BETWEEN @latMax and  @latMin;";
-                    //+ " WHERE centerLongitude > @lngMin and centerLatitude < @latMin and" 
-                    //+ " centerLongitude < @lngMax and centerLatitude > @latMax;";
+                    + " centerLatitude BETWEEN @latMax and  @latMin LIMIT 50000;";
                 command.Parameters.AddWithValue("lngMin", lngMin);
                 command.Parameters.AddWithValue("lngMax", lngMax);
                 command.Parameters.AddWithValue("latMin", latMin);
