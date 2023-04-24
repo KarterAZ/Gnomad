@@ -79,6 +79,7 @@ const handleApiLoaded = async(map, maps) => {
     //for (var ii = 0; ii < bermudaTriangles.length; ii++) {
       //  bermudaTriangles[ii].setMap(map);
     //}
+
     //bermudaTriangles[0].setMap(map);
 
     /*for (let i = 0; i < 242; i++) {
