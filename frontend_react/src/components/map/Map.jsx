@@ -140,10 +140,10 @@ const MyInfoWindow = ({ lat, lng, type, name, description, toggleWindow }) => {
     lat: lat,
     lng: lng,
   }
- 
+
   return (
-    <div className='infowindow-container' >
-    
+    <div>
+
       {showInfoWindow && (
         // customized InfoWindow, was having too much trouble using google map's (plus ours looks nicer).
         <div className='info-window' >
@@ -207,7 +207,7 @@ const containerStyle = {
 
 const Map = () => {
   //State declared for storing markers
-  const [markers, setMarkers] = useState(presetMarkers);
+  const [markers, setMarkers] = useState("");
 
   // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
@@ -381,7 +381,7 @@ const Map = () => {
           >
             <MarkerClusterer options={{ maxZoom: 14 }}>
               {(clusterer) =>
-                [...markers,...presetMarkers].map((marker, index) =>
+                [...markers, ...presetMarkers].map((marker, index) =>
                 (
                   //...markers, removsed for meantime
                   // TODO: caledSize: new window. .maps.Size(50, 50), uses hard fixed pixels,
@@ -407,18 +407,6 @@ const Map = () => {
                     }}
                     clusterer={clusterer} // Add the clusterer prop to each marker
                   >
-                    {selectedMarker && showInfoWindow &&
-                      (
-                        <MyInfoWindow
-                          lat={selectedMarker.lat}
-                          lng={selectedMarker.lng}
-                          type={selectedMarker.type}
-                          name={selectedMarker.name}
-                          description={selectedMarker.description}
-                          toggleWindow={showInfoWindow}
-                        >
-                        </MyInfoWindow>
-                      )}
                   </Marker>
                 ))
               }
@@ -449,4 +437,18 @@ export default React.memo(Map);
             }
           }}
     />
+*/
+/*
+ {selectedMarker && showInfoWindow &&
+                      (
+                        <MyInfoWindow
+                          lat={selectedMarker.lat}
+                          lng={selectedMarker.lng}
+                          type={selectedMarker.type}
+                          name={selectedMarker.name}
+                          description={selectedMarker.description}
+                          toggleWindow={showInfoWindow}
+                        >
+                        </MyInfoWindow>
+                      )}
 */
