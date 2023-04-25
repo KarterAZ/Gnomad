@@ -9,8 +9,7 @@
 
 // external imports.
 import { Icon } from '@iconify/react';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
 import baselineSearch from '@iconify/icons-ic/baseline-search';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
@@ -19,6 +18,7 @@ import { LoginButton } from '../login_button/LoginButton';
 
 import './sidebar.css';
 import event from '../../utilities/event';
+import SearchBar from '../search_bar/SearchBar';
 
 // key for google login api.
 const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com';
@@ -26,17 +26,17 @@ const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleuserc
 // this class renders the Sidebar component.
 export default function Sidebar({ toggleMarkerCreation }) 
 {
-  const navigate = useNavigate();
   const [open, setOpen] = useState(true);
 
-  const [showPinCreator, setShowPinCreator] = useState(false);
+  const sidebar = useRef();
 
   // show / hide the Sidebar.
   const handleClick = () => 
   {
     if (!open)
     {
-      setShowPinCreator(false);
+      event.emit('close-pin-creator');
+      event.emit('close-route-creator');
     }
 
     setOpen(!open);
@@ -48,12 +48,12 @@ export default function Sidebar({ toggleMarkerCreation })
     if (!open) 
     {
       // set max-width to 0px.
-      document.getElementById('sidebar-container').style.maxWidth = '0px';
+      sidebar.current.style.maxWidth = '0px';
     }
     else 
     {
       // set max-width back to what the css specifies.
-      document.getElementById('sidebar-container').style.maxWidth = null;
+      sidebar.current.style.maxWidth = null;
     }
   }, [open]);
 
@@ -69,25 +69,17 @@ export default function Sidebar({ toggleMarkerCreation })
   {
     setOpen(false);
     event.emit('show-pin-creator');
-    //setShowPinCreator(true);
   }
 
-  // create a pin from the dialog.
-  const createPin = (pinName, pinDescription, pinType) => 
+  const showCreateRouteMenu = () =>
   {
-    toggleMarkerCreation(pinName, pinDescription, pinType);
-    setShowPinCreator(false);
-  }
-
-  // navigate to the create route page when the button is clicked.
-  const createRoute = () => 
-  {
-    navigate('routes');
+    setOpen(false);
+    event.emit('show-route-creator');
   }
 
   // render the sidebar.
   return (
-    <div id='sidebar-container'>
+    <div ref={sidebar} id='sidebar-container'>
       <div id='sidebar-content'>
         {/* login section */}
         <section className='section' id='header-section'>
@@ -105,10 +97,7 @@ export default function Sidebar({ toggleMarkerCreation })
         {/* search bar section */}
         <section className='section' id='search-section'>
           <label>Search</label>
-          <div className='search-wrapper'>
-            <input id='search-bar' className='text-input' type='text'></input>
-            <button onClick={search} className='search-button'><Icon icon={baselineSearch} width="20" height="20" /></button>
-          </div>
+          <SearchBar/>
         </section>
 
         {/* pin list section */}
@@ -122,7 +111,7 @@ export default function Sidebar({ toggleMarkerCreation })
             Create Pin
           </button>
 
-          <button className='button' id='route-add-button' onClick={createRoute}>
+          <button className='button' id='route-add-button' onClick={showCreateRouteMenu}>
             Create Route
           </button>
 

@@ -383,6 +383,7 @@ const Map = () => {
       <div id='map'>
         <LoadScript googleMapsApiKey="AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o">
           <GoogleMap
+            defaultOptions={{mapTypeControl: false}}
             mapContainerStyle={containerStyle}
             center={defaultProps.center}
             zoom={defaultProps.zoom}

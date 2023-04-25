@@ -16,6 +16,7 @@ namespace TravelCompanionAPI.Data
     {
         private static DatabaseConnection _instance;
         private string _connection_string;
+        private static object _lock = new object();
 
         private DatabaseConnection()
         { }
@@ -29,7 +30,13 @@ namespace TravelCompanionAPI.Data
         {
             if (_instance == null)
             {
-                _instance = new DatabaseConnection();
+                lock (_lock)
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new DatabaseConnection();
+                    }
+                }
             }
 
             return _instance;
@@ -37,13 +44,29 @@ namespace TravelCompanionAPI.Data
 
         public MySqlConnection getConnection()
         {
+            // ensure that a connectionn string is set
             if (_connection_string == null)
             {
                 throw new Exception("DatabaseConnection does not have a connection string.");
             }
 
+            // create the connection
             MySqlConnection connection = new MySqlConnection(_connection_string);
-            connection.Open();
+
+            // try to open the connection, if it isn't able to
+            // print the error message and return null.
+            try
+            {
+                connection.Open();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine("Could not open database connection: {0}", exception.Message);
+                return null;
+            }
+
+            // return the opened connection,
+            // user will have to cose the connection manually.
             return connection;
         }
     }

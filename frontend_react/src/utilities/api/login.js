@@ -20,7 +20,6 @@ const logged_in_key = 'logged_in';
 // user id.
 export default async function login(token)
 {
-    console.log(token);
     // set the id_token cookie.
     setCookie('id_token', 'Bearer ' + token);
 

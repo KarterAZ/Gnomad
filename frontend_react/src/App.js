@@ -14,7 +14,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // internal imports.
 import HomePage from './pages/home/HomePage';
-import RoutesPage from './pages/routes/RoutesPage';
 
 // This function returns the main app content.
 export default function App() 
@@ -23,7 +22,6 @@ export default function App()
     <Router>
       <Routes>
         <Route exact path='/' element={<HomePage/>} />
-        <Route path='routes' element={<RoutesPage/>}/>
       </Routes>
     </Router>
   );

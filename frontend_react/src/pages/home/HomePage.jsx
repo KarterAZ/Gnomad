@@ -13,6 +13,7 @@ import Directions from '../../components/directions/directions';
 import Map from '../../components/map/Map';
 import { hasLocalData, loadRoutes } from '../../utilities/offline_data/offline_data';
 import PinCreator from '../../components/pin_creator/PinCreator';
+import RouteCreator from '../../components/route_creator/RouteCreator';
 
 import './home.css';
 import { useState } from 'react';
@@ -22,6 +23,8 @@ import event from '../../utilities/event';
 export default function HomePage() 
 {
   const [showPinCreator, setShowPinCreator] = useState(false);
+  const [showRouteCreator, setShowRouteCreator] = useState(false);
+
   const pageLoad = () =>
   {
     loadUserData();
@@ -49,11 +52,22 @@ export default function HomePage()
     setShowPinCreator(false);
   });
 
+  event.on('show-route-creator', () =>
+  {
+    setShowRouteCreator(true);
+  });
+
+  event.on('close-route-creator', () =>
+  {
+    setShowRouteCreator(false);
+  });
+
   return (
     <>
       <div id='content' onLoad={pageLoad}>
         <Map/>
         { showPinCreator && <PinCreator/> }
+        { showRouteCreator && <RouteCreator/> }
       </div>
       <Routing/>
       <Directions/>

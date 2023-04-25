@@ -517,7 +517,7 @@ namespace TravelCompanionAPI.Data
                         pins.Add(pin);
                     }
                 }
-                connection.Close();
+                //connection.Close();
             }
 
             //Add tag to the pins in the pin list
@@ -583,7 +583,7 @@ namespace TravelCompanionAPI.Data
                         pins.Add(pin);
                     }
                 }
-                connection.Close();
+                //connection.Close();
             }
             //Add tag to the pins in the pin list
             using (MySqlCommand command = new MySqlCommand())
