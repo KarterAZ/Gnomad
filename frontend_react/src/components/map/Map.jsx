@@ -97,7 +97,7 @@ const presetMarkers = [
 
 // can still utilize our own infowindow, dont need to use google map's, realistically most of this code is just for infowindow
 // renamed and repurposed.
-const MyInfoWindow = ({ lat, lng, image, type, name, description, toggleWindow }) => {
+const MyInfoWindow = ({ lat, lng, type, name, description, toggleWindow }) => {
   // named constants for the rating values.
   const THUMBS_UP = "1";
   const THUMBS_DOWN = "-1";
@@ -135,26 +135,18 @@ const MyInfoWindow = ({ lat, lng, image, type, name, description, toggleWindow }
   }
   //REQUIRED TO FORMAT LIKE THIS
   // or else it will not load from lat/lng, needs position 
-  
+
   const position = {
     lat: lat,
     lng: lng,
   }
- 
 
   return (
-    <div className='marker-container'>
-      <img // area responsible for marker image. 
-        className='marker'
-        src={image}
-        alt="marker"  
-        position={position}
-      // onClick={() => setShowInfoWindow(!showInfoWindow)}
-      // toggles useState whether to display the InfoWindow upon marker click.
-      />
+    <div>
+
       {showInfoWindow && (
         // customized InfoWindow, was having too much trouble using google map's (plus ours looks nicer).
-        <div className='info-window'>
+        <div className='info-window' >
           <div className='info-window-header'>
             {/* favorite button */}
             <div className='header-button-wrapper'>
@@ -215,7 +207,7 @@ const containerStyle = {
 
 const Map = () => {
   //State declared for storing markers
-  const [markers, setMarkers] = useState(presetMarkers);
+  const [markers, setMarkers] = useState("");
 
 
   // state declared for enabling/disabling marker creation on click with sidebar.
@@ -375,7 +367,7 @@ const Map = () => {
     lat: 37.772,
     lng: -122.214
   }
-
+  console.log(markers);
 
   return (
     <div id='wrapper'>
@@ -401,7 +393,7 @@ const Map = () => {
           >
             <MarkerClusterer options={{ maxZoom: 14 }}>
               {(clusterer) =>
-                [...presetMarkers].map((marker, index) =>
+                [...markers, ...presetMarkers].map((marker, index) =>
                 (
                   //...markers, removsed for meantime
                   // TODO: caledSize: new window. .maps.Size(50, 50), uses hard fixed pixels,
@@ -427,7 +419,6 @@ const Map = () => {
                     }}
                     clusterer={clusterer} // Add the clusterer prop to each marker
                   >
-            
                   </Marker>
                 ))
               }
@@ -459,14 +450,12 @@ export default React.memo(Map);
           }}
     />
 */
-
-/* goes before marker closes & after clusterer = {cluterer} >
-  {selectedMarker && showInfoWindow &&
+/*
+ {selectedMarker && showInfoWindow &&
                       (
                         <MyInfoWindow
                           lat={selectedMarker.lat}
                           lng={selectedMarker.lng}
-                          image={selectedMarker.image}
                           type={selectedMarker.type}
                           name={selectedMarker.name}
                           description={selectedMarker.description}
@@ -474,6 +463,4 @@ export default React.memo(Map);
                         >
                         </MyInfoWindow>
                       )}
-
-
 */
