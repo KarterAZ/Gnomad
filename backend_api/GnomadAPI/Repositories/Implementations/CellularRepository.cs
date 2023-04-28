@@ -30,11 +30,8 @@ namespace TravelCompanionAPI.Data
         const string TABLE = "h3_oregon_data";
         const string NEWTABLE = "oregon_cellular_coords";
 
-        //TODO: do we need config?
-        public CellularRepository(IConfiguration config)
-        {
-
-        }
+        public CellularRepository()
+        {}
 
         public void SaveToDatabase()
         {
@@ -207,7 +204,6 @@ namespace TravelCompanionAPI.Data
             return h3_oregon_data;
         }
 
-        //TODO: Might go faster if double instead of decimal. Doubt we need THAT much precision?
         public List<decimal> getHexCoords(int pass)
         {
             List<string> h3ids = getAllH3();
