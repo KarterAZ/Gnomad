@@ -251,7 +251,7 @@ namespace TravelCompanionAPI.Data
             return (lat_coord_data, lng_coord_data);
         }
 
-        public List<float> getAllCoordsSingle(float latMin, float lngMin, float latMax, float lngMax)
+        public List<float> getAllCoordsSingle(int pass, float latMin, float lngMin, float latMax, float lngMax)
         {
             List<float> latLng_coord_data = new List<float>();
 
@@ -260,17 +260,30 @@ namespace TravelCompanionAPI.Data
             latMin = latMin * ((float)Math.PI / 180);
             latMax = latMax * ((float)Math.PI / 180);
 
+            int offset = 0, lim = 0;
+
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
+                command.CommandText = @"SELECT COUNT(id) FROM " + COORDTABLE + ";";
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        lim = reader.GetInt32(0) / 4;
+                        offset = lim * pass;
+                    }
+                }
                 command.CommandText = @"SELECT centerLongitude, centerLatitude, latitude1, longitude1, latitude2, longitude2,"
                     + " latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + COORDTABLE
-                    + " WHERE centerLongitude BETWEEN @lngMax and @lngMin and centerLatitude BETWEEN @latMax and @latMin;";
+                    + " WHERE centerLongitude BETWEEN @lngMax and @lngMin and centerLatitude BETWEEN @latMax and @latMin LIMIT @lim OFFSET @offset;";
                 command.Parameters.AddWithValue("lngMin", lngMin);
                 command.Parameters.AddWithValue("lngMax", lngMax);
                 command.Parameters.AddWithValue("latMin", latMin);
                 command.Parameters.AddWithValue("latMax", latMax);
+                command.Parameters.AddWithValue("offset", offset);
+                command.Parameters.AddWithValue("lim", lim);
 
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
