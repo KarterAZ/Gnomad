@@ -52,6 +52,10 @@ const handleApiLoaded = async(map, maps) => {
     var ret2Array = [];
     var ret3Array = [];
     var ret4Array = [];
+    var ret5Array = [];
+    var ret6Array = [];
+    var ret7Array = [];
+    var ret8Array = [];
 
     var bounds = map.getBounds();
     var ne = bounds.getNorthEast();
@@ -63,11 +67,25 @@ const handleApiLoaded = async(map, maps) => {
         latLngArray.push(gData);
     }*/
 
-    let [ret1Array, ret2Array, ret3Array, ret4Array] = await Promise.all(
+    /*let [[ret1Array, ret2Array, ret3Array, ret4Array, ret5Array, ret6Array, ret7Array, ret8Array] = await Promise.all(
             [getAllCoords(0, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(1, ne.lat(), ne.lng(), sw.lat(), sw.lng()),
-            getAllCoords(2, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(3, ne.lat(), ne.lng(), sw.lat(), sw.lng())]);
+            getAllCoords(2, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(3, ne.lat(), ne.lng(), sw.lat(), sw.lng())]);*/
 
-    for (let i = 0; i < ret1Array.length; i += 2) {
+    var retArrays = [8];
+
+    let retArrays = await Promise.all(
+        [getAllCoords(0, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(1, ne.lat(), ne.lng(), sw.lat(), sw.lng()),
+        getAllCoords(2, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(3, ne.lat(), ne.lng(), sw.lat(), sw.lng())]);
+
+    //var retArrays = [ret1Array, ret2Array, ret3Array, ret4Array, ret5Array, ret6Array, ret7Array, ret8Array];
+
+    for (let i = 0; i < retArrays.length; i++) {
+        for (let ii = 0; ii < retArrays[i].length; ii += 2) {
+            let gData = new maps.LatLng(parseFloat(ret1Array[i][ii]), parseFloat(ret1Array[i][ii + 1]));
+            latLngArray.push(gData);
+        }
+    }
+    /*for (let i = 0; i < ret1Array.length; i += 2) {
         let gData = new maps.LatLng(parseFloat(ret1Array[i]), parseFloat(ret1Array[i + 1]));
         latLngArray.push(gData);
     }
@@ -82,7 +100,7 @@ const handleApiLoaded = async(map, maps) => {
     for (let i = 0; i < ret4Array.length; i += 2) {
         let gData = new maps.LatLng(parseFloat(ret4Array[i]), parseFloat(ret4Array[i + 1]));
         latLngArray.push(gData);
-    }
+    }*/
 
     var bermudaTriangle = new maps.Polygon({
         paths: latLngArray,
