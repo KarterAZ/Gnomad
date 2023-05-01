@@ -28,17 +28,8 @@ namespace TravelCompanionAPI.Data
         const string PTABLE = "pins";
         const string RTABLE = "user_review";
 
-        //TODO: Why two constructors? Do we need config?
         public UserRepository()
         { }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public UserRepository(IConfiguration config)
-        {
-
-        }
 
         /// <summary>
         /// Gets a user from their id
@@ -147,7 +138,6 @@ namespace TravelCompanionAPI.Data
 
         }
 
-        //TODO: fix this function, this code needs some work.
         /// <summary>
         /// Checks if the user exists
         /// </summary>
@@ -164,7 +154,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT COUNT(*) FROM " + TABLE + " WHERE email = @Email;";
+                command.CommandText = @"SELECT COUNT(id) FROM " + TABLE + " WHERE email = @Email;";
 
                 command.Parameters.AddWithValue("@Email", user.Email);
 
@@ -173,7 +163,7 @@ namespace TravelCompanionAPI.Data
                 {
                     while (reader.Read())
                     {
-                        if (reader.GetInt32(0) == 1)
+                        if (reader.GetInt32(0) != 0)
                         {
                             exists = true;
                         }

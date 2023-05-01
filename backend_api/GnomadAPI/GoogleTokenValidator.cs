@@ -43,11 +43,21 @@ internal class GoogleTokenValidator : ISecurityTokenValidator
 
     public ClaimsPrincipal ValidateToken(string securityToken, TokenValidationParameters validationParameters, out SecurityToken validatedToken)
     {
-        // call googles validate function
-        var payload = GoogleJsonWebSignature.ValidateAsync(securityToken, new GoogleJsonWebSignature.ValidationSettings()).Result;
+        GoogleJsonWebSignature.Payload payload = null;
 
         // initialize the token to null
         validatedToken = null;
+
+        try
+        {
+            // call googles validate function
+            payload = GoogleJsonWebSignature.ValidateAsync(securityToken, new GoogleJsonWebSignature.ValidationSettings()).Result;
+        }
+        catch (Exception e) 
+        {
+            Console.WriteLine(e);
+            return null;
+        }
 
         // create the claims list
         var claims = new List<Claim>

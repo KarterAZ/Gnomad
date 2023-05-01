@@ -31,10 +31,8 @@ namespace TravelCompanionAPI.Data
         /// <summary>
         /// Constructor
         /// </summary>
-        public PinRepository(IConfiguration config)
-        {
-            //TODO: do we need the config?
-        }
+        public PinRepository()
+        {}
 
         /// <summary>
         /// Gets a pin from its id
@@ -434,18 +432,6 @@ namespace TravelCompanionAPI.Data
         }
 
         /// <summary>
-        /// Gets the id of a pin based on its data.
-        /// </summary>
-        /// <returns>
-        /// An int (the id) of the specified pin
-        /// </returns>
-        public int getId(Pin data)
-        {
-            //TODO: implement or delete function
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Gets all pins with any of the given tags
         /// </summary>
         /// <returns>
@@ -517,7 +503,7 @@ namespace TravelCompanionAPI.Data
                         pins.Add(pin);
                     }
                 }
-                connection.Close();
+                //connection.Close();
             }
 
             //Add tag to the pins in the pin list
@@ -583,7 +569,7 @@ namespace TravelCompanionAPI.Data
                         pins.Add(pin);
                     }
                 }
-                connection.Close();
+                //connection.Close();
             }
             //Add tag to the pins in the pin list
             using (MySqlCommand command = new MySqlCommand())

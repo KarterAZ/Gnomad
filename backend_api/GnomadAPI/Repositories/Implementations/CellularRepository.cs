@@ -30,11 +30,8 @@ namespace TravelCompanionAPI.Data
 
         const string COORDTABLE = "oregon_cellular_coords";
 
-        //TODO: do we need config?
-        public CellularRepository(IConfiguration config)
-        {
-
-        }
+        public CellularRepository()
+        {}
 
         public void SaveToDatabase()
         {
@@ -235,6 +232,8 @@ namespace TravelCompanionAPI.Data
                 {
                     while (reader.Read())
                     {
+                        //Compare centers (beginning) before (start at 2)
+                        //Then go to 13 (<14) for all data received from sql statement
                         for (int i = 2; i < 14; i += 2)
                         {
                             float lat_coord = reader.GetFloat(i);

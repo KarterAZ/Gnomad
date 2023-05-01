@@ -1,6 +1,8 @@
 import { useState } from "react";
 import event from "../../utilities/event";
 
+import './pin_creator.css';
+
 export default function PinCreator()
 {
   // variable states.
@@ -66,12 +68,12 @@ export default function PinCreator()
   // HTML for the pin creation window.
   return (
     <div id='pin-creator'>
-      <div id='pin-creator-header'>
+      <div id='creator-header'>
         <h2>Create a Pin</h2>
       </div>
 
       {/* section to enter pin name */}
-      <div id='pin-creator-body'>
+      <div id='creator-body'>
         <div className='input-section'>
           <span id='input-label-wrapper'><label>Pin Name</label> <label className='error'>{nameError}</label></span>
           <input 

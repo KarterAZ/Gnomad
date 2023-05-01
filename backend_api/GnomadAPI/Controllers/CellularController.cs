@@ -25,7 +25,6 @@ namespace TravelCompanionAPI.Controllers
     /// </summary>
     [Route("h3_oregon_data")]
     [ApiController]
-    [Authorize]
     public class CellularController : ControllerBase
     {
         //The repository obtained through dependency injection.

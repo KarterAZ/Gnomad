@@ -62,7 +62,6 @@ namespace TravelCompanionAPI.Data
             return pintags;
         }
 
-        //TODO: will this ever be used?
         /// <summary>
         /// Returns a list of pins that have the right tag id
         /// </summary>

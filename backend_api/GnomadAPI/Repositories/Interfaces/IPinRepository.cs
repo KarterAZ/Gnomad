@@ -12,7 +12,6 @@ using TravelCompanionAPI.Models;
 
 namespace TravelCompanionAPI.Data
 {
-    //TODO: Might need <> to specify pin or sticker, or just make sticker same class as pin.
     public interface IPinRepository
     {
         //******************************************************************************
@@ -20,8 +19,6 @@ namespace TravelCompanionAPI.Data
         //******************************************************************************
 
         public Pin getById(int id);
-
-        public int getId(Pin data);
 
         public List<Pin> getAll();
 
