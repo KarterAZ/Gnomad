@@ -42,109 +42,42 @@ const defaultProps =
 
 // fills in the cell coverage.
 const handleApiLoaded = async(map, maps) => {
-    var colorNum = 0;
-    var color = ["#FF5733", "#FFFC33", "#33FF36", "#33FFF9", "#3393FF", "#3339FF", "#9F33FF", "#FF33CA", "#FF3333", "#440000"]
-    //var bermudaTriangles = [];
-    var latLngArray = [];
-    //var latArray = [];
-    //var lngArray = [];
 
+    //variables for the bounds of the screen
     var bounds = map.getBounds();
     var ne = bounds.getNorthEast();
     var sw = bounds.getSouthWest();
 
-    /*[latArray, lngArray] = await getAllCoords(ne.lat(), ne.lng(), sw.lat(), sw.lng());
-    for (let i = 0; i < lngArray.length; i++) {
-        let gData = new maps.LatLng(parseFloat(latArray[i]), parseFloat(lngArray[i]));
-        latLngArray.push(gData);
-    }*/
-
+    //fill an array of calls to the backend
     const promises = [];
-
     let maxNum = 5;
     for(let i = 0; i < maxNum; i++)
     {
       promises.push(getAllCoords(maxNum, i, ne.lat(), ne.lng(), sw.lat(), sw.lng()));
     }
 
-    //let [ret1Array, ret2Array, ret3Array, ret4Array, ret5Array, ret6Array, ret7Array, ret8Array] 
+    //calls all the async functions and waits for all of them to return
     let retArrays = await Promise.all(promises);
-            /*[getAllCoords(0, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(1, ne.lat(), ne.lng(), sw.lat(), sw.lng()),
-            getAllCoords(2, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(3, ne.lat(), ne.lng(), sw.lat(), sw.lng()),
-            getAllCoords(4, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(5, ne.lat(), ne.lng(), sw.lat(), sw.lng()),
-            getAllCoords(6, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(7, ne.lat(), ne.lng(), sw.lat(), sw.lng())]);*/
 
-    //var retArrays = [8];
-
-    /*let retArrays = await Promise.all(
-        [getAllCoords(0, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(1, ne.lat(), ne.lng(), sw.lat(), sw.lng()),
-        getAllCoords(2, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(3, ne.lat(), ne.lng(), sw.lat(), sw.lng())]);
-    */
-    //var retArrays = [ret1Array, ret2Array, ret3Array, ret4Array, ret5Array, ret6Array, ret7Array, ret8Array];
-
+    //parse all the coords to api lat/lng
+    var latLngArray = [];
     for (let i = 0; i < retArrays.length; i++) {
         for (let ii = 0; ii < retArrays[i].length; ii += 2) {
             let gData = new maps.LatLng(parseFloat(retArrays[i][ii]), parseFloat(retArrays[i][ii + 1]));
             latLngArray.push(gData);
         }
     }
-    /*for (let i = 0; i < ret1Array.length; i += 2) {
-        let gData = new maps.LatLng(parseFloat(ret1Array[i]), parseFloat(ret1Array[i + 1]));
-        latLngArray.push(gData);
-    }
-    for (let i = 0; i < ret2Array.length; i += 2) {
-        let gData = new maps.LatLng(parseFloat(ret2Array[i]), parseFloat(ret2Array[i + 1]));
-        latLngArray.push(gData);
-    }
-    for (let i = 0; i < ret3Array.length; i += 2) {
-        let gData = new maps.LatLng(parseFloat(ret3Array[i]), parseFloat(ret3Array[i + 1]));
-        latLngArray.push(gData);
-    }
-    for (let i = 0; i < ret4Array.length; i += 2) {
-        let gData = new maps.LatLng(parseFloat(ret4Array[i]), parseFloat(ret4Array[i + 1]));
-        latLngArray.push(gData);
-    }*/
 
+    //draw the map
     var bermudaTriangle = new maps.Polygon({
         paths: latLngArray,
-        strokeColor: color[colorNum],
+        strokeColor: "#3393FF",
         strokeOpacity: 0.8,
         strokeWeight: 2,
-        fillColor: color[colorNum],
+        fillColor: "#3393FF",
         fillOpacity: 0.35
     });
     bermudaTriangle.setMap(map);
-
-    //for (var ii = 0; ii < bermudaTriangles.length; ii++) {
-      //  bermudaTriangles[ii].setMap(map);
-    //}
-
-    //bermudaTriangles[0].setMap(map);
-
-    /*for (let i = 0; i < 242; i++) {
-        latLngArray = [];
-        lngArray = await getAllCoords(i);
-
-        for (let ii = 0; ii < lngArray.length; ii += 2) {
-            let gData = new maps.LatLng(parseFloat(lngArray[ii]), parseFloat(lngArray[ii + 1]));
-            latLngArray.push(gData);
-        }
-        bermudaTriangles.push(new maps.Polygon({
-            paths: latLngArray,
-            strokeColor: color[colorNum],
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: color[colorNum],
-            fillOpacity: 0.35
-        }));
-        bermudaTriangles[i].setMap(map);
-
-        colorNum = (colorNum % 10) + 1;
-        console.log(i);
-    }*/
-    /*for (var ii = 0; ii < bermudaTriangles.length; ii++) {
-        bermudaTriangles[ii].setMap(map);
-    }*/
 }
 
 
