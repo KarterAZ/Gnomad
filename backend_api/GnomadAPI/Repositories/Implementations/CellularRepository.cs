@@ -251,7 +251,7 @@ namespace TravelCompanionAPI.Data
             return (lat_coord_data, lng_coord_data);
         }
 
-        public List<float> getAllCoordsSingle(int pass, float latMin, float lngMin, float latMax, float lngMax)
+        public List<float> getAllCoordsSingle(int max_pass, int pass, float latMin, float lngMin, float latMax, float lngMax)
         {
             List<float> latLng_coord_data = new List<float>();
 
@@ -271,7 +271,7 @@ namespace TravelCompanionAPI.Data
                 {
                     while (reader.Read())
                     {
-                        lim = reader.GetInt32(0) / 8; //TODO: NO MAGIC NUMBER -- also on frontend :)
+                        lim = reader.GetInt32(0) / max_pass;
                         offset = lim * pass;
                     }
                 }
@@ -289,6 +289,8 @@ namespace TravelCompanionAPI.Data
                 {
                     while (reader.Read())
                     {
+                        //Compare centers (beginning) before (start at 2)
+                        //Then go to 13 (<14) for all data received from sql statement
                         for (int i = 2; i < 14; i++)
                         {
                             float coord = reader.GetFloat(i);
