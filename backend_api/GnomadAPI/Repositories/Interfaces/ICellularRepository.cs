@@ -7,8 +7,6 @@
 *
 ************************************************************************************************/
 
-using H3Lib;
-using System;
 using System.Collections.Generic;
 using TravelCompanionAPI.Models;
 

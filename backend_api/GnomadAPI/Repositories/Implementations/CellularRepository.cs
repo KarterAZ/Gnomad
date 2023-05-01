@@ -11,12 +11,9 @@ using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using TravelCompanionAPI.Models;
-using Microsoft.Extensions.Configuration;
 using System.Data;
 using H3Lib;
 using H3Lib.Extensions;
-using System.Diagnostics;
-using System.Linq;
 
 namespace TravelCompanionAPI.Data
 {
