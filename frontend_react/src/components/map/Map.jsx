@@ -48,14 +48,6 @@ const handleApiLoaded = async(map, maps) => {
     var latLngArray = [];
     //var latArray = [];
     //var lngArray = [];
-    var ret1Array = [];
-    var ret2Array = [];
-    var ret3Array = [];
-    var ret4Array = [];
-    var ret5Array = [];
-    var ret6Array = [];
-    var ret7Array = [];
-    var ret8Array = [];
 
     var bounds = map.getBounds();
     var ne = bounds.getNorthEast();
@@ -67,21 +59,31 @@ const handleApiLoaded = async(map, maps) => {
         latLngArray.push(gData);
     }*/
 
-    /*let [[ret1Array, ret2Array, ret3Array, ret4Array, ret5Array, ret6Array, ret7Array, ret8Array] = await Promise.all(
-            [getAllCoords(0, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(1, ne.lat(), ne.lng(), sw.lat(), sw.lng()),
-            getAllCoords(2, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(3, ne.lat(), ne.lng(), sw.lat(), sw.lng())]);*/
+    const promises = [];
+
+    for(let i = 0; i < 8; i++)
+    {
+      promises.push(getAllCoords(i, ne.lat(), ne.lng(), sw.lat(), sw.lng()));
+    }
+
+    //let [ret1Array, ret2Array, ret3Array, ret4Array, ret5Array, ret6Array, ret7Array, ret8Array] 
+    let retArrays = await Promise.all(promises);
+            /*[getAllCoords(0, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(1, ne.lat(), ne.lng(), sw.lat(), sw.lng()),
+            getAllCoords(2, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(3, ne.lat(), ne.lng(), sw.lat(), sw.lng()),
+            getAllCoords(4, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(5, ne.lat(), ne.lng(), sw.lat(), sw.lng()),
+            getAllCoords(6, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(7, ne.lat(), ne.lng(), sw.lat(), sw.lng())]);*/
 
     //var retArrays = [8];
 
-    let retArrays = await Promise.all(
+    /*let retArrays = await Promise.all(
         [getAllCoords(0, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(1, ne.lat(), ne.lng(), sw.lat(), sw.lng()),
         getAllCoords(2, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(3, ne.lat(), ne.lng(), sw.lat(), sw.lng())]);
-
+    */
     //var retArrays = [ret1Array, ret2Array, ret3Array, ret4Array, ret5Array, ret6Array, ret7Array, ret8Array];
 
     for (let i = 0; i < retArrays.length; i++) {
         for (let ii = 0; ii < retArrays[i].length; ii += 2) {
-            let gData = new maps.LatLng(parseFloat(ret1Array[i][ii]), parseFloat(ret1Array[i][ii + 1]));
+            let gData = new maps.LatLng(parseFloat(retArrays[i][ii]), parseFloat(retArrays[i][ii + 1]));
             latLngArray.push(gData);
         }
     }

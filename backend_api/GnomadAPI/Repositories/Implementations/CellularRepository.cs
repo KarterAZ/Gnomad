@@ -271,7 +271,7 @@ namespace TravelCompanionAPI.Data
                 {
                     while (reader.Read())
                     {
-                        lim = reader.GetInt32(0) / 8;
+                        lim = reader.GetInt32(0) / 8; //TODO: NO MAGIC NUMBER -- also on frontend :)
                         offset = lim * pass;
                     }
                 }
