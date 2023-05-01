@@ -61,7 +61,7 @@ const handleApiLoaded = async(map, maps) => {
 
     const promises = [];
 
-    for(let i = 0; i < 8; i++)
+    for(let i = 0; i < 8; i++) //TODO: Magic number; also in backend.
     {
       promises.push(getAllCoords(i, ne.lat(), ne.lng(), sw.lat(), sw.lng()));
     }
