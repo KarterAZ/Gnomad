@@ -71,7 +71,7 @@ const handleApiLoaded = async(map, maps) => {
             [getAllCoords(0, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(1, ne.lat(), ne.lng(), sw.lat(), sw.lng()),
             getAllCoords(2, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(3, ne.lat(), ne.lng(), sw.lat(), sw.lng())]);*/
 
-    var retArrays = [8];
+    //var retArrays = [8];
 
     let retArrays = await Promise.all(
         [getAllCoords(0, ne.lat(), ne.lng(), sw.lat(), sw.lng()), getAllCoords(1, ne.lat(), ne.lng(), sw.lat(), sw.lng()),
