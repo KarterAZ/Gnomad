@@ -15,9 +15,7 @@ using Microsoft.Extensions.Configuration;
 using System.Data;
 using H3Lib;
 using H3Lib.Extensions;
-using System.Diagnostics;
-using System.Linq;
-using System.Drawing;
+using System.Threading;
 
 namespace TravelCompanionAPI.Data
 {
@@ -249,6 +247,26 @@ namespace TravelCompanionAPI.Data
             }
 
             return (lat_coord_data, lng_coord_data);
+        }
+
+        public List<float> getAllCoordsThreaded(int max_pass, float latMin, float lngMin, float latMax, float lngMax)
+        {
+            List<float> coords = new List<float>();
+            List<Thread> threads = new List<Thread>();
+            
+            for(int i = 0; i < max_pass; i++)
+            {
+                Thread thread = new Thread(new ThreadStart(() => coords.AddRange(getAllCoordsSingle(max_pass, i, latMin, lngMin, latMax, lngMax))));
+                thread.Start();
+                threads.Add(thread);
+            }
+
+            foreach(Thread thread in threads)
+            {
+                thread.Join();
+            }
+
+            return coords;
         }
 
         public List<float> getAllCoordsSingle(int max_pass, int pass, float latMin, float lngMin, float latMax, float lngMax)

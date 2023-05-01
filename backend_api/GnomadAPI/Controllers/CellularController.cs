@@ -91,10 +91,10 @@ namespace TravelCompanionAPI.Controllers
             return (new JsonResult(Ok(latList)), new JsonResult(Ok(lngList)));
         }
 
-        [HttpGet("allCoordsSingle/{max_pass}/{pass}/{latMin}/{lngMin}/{latMax}/{lngMax}")]
-        public JsonResult getAllCoordsSingle(int max_pass, int pass, float latMin, float lngMin, float latMax, float lngMax)
+        [HttpGet("allCoordsSingle/{max_pass}/{latMin}/{lngMin}/{latMax}/{lngMax}")]
+        public JsonResult getAllCoordsSingle(int max_pass, float latMin, float lngMin, float latMax, float lngMax)
         {
-            List<float> latLngList = _repo.getAllCoordsSingle(max_pass, pass, latMin, lngMin, latMax, lngMax);
+            List<float> latLngList = _repo.getAllCoordsThreaded(max_pass, latMin, lngMin, latMax, lngMax);
 
             return new JsonResult(Ok(latLngList));
         }

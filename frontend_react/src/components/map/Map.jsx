@@ -31,7 +31,7 @@ import electric from '../../images/Charger.png';
 import getAllCoords from '../../utilities/api/get_cell_coords';
 
 // can later make the default lat/lng be user's location?
-const defaultProps = 
+const defaultProps =
 {
   zoom: 6,
   center: {
@@ -41,43 +41,41 @@ const defaultProps =
 };
 
 // fills in the cell coverage.
-const handleApiLoaded = async(map, maps) => {
+const handleApiLoaded = async (map, maps) => {
 
-    //variables for the bounds of the screen
-    var bounds = map.getBounds();
-    var ne = bounds.getNorthEast();
-    var sw = bounds.getSouthWest();
+  //variables for the bounds of the screen
+  var bounds = map.getBounds();
+  var ne = bounds.getNorthEast();
+  var sw = bounds.getSouthWest();
 
-    //fill an array of calls to the backend
-    const promises = [];
-    let maxNum = 5;
-    for(let i = 0; i < maxNum; i++)
-    {
-      promises.push(getAllCoords(maxNum, i, ne.lat(), ne.lng(), sw.lat(), sw.lng()));
-    }
+  //fill an array of calls to the backend
+  // const promises = [];
+  let maxNum = 5;
+  // for(let i = 0; i < maxNum; i++)
+  // {
+  //   promises.push(getAllCoords(maxNum, i, ne.lat(), ne.lng(), sw.lat(), sw.lng()));
+  // }
 
-    //calls all the async functions and waits for all of them to return
-    let retArrays = await Promise.all(promises);
+  //calls all the async functions and waits for all of them to return
+  let retArrays = getAllCoords(maxNum, ne.lat(), ne.lng(), sw.lat(), sw.lng());
 
-    //parse all the coords to api lat/lng
-    var latLngArray = [];
-    for (let i = 0; i < retArrays.length; i++) {
-        for (let ii = 0; ii < retArrays[i].length; ii += 2) {
-            let gData = new maps.LatLng(parseFloat(retArrays[i][ii]), parseFloat(retArrays[i][ii + 1]));
-            latLngArray.push(gData);
-        }
-    }
+  //parse all the coords to api lat/lng
+  var latLngArray = [];
+  for (let i = 0; i < retArrays.length; i += 2) {
+    let gData = new maps.LatLng(parseFloat(retArrays[i]), parseFloat(retArrays[i + 1]));
+    latLngArray.push(gData);
+  }
 
-    //draw the map
-    var bermudaTriangle = new maps.Polygon({
-        paths: latLngArray,
-        strokeColor: "#3393FF",
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: "#3393FF",
-        fillOpacity: 0.35
-    });
-    bermudaTriangle.setMap(map);
+  //draw the map
+  var bermudaTriangle = new maps.Polygon({
+    paths: latLngArray,
+    strokeColor: "#3393FF",
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: "#3393FF",
+    fillOpacity: 0.35
+  });
+  bermudaTriangle.setMap(map);
 }
 
 
@@ -91,8 +89,7 @@ const presetMarkers = [
 ];
 
 // general format all pins will follow, made dynamic by adding image data member instead of having 3-4 separate versions.
-const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) => 
-{
+const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) => {
   // named constants for the rating values.
   const THUMBS_UP = "1";
   const THUMBS_DOWN = "-1";
@@ -112,14 +109,11 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
   // initially had an incrementer/decrementer but this version just stores one state
   // of the user, eventually needs to be connected to the database to get a finalized
   // reputation count on each marker.
-  const handleReputationClick = (value) => 
-  {
-    if (reputation === null) 
-    {
+  const handleReputationClick = (value) => {
+    if (reputation === null) {
       setReputation(value)
-    } 
-    else 
-    {
+    }
+    else {
       // if currentRep is equal to value reset reputation value to null, else assign value.
       setReputation((currentReputation) =>
         currentReputation === value ? null : value
@@ -128,8 +122,7 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
   };
 
   // toggles favorite state between true/false on click. 
-  const handleFavoriteClick = () => 
-  {
+  const handleFavoriteClick = () => {
     setIsFavorite((currentIsFavorite) => !currentIsFavorite);
   }
 
@@ -141,10 +134,10 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
         alt="marker"
         lat={lat}
         lng={lng}
-        onClick={() => setShowInfoWindow(!showInfoWindow)} 
-        // toggles useState whether to display the InfoWindow upon marker click.
+        onClick={() => setShowInfoWindow(!showInfoWindow)}
+      // toggles useState whether to display the InfoWindow upon marker click.
       />
-      {showInfoWindow && ( 
+      {showInfoWindow && (
         // customized InfoWindow, was having too much trouble using google map's (plus ours looks nicer).
         <div className='info-window'>
           <div className='info-window-header'>
@@ -195,8 +188,7 @@ const CustomMarker = ({ lat, lng, image, type, name, description, onClick }) =>
   );
 };
 
-export default function Map() 
-{
+export default function Map() {
   // state declared for storing markers.
   const [markers, setMarkers] = useState([]);
 
@@ -208,24 +200,20 @@ export default function Map()
   const [selectedPinType, setSelectedPinType] = useState("");
 
   // function that toggles the sidebar's create pin option.
-  const toggleMarkerCreation = (pinName, pinDescription, pinType) => 
-  {
+  const toggleMarkerCreation = (pinName, pinDescription, pinType) => {
     setMarkerCreationEnabled(!markerCreationEnabled);
     setSelectedPinName(pinName);
     setSelectedPinDescription(pinDescription);
     setSelectedPinType(pinType);
   };
 
-  event.on('create-pin', (data) =>
-  {
+  event.on('create-pin', (data) => {
     toggleMarkerCreation(data.pin.name, data.pin.description, data.pin.type)
   });
 
   // function handling onclick events on the map that will result in marker creation.
-  const handleCreatePin = (event) => 
-  {
-    if (markerCreationEnabled && selectedPinType !== "") 
-    {
+  const handleCreatePin = (event) => {
+    if (markerCreationEnabled && selectedPinType !== "") {
       let pinImage = '';
       switch (selectedPinType) {
         case 'Pin':
@@ -251,7 +239,7 @@ export default function Map()
       }
 
       // adds marker to array that gets rendered (Eventually will have to add a pin to the database).
-      setMarkers([...markers, 
+      setMarkers([...markers,
       {
         lat: event.lat,
         lng: event.lng,
@@ -266,14 +254,14 @@ export default function Map()
   };
 
   // handles changes to lat/lng depending on position and zoom
-  const handleMapChange = async({ center, zoom, bounds }) => {
+  const handleMapChange = async ({ center, zoom, bounds }) => {
     //extract lat/lng out of bounds & center
     let { lat, lng } = center;
     const { lat: latStart, lng: lngStart } = bounds.sw;
-    
+
     // set lng to a valid coordinate
     lng = ((lng + 180) % 360 + 360) % 360 - 180;
-    
+
     // set the ranges
     const latRange = bounds.ne.lat - bounds.sw.lat;
     const longRange = bounds.ne.lng - bounds.sw.lng;
