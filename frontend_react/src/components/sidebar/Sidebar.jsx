@@ -78,7 +78,7 @@ export default function Sidebar({ toggleMarkerCreation })
   }
 
   // create a pin from the dialog.
-  const createPin = (pinName, pinDescription, pinType) => 
+  const showCreateRouteMenu = (pinName, pinDescription, pinType) => 
   {
     setOpen(false);
     event.emit('show-route-creator');
