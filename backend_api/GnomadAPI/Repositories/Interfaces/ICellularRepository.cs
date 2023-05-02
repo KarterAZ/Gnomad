@@ -27,6 +27,14 @@ namespace TravelCompanionAPI.Data
 
         public List<string> getAllH3();
 
+        public (List<float>, List<float>) getAllCoords(float latMin, float lngMin, float latMax, float lngMax);
+
+        public List<float> getAllCoordsThreaded(int max_pass, float latMin, float lngMin, float latMax, float lngMax);
+
+        public List<float> getAllCoordsSingle(int max_pass, int pass, float latMin, float lngMin, float latMax, float lngMax);
+
+        public List<int> getIdsInRange(float latMin, float lngMin, float latMax, float lngMax);
+
         public List<decimal> getHexCoords(int pass);
     }
 }

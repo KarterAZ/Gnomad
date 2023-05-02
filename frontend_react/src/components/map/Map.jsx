@@ -51,31 +51,40 @@ const options = {
 
 // fills in the cell coverage.
 const handleApiLoaded = async (map, maps) => {
-  var colorNum = 0;
-  var color = ["#FF5733", "#FFFC33", "#33FF36", "#33FFF9", "#3393FF", "#3339FF", "#9F33FF", "#FF33CA", "#FF3333", "#440000"]
-  var bermudaTriangles = [];
 
-  for (let i = 0; i < 242; i++) {
-    var latLngArray = [];
-    var lngArray = await getAllCoords(i);
+  //variables for the bounds of the screen
+  var bounds = map.getBounds();
+  var ne = bounds.getNorthEast();
+  var sw = bounds.getSouthWest();
 
-    for (let ii = 0; ii < lngArray.length; ii += 2) {
-      let gData = new maps.LatLng(parseFloat(lngArray[ii]), parseFloat(lngArray[ii + 1]));
-      latLngArray.push(gData);
-    }
-    var bermudaTriangle = new maps.Polygon({
-      paths: latLngArray,
-      strokeColor: color[colorNum],
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: color[colorNum],
-      fillOpacity: 0.35
-    });
-    bermudaTriangles.push(bermudaTriangle);
+  //fill an array of calls to the backend
+  // const promises = [];
+  let maxNum = 5;
+  // for(let i = 0; i < maxNum; i++)
+  // {
+  //   promises.push(getAllCoords(maxNum, i, ne.lat(), ne.lng(), sw.lat(), sw.lng()));
+  // }
 
-    bermudaTriangles[i].setMap(map);
-    colorNum = (colorNum % 10) + 1;
+  //calls all the async functions and waits for all of them to return
+  let retArrays = getAllCoords(maxNum, ne.lat(), ne.lng(), sw.lat(), sw.lng());
+
+  //parse all the coords to api lat/lng
+  var latLngArray = [];
+  for (let i = 0; i < retArrays.length; i += 2) {
+    let gData = new maps.LatLng(parseFloat(retArrays[i]), parseFloat(retArrays[i + 1]));
+    latLngArray.push(gData);
   }
+
+  //draw the map
+  var bermudaTriangle = new maps.Polygon({
+    paths: latLngArray,
+    strokeColor: "#3393FF",
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: "#3393FF",
+    fillOpacity: 0.35
+  });
+  bermudaTriangle.setMap(map);
 }
 
 
@@ -233,8 +242,7 @@ const Map = () => {
     setSelectedPinType(pinType);
   };
 
-  event.on('create-pin', (data) =>
-  {
+  event.on('create-pin', (data) => {
     toggleMarkerCreation(data.pin.name, data.pin.description, data.pin.type)
   });
 
@@ -289,14 +297,14 @@ const Map = () => {
   };
 
   // handles changes to lat/lng depending on position and zoom
-  const handleMapChange = ({ center, zoom, bounds }) => {
+  const handleMapChange = async ({ center, zoom, bounds }) => {
     //extract lat/lng out of bounds & center
     let { lat, lng } = center;
     const { lat: latStart, lng: lngStart } = bounds.sw;
-    
+
     // set lng to a valid coordinate
     lng = ((lng + 180) % 360 + 360) % 360 - 180;
-    
+
     // set the ranges
     const latRange = bounds.ne.lat - bounds.sw.lat;
     const longRange = bounds.ne.lng - bounds.sw.lng;

@@ -71,7 +71,14 @@ export default function Sidebar({ toggleMarkerCreation })
     event.emit('show-pin-creator');
   }
 
-  const showCreateRouteMenu = () =>
+  // show the cellular data.
+  const showCellularData = () => 
+  {
+    event.emit('toggle-cellular-creator');
+  }
+
+  // create a pin from the dialog.
+  const showCreateRouteMenu = (pinName, pinDescription, pinType) => 
   {
     setOpen(false);
     event.emit('show-route-creator');
@@ -107,6 +114,10 @@ export default function Sidebar({ toggleMarkerCreation })
 
         {/* buttons section */}
         <section className='section' id='create-buttons-section'>
+        <button className='button' id='toggle-cellular-button' onClick={showCellularData}>
+            Toggle Cellular Data
+          </button>
+
           <button className='button' id='pin-add-button' onClick={showCreatePinMenu}>
             Create Pin
           </button>
