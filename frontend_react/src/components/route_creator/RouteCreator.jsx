@@ -1,6 +1,6 @@
 // RouteCreator
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import searchPins from '../../utilities/api/search_pins';
 import event from "../../utilities/event";
@@ -122,7 +122,7 @@ export default function RouteCreator()
                   />
               </div>
 
-              <div className='input-section' id='pin-description-input-wrapper'>
+              <div className='input-section' id='route-creator-section'>
                   <div id='route-pins-picker'>
                       <div className='split-section' id='search-pins-list-wrapper'>
                           <div>
@@ -136,7 +136,7 @@ export default function RouteCreator()
                           </div>
                       </div>
                       <div className='split-section'>
-                          <label>Pins</label>
+                        <span id='input-label-wrapper'><label>Pins</label><label className='error'>{pinsError}</label></span>
                           <ul id='route-pins-list'>
                           {routePins.map((pin, index) => (
                               <li key={index}>{pin.title}</li>

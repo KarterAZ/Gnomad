@@ -214,6 +214,8 @@
   flex-direction: column;
   gap: 10px;
 
+  overflow: hidden;
+
   height: 100%;
 }
 

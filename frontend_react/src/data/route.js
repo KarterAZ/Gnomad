@@ -1,3 +1,4 @@
+// represents a route in our database.
 export default class Route
 {
     title = '';

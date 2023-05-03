@@ -101,7 +101,9 @@ export async function post(path, data = {})
     {
       Accept: '*/*',
       // add the auth token.
-      Authorization: auth_token
+      Authorization: auth_token,
+      // set the content type.
+      "Content-Type": "application/json",
     },
     // add the request content.
     body: JSON.stringify(data)
