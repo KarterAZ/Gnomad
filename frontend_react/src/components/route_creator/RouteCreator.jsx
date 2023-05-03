@@ -28,13 +28,15 @@ export default function RouteCreator()
   const validateInput = () =>
   {
     let status = true;
-    // TODO: replace these with regex for whitespace.
+
+    // validate the route name is not empty.
     if (routeName.trim().length === 0)
     {
       setNameError('This cannot be left blank.');
       status = false;
     }
 
+    // validate there is at least 1 pin in the route.
     if (routePins.length <= 0)
     {
       setPinsError('You must have at least one pin.');
@@ -105,19 +107,24 @@ export default function RouteCreator()
   // add a pin to the route.
   const addToRoute = (pin) =>
   {
+    // clear the error message if there is one.
     setPinsError('');
+    // add the route to the array.
     setRoutePins(list => [...list, pin]);
   }
 
   // remove a pin from the route by index.
   const removeFromRoute = (index) =>
   {
-    var array = [...routePins];
+    // make a copy of the array.
+    var new_array = [...routePins];
     
+    // if the index is valid remove the element from the array.
     if (index !== -1) 
     {
-      array.splice(index, 1);
-      setRoutePins(array);
+      new_array.splice(index, 1);
+      // set the routePins array to the new array.
+      setRoutePins(new_array);
     }
   }
 
