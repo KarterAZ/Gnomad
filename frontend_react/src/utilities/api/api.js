@@ -83,6 +83,8 @@ export async function get(path, params = [])
 // it also takes an object as data to send.
 export async function post(path, data = {})
 {
+  console.log(JSON.stringify(data));
+
   // get the auth token.
   const auth_token = getToken();
 

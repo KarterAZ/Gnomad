@@ -3,7 +3,7 @@ export default class Route
     title = '';
     pins = [];
     id = 0;
-    user_id = 0;
+    userId = 0;
 
     constructor(title, pins)
     {
