@@ -1,6 +1,6 @@
 // RouteCreator
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import searchPins from '../../utilities/api/search_pins';
 import event from "../../utilities/event";
@@ -16,7 +16,7 @@ export default function RouteCreator()
   // variable states.
   const [routeName, setRouteName] = useState('');
   const [routePins, setRoutePins] = useState([]);
-
+  const [routePinsHtml, setRoutePinsHtml] = useState([]);
   const [pinResults, setPinResults] = useState([]);
 
   // error states.
@@ -44,29 +44,39 @@ export default function RouteCreator()
     return status;
   }
 
+  // called on create route button click.
   const submit = async () =>
   {
+    // validate the route.
     if (validateInput())
     {
+      // create the route object.
       let route = new Route(routeName, routePins);
+      // call the createRoute backend endpoint.
       let response = await createRoute(route);
 
+      // if the response is null, the create route
+      // failed and errors can be handled here.
       if (response == null)
       {
         console.log("Create route call failed.");
       }
       else
       {
+        // if the route was created successfully,
+        // close the route creator.
         close();
       }
     }
-}
+  } 
 
+  // this function closes the route creator.
   const close = () =>
   {
     event.emit('close-route-creator');
   }
 
+  // called when a query is searched for.
   const search = async (searchQuery) =>
   {
     // remove whitespace from beginning and end of the query.
@@ -79,22 +89,59 @@ export default function RouteCreator()
       let pins = await searchPins(searchQuery);
 
       // set the pins to a pin list.
-      setPinResults(pins.map((pin, index) => <ListPin key={index} pin={pin}/>));
+      setPinResults(pins.map((pin, index) => <ResultPin key={index} pin={pin}/>));
     }
   }
 
+  // update the pins list when the routePins change.
+  useEffect(() =>
+  {
+    setRoutePinsHtml(
+      routePins.map((pin, index) => <RoutePin index={index} key={index} pin={pin}></RoutePin>)
+    );
+
+  }, [routePins]);
+
+  // add a pin to the route.
   const addToRoute = (pin) =>
   {
+    setPinsError('');
     setRoutePins(list => [...list, pin]);
   }
 
-  const ListPin = ({pin}) =>
+  // remove a pin from the route by index.
+  const removeFromRoute = (index) =>
+  {
+    var array = [...routePins];
+    
+    if (index !== -1) 
+    {
+      array.splice(index, 1);
+      setRoutePins(array);
+    }
+  }
+
+  // a component to hold the search result pins.
+  const ResultPin = ({pin}) =>
   {
     return (
       <li>
         <div className='result-pin'>
           <span className='add-pin-title'>{pin.title}</span>
           <button className='add-pin-button' onClick={() => addToRoute(pin)}>+</button>
+        </div>
+      </li>
+    );
+  }
+
+  // a component to hold the route pins.
+  const RoutePin = ({pin, index}) =>
+  {
+    return (
+      <li>
+        <div className='result-pin'>
+          <span className='add-pin-title'>{pin.title}</span>
+          <button className='add-pin-button' onClick={() => removeFromRoute(index)}>-</button>
         </div>
       </li>
     );
@@ -126,21 +173,19 @@ export default function RouteCreator()
                   <div id='route-pins-picker'>
                       <div className='split-section' id='search-pins-list-wrapper'>
                           <div>
-                          <label>Search for pins to add</label>
-                          <SearchBar onSubmit={search}/>
+                            <label>Search for pins to add</label>
+                            <SearchBar onSubmit={search}/>
                           </div>
                           <div id='pins-search-results'>
-                          <ul id='search-pins-list'>
-                              {pinResults}
-                          </ul>
+                            <ul id='search-pins-list'>
+                                {pinResults}
+                            </ul>
                           </div>
                       </div>
                       <div className='split-section'>
                         <span id='input-label-wrapper'><label>Pins</label><label className='error'>{pinsError}</label></span>
                           <ul id='route-pins-list'>
-                          {routePins.map((pin, index) => (
-                              <li key={index}>{pin.title}</li>
-                          ))}
+                            {routePinsHtml}
                           </ul>
                       </div>
                   </div>

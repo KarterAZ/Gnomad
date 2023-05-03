@@ -72,7 +72,7 @@ export async function get(path, params = [])
   .then(json => {return json.value})
   .catch((error) => 
   {
-    console.log('Fetch Error:', error);
+    console.log('Get Error:', error);
   });
 
   return result;
@@ -83,8 +83,6 @@ export async function get(path, params = [])
 // it also takes an object as data to send.
 export async function post(path, data = {})
 {
-  console.log(JSON.stringify(data));
-
   // get the auth token.
   const auth_token = getToken();
 
@@ -99,12 +97,16 @@ export async function post(path, data = {})
     // set the headers.
     headers: 
     {
+      // accept any response.
       Accept: '*/*',
+
       // add the auth token.
       Authorization: auth_token,
+
       // set the content type.
       "Content-Type": "application/json",
     },
+
     // add the request content.
     body: JSON.stringify(data)
   })
@@ -112,7 +114,7 @@ export async function post(path, data = {})
   .then(json => {return json.value})
   .catch((error) => 
   {
-    console.log('Fetch Error:', error);
+    console.log('Post Error:', error);
   });
 
   return result;
