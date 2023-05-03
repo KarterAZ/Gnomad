@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import searchPins from '../../utilities/api/search_pins';
 import event from "../../utilities/event";
 import SearchBar from "../search_bar/SearchBar";
+import Route from "../../data/route"
+import createRoute from "../../utilities/api/create_routes";
 
 import './route_creator.css';
 
@@ -42,12 +44,21 @@ export default function RouteCreator()
     return status;
   }
 
-  const submit = () =>
+  const submit = async () =>
   {
     if (validateInput())
     {
-      // TODO: create route here.
-      close();
+      let route = new Route(routeName, routePins);
+      let response = await createRoute(route);
+
+      if (response == null)
+      {
+        console.log("Create route call failed.");
+      }
+      else
+      {
+        close();
+      }
     }
 }
 
