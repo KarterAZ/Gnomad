@@ -132,7 +132,7 @@ export default function RouteCreator()
   const ResultPin = ({pin}) =>
   {
     return (
-      <li>
+      <li className='list-item'>
         <div className='result-pin'>
           <span className='add-pin-title'>{pin.title}</span>
           <button className='add-pin-button' onClick={() => addToRoute(pin)}>+</button>
@@ -145,7 +145,7 @@ export default function RouteCreator()
   const RoutePin = ({pin, index}) =>
   {
     return (
-      <li>
+      <li className='list-item'>
         <div className='result-pin'>
           <span className='add-pin-title'>{pin.title}</span>
           <button className='add-pin-button' onClick={() => removeFromRoute(index)}>-</button>
@@ -184,14 +184,14 @@ export default function RouteCreator()
                             <SearchBar onSubmit={search}/>
                           </div>
                           <div id='pins-search-results'>
-                            <ul id='search-pins-list'>
+                            <ul className='pins-list'>
                                 {pinResults}
                             </ul>
                           </div>
                       </div>
                       <div className='split-section'>
                         <span id='input-label-wrapper'><label>Pins</label><label className='error'>{pinsError}</label></span>
-                          <ul id='route-pins-list'>
+                          <ul className='pins-list'>
                             {routePinsHtml}
                           </ul>
                       </div>
