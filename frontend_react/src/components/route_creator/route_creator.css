@@ -44,11 +44,17 @@
     flex-direction: column;
 }
 
+#route-creator-section
+{
+    height: 100%;
+    overflow: hidden;
+}
+
 #pins-search-results 
 {
     display: flex;
     flex-direction: column;
-    height: 305px;
+    height: 100%;
     border-radius: 4px;
 
     overflow: hidden;
