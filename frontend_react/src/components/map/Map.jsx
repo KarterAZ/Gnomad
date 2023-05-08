@@ -91,10 +91,6 @@ const presetMarkers = [
   { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
 
   { lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", description: "testing" }, //extra added to test markercluster
-
-
-
-
 ];
 
 // can still utilize our own infowindow, dont need to use google map's, realistically most of this code is just for infowindow
@@ -225,7 +221,8 @@ const Map = () => {
   const [showInfoWindow, setShowInfoWindow] = useState(false);
 
   //const [directionsResponse, setDirectionsResponse] = useState(null);
-
+  const [directions, setDirections] = useState(null);
+  const [directionsService, setDirectionsService] = useState(null);
 
   // function that toggles the sidebar's create pin option.
   const toggleMarkerCreation = (pinName, pinDescription, pinType) => {
@@ -370,13 +367,36 @@ const Map = () => {
   }
   console.log(markers);
 
+  const calculateAndDisplayRoute = (directionsService, directionsRenderer) => {
+    directionsService.route(
+      {
+        origin: new window.google.maps.LatLng(presetMarkers[0].lat, presetMarkers[0].lng),
+        destination: new window.google.maps.LatLng(presetMarkers[1].lat, presetMarkers[1].lng),
+        travelMode: "DRIVING",
+      },
+      (response, status) => {
+        if (status === "OK") {
+          directionsRenderer.setDirections(response);
+        } else {
+          console.error("Directions request failed due to " + status);
+        }
+      }
+    );
+  };
+
+  useEffect(() => {
+    if (directionsService) {
+      calculateAndDisplayRoute(directionsService, setDirections);
+    }
+  }, [directionsService, setDirections]);
+
   return (
     <div id='wrapper'>
       <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
       <div id='map'>
         <LoadScript googleMapsApiKey="AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o">
           <GoogleMap
-            defaultOptions={{mapTypeControl: false}}
+            defaultOptions={{ mapTypeControl: false }}
             mapContainerStyle={containerStyle}
             center={defaultProps.center}
             zoom={defaultProps.zoom}
@@ -386,12 +406,19 @@ const Map = () => {
               console.log("Google Maps API loaded successfully!");
               console.log("Map object:", map);
               console.log("Maps object:", maps);
+              setDirectionsService(new maps.DirectionsService());
               handleApiLoaded(map, maps)
             }}
 
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
             onChange={handleMapChange}
           >
+            {directionsService && (
+              <DirectionsRenderer
+                options={{ suppressMarkers: true }}
+                directions={directions}
+              />
+            )}
             <MarkerClusterer options={{ maxZoom: 14 }}>
               {(clusterer) =>
                 [...markers, ...presetMarkers].map((marker, index) =>
