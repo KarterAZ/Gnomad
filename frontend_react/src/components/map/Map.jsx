@@ -8,14 +8,15 @@
 //################################################################
 
 import React, { useState, useEffect } from 'react';
-import{ 
-  GoogleMap, 
+import {
+  GoogleMap,
   LoadScript,
-  Marker, 
-  MarkerClusterer, 
-  DirectionsService, 
-  DirectionsRenderer 
+  Marker,
+  MarkerClusterer,
+  DirectionsService,
+  DirectionsRenderer
 } from '@react-google-maps/api';
+import DOMPurify from 'dompurify';
 
 // internal imports.
 import './map.css';
@@ -23,7 +24,9 @@ import './map.css';
 
 // internal imports.
 import { get, isAuthenticated } from '../../utilities/api/api.js';
-import Sidebar from '../sidebar/Sidebar'
+import Sidebar from '../sidebar/Sidebar';
+import DirectionsPanel from '../directions/directions';
+
 import RouteCreator from '../route_creator/RouteCreator'
 import event from '../../utilities/event';
 import pin from '../../images/Pin.png';
@@ -377,13 +380,19 @@ const Map = () => {
   }
   console.log(markers);
 
-  const onDirectionsFetched = (result, status) => {
-    if (status === 'OK') {
-      setDirections(result);
-    } else {
-      console.error(`Error fetching directions: ${status}`);
-    }
-  };
+function onDirectionsFetched(directions) 
+{
+  if (directions !== null) 
+  {
+    const steps = directions.routes[0].legs[0].steps;
+    const directionsPanelContent = steps.map(step => 
+    {
+      const sanitizedInstructions = DOMPurify.sanitize(step.html_instructions, { ALLOWED_TAGS: [] });
+      return `<p>${sanitizedInstructions}</p>`;
+    }).join('');
+    setDirections(directions);
+  }
+}
   /*
   //calculating outside of the render to figure out first, last, and every stop inbetween
 
@@ -428,15 +437,15 @@ const Map = () => {
             onChange={handleMapChange}
           >
             <DirectionsService
-              options={{ 
+              options={{
                 origin: 'San Francisco, CA',
                 destination: 'Los Angeles, CA',
-                waypoints: 
-                [
-                  {location: 'San Jose, CA'},
-                  {location: 'Santa Barbara, CA'},
-                  {location: 'San Diego, CA'},
-                ],
+                waypoints:
+                  [
+                    { location: 'San Jose, CA' },
+                    { location: 'Santa Barbara, CA' },
+                    { location: 'San Diego, CA' },
+                  ],
                 travelMode: 'DRIVING',
               }}
               callback={onDirectionsFetched}
@@ -450,8 +459,9 @@ const Map = () => {
                 panel: document.getElementById('directions-panel'),
               }}
             />
-            <div id="directions-panel"></div>
-        
+            <DirectionsPanel directions={directions} />
+  
+
             <MarkerClusterer options={{ maxZoom: 14 }}>
               {(clusterer) =>
                 [...markers, ...presetMarkers].map((marker, index) =>
