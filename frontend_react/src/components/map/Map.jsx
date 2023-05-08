@@ -57,15 +57,8 @@ const handleApiLoaded = async (map, maps) => {
   var ne = bounds.getNorthEast();
   var sw = bounds.getSouthWest();
 
-  //fill an array of calls to the backend
-  // const promises = [];
+  //fill an array with data using maxNum threads on backend
   let maxNum = 5;
-  // for(let i = 0; i < maxNum; i++)
-  // {
-  //   promises.push(getAllCoords(maxNum, i, ne.lat(), ne.lng(), sw.lat(), sw.lng()));
-  // }
-
-  //calls all the async functions and waits for all of them to return
   let retArrays = getAllCoords(maxNum, ne.lat(), ne.lng(), sw.lat(), sw.lng());
 
   //parse all the coords to api lat/lng
