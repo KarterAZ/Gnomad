@@ -32,7 +32,7 @@ namespace TravelCompanionAPI.Data
         /// Constructor
         /// </summary>
         public PinRepository()
-        {}
+        { }
 
         /// <summary>
         /// Gets a pin from its id
@@ -83,7 +83,7 @@ namespace TravelCompanionAPI.Data
             }
 
             connection.Close();
-            
+
             return pin;
         }
 
@@ -107,7 +107,7 @@ namespace TravelCompanionAPI.Data
             {
                 command.Connection = connection;
                 command.CommandType = CommandType.Text;
-                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE + 
+                command.CommandText = @"SELECT id, user_id, longitude, latitude, title, street FROM " + PIN_TABLE +
                                     " WHERE(longitude > @minLong AND longitude < @maxLong AND latitude > @minLat AND latitude < @maxLat) LIMIT 100;";
 
                 command.Parameters.AddWithValue("@minLong", minLong);
@@ -355,46 +355,53 @@ namespace TravelCompanionAPI.Data
         /// TODO: User Verification
         public bool add(Pin pin)
         {
-            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
-
-            using (MySqlCommand command = new MySqlCommand())
+            try
             {
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO " + PIN_TABLE + " (user_id, longitude, latitude, title, street) VALUES (@userID, @Longitude, @Latitude, @Title, @Street);";
-                command.Parameters.AddWithValue("@userId", pin.UserId);
-                command.Parameters.AddWithValue("@Longitude", pin.Longitude);
-                command.Parameters.AddWithValue("@Latitude", pin.Latitude);
-                command.Parameters.AddWithValue("@Title", pin.Title);
-                command.Parameters.AddWithValue("@Street", pin.Street);
+                MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
-                command.ExecuteNonQuery();
-
-                pin.Id = (int)command.LastInsertedId;
-            }
-            
-            using (MySqlCommand command = new MySqlCommand())
-            {
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "INSERT INTO " + TAG_TABLE + " (pin_id, tag_id) VALUES (@pin_id, @tag_id);";
-                command.Parameters.AddWithValue("@pin_id", pin.Id);
-
-                MySqlParameter tagIdParameter;
-                
-                //Adds each tag as a parameter and sends a new query for each.
-                foreach (int myTag in pin.Tags)
+                using (MySqlCommand command = new MySqlCommand())
                 {
-                    tagIdParameter = new MySqlParameter("@tag_id", myTag);
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "INSERT INTO " + PIN_TABLE + " (user_id, longitude, latitude, title, street) VALUES (@userID, @Longitude, @Latitude, @Title, @Street);";
+                    command.Parameters.AddWithValue("@userId", pin.UserId);
+                    command.Parameters.AddWithValue("@Longitude", pin.Longitude);
+                    command.Parameters.AddWithValue("@Latitude", pin.Latitude);
+                    command.Parameters.AddWithValue("@Title", pin.Title);
+                    command.Parameters.AddWithValue("@Street", pin.Street);
 
-                    command.Parameters.Add(tagIdParameter);
                     command.ExecuteNonQuery();
-                    command.Parameters.Remove(tagIdParameter);
-                }
-            }
 
-            connection.Close();
-            return true;
+                    pin.Id = (int)command.LastInsertedId;
+                }
+
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "INSERT INTO " + TAG_TABLE + " (pin_id, tag_id) VALUES (@pin_id, @tag_id);";
+                    command.Parameters.AddWithValue("@pin_id", pin.Id);
+
+                    MySqlParameter tagIdParameter;
+
+                    //Adds each tag as a parameter and sends a new query for each.
+                    foreach (int myTag in pin.Tags)
+                    {
+                        tagIdParameter = new MySqlParameter("@tag_id", myTag);
+
+                        command.Parameters.Add(tagIdParameter);
+                        command.ExecuteNonQuery();
+                        command.Parameters.Remove(tagIdParameter);
+                    }
+                }
+
+                connection.Close();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -407,7 +414,7 @@ namespace TravelCompanionAPI.Data
         {
             bool exists = false;
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
-            
+
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = connection;
@@ -442,26 +449,26 @@ namespace TravelCompanionAPI.Data
             List<Pin> pins;
             List<Pin> deleteList = new List<Pin>();
 
-            if(latStart == 0 && longStart == 0 && latRange == 0 && longRange == 0)
+            if (latStart == 0 && longStart == 0 && latRange == 0 && longRange == 0)
                 pins = getAllInArea(); //Defaults to Oregon
             else
                 pins = getAllInArea(latStart, longStart, latRange, longRange);
 
             //Checks if pin is valid, adds to deleteList
-            foreach(Pin pin in pins)
+            foreach (Pin pin in pins)
             {
                 bool delete = true;
-                foreach(int tag in tags)
+                foreach (int tag in tags)
                 {
-                    if(delete)
+                    if (delete)
                     {
-                        if(pin.Tags.Contains(tag))
+                        if (pin.Tags.Contains(tag))
                         {
                             delete = false;
                         }
                     }
                 }
-                if(delete)
+                if (delete)
                 {
                     deleteList.Add(pin);
                 }
@@ -503,7 +510,6 @@ namespace TravelCompanionAPI.Data
                         pins.Add(pin);
                     }
                 }
-                //connection.Close();
             }
 
             //Add tag to the pins in the pin list
@@ -569,7 +575,6 @@ namespace TravelCompanionAPI.Data
                         pins.Add(pin);
                     }
                 }
-                //connection.Close();
             }
             //Add tag to the pins in the pin list
             using (MySqlCommand command = new MySqlCommand())
@@ -655,15 +660,15 @@ namespace TravelCompanionAPI.Data
 
             List<Pin> stickers;
 
-            if(latStart == 0 && longStart == 0 && latRange == 0 && longRange == 0)
-                stickers = getAllByTag(new List<int>(){Convert.ToInt32(TagValues.tags.Sticker)}); //Defaults to Oregon
+            if (latStart == 0 && longStart == 0 && latRange == 0 && longRange == 0)
+                stickers = getAllByTag(new List<int>() { Convert.ToInt32(TagValues.tags.Sticker) }); //Defaults to Oregon
             else
-                stickers = getAllByTag(new List<int>(){Convert.ToInt32(TagValues.tags.Sticker)}, latStart, longStart, latRange, longRange);
+                stickers = getAllByTag(new List<int>() { Convert.ToInt32(TagValues.tags.Sticker) }, latStart, longStart, latRange, longRange);
 
-            for(int ii = stickers.Count-1; ii >= 0; ii--)
+            for (int ii = stickers.Count - 1; ii >= 0; ii--)
             {
                 //If wrong user, remove from list.
-                if(stickers.ElementAt(ii).UserId != uid)
+                if (stickers.ElementAt(ii).UserId != uid)
                 {
                     stickers.RemoveAt(ii);
                 }
