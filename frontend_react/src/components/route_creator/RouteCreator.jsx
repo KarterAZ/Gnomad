@@ -11,7 +11,7 @@ import createRoute from "../../utilities/api/create_routes";
 import './route_creator.css';
 
 // Purpose: creates a window to allow the user to create a route.
-export default function RouteCreator()
+export default function RouteCreator(setWayPointsArr)
 {
   // variable states.
   const [routeName, setRouteName] = useState('');

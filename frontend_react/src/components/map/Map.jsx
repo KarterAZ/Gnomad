@@ -8,13 +8,13 @@
 //################################################################
 
 import React, { useState, useEffect } from 'react';
-import{ 
-  GoogleMap, 
+import {
+  GoogleMap,
   LoadScript,
-  Marker, 
-  MarkerClusterer, 
-  DirectionsService, 
-  DirectionsRenderer 
+  Marker,
+  MarkerClusterer,
+  DirectionsService,
+  DirectionsRenderer
 } from '@react-google-maps/api';
 
 // internal imports.
@@ -24,7 +24,7 @@ import './map.css';
 // internal imports.
 import { get, isAuthenticated } from '../../utilities/api/api.js';
 import Sidebar from '../sidebar/Sidebar'
-
+import RouteCreator from '../route_creator/RouteCreator'
 import event from '../../utilities/event';
 import pin from '../../images/Pin.png';
 import bathroom from '../../images/Restroom.png';
@@ -91,12 +91,11 @@ const handleApiLoaded = async (map, maps) => {
 // array of markers that gets used to populate map, eventually will be filled with pin data from database.
 //used to test marker operations/google maps without having to render entire
 const presetMarkers = [
-  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", description: "Brevada" },
-  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", description: "Pilot" },
-  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", description: "Oregon Tech" },
-  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", description: "Oregon Tech Parking Lot F" },
   { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
-
+  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", description: "Oregon Tech" },
+  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", description: "Brevada" },
+  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", description: "Oregon Tech Parking Lot F" },
+  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", description: "Pilot" },
   { lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", description: "testing" }, //extra added to test markercluster
 ];
 
@@ -227,9 +226,13 @@ const Map = () => {
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [showInfoWindow, setShowInfoWindow] = useState(false);
 
-  //const [directionsResponse, setDirectionsResponse] = useState(null);
+  //States for direction rendering
   const [directions, setDirections] = useState(null);
   const [directionsService, setDirectionsService] = useState(null);
+  //State for communicating with directions render
+  const [directionsEnabled, setDirectionsToggle] = useState(false);
+  const [wayPointsArr, setWayPointsArr] = useState([]);
+
 
   // function that toggles the sidebar's create pin option.
   const toggleMarkerCreation = (pinName, pinDescription, pinType) => {
@@ -381,6 +384,21 @@ const Map = () => {
       console.error(`Error fetching directions: ${status}`);
     }
   };
+  //calculating outside of the render to figure out first, last, and every stop inbetween
+
+  const waypoints = presetMarkers.map((marker, index) => {
+    if (index === 0) {
+      // First marker is the origin
+      return { location: new window.google.maps.LatLng(marker.lat, marker.lng), stopover: false };
+    } else if (index === presetMarkers.length - 1) {
+      // Last marker is the destination
+      return { location: new window.google.maps.LatLng(marker.lat, marker.lng), stopover: true };
+    } else {
+      // Other markers are waypoints
+      return { location: new window.google.maps.LatLng(marker.lat, marker.lng), stopover: true };
+    }
+  });
+
   return (
     <div id='wrapper'>
       <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
@@ -404,11 +422,14 @@ const Map = () => {
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
             onChange={handleMapChange}
           >
-            <DirectionsService
+            
+            <DirectionsService //currently testing the array
               options={{
-                origin: 'San Francisco, CA',
-                destination: 'Los Angeles, CA',
-                travelMode: 'DRIVING'
+                origin: new window.google.maps.LatLng(presetMarkers[0].lat, presetMarkers[0].lng),
+                destination: new window.google.maps.LatLng(presetMarkers[presetMarkers.length - 1].lat, presetMarkers[presetMarkers.length - 1].lng),
+                waypoints: waypoints,
+                travelMode: 'DRIVING',
+
               }}
               callback={onDirectionsFetched}
             />
@@ -418,7 +439,7 @@ const Map = () => {
                 polylineOptions: {
                   strokeColor: "#000",
                 },
-               // suppressMarkers: true,
+                // suppressMarkers: true,
               }}
             />
 
