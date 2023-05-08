@@ -8,7 +8,14 @@
 //################################################################
 
 import React, { useState, useEffect } from 'react';
-import { GoogleMap, LoadScript, Marker, MarkerClusterer, DirectionsService } from '@react-google-maps/api';
+import{ 
+  GoogleMap, 
+  LoadScript,
+  Marker, 
+  MarkerClusterer, 
+  DirectionsService, 
+  DirectionsRenderer 
+} from '@react-google-maps/api';
 
 // internal imports.
 import './map.css';
@@ -367,29 +374,13 @@ const Map = () => {
   }
   console.log(markers);
 
-  const calculateAndDisplayRoute = (directionsService, directionsRenderer) => {
-    directionsService.route(
-      {
-        origin: new window.google.maps.LatLng(presetMarkers[0].lat, presetMarkers[0].lng),
-        destination: new window.google.maps.LatLng(presetMarkers[1].lat, presetMarkers[1].lng),
-        travelMode: "DRIVING",
-      },
-      (response, status) => {
-        if (status === "OK") {
-          directionsRenderer.setDirections(response);
-        } else {
-          console.error("Directions request failed due to " + status);
-        }
-      }
-    );
-  };
-
-  useEffect(() => {
-    if (directionsService) {
-      calculateAndDisplayRoute(directionsService, setDirections);
+  const onDirectionsFetched = (result, status) => {
+    if (status === 'OK') {
+      setDirections(result);
+    } else {
+      console.error(`Error fetching directions: ${status}`);
     }
-  }, [directionsService, setDirections]);
-
+  };
   return (
     <div id='wrapper'>
       <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
@@ -413,12 +404,24 @@ const Map = () => {
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
             onChange={handleMapChange}
           >
-            {directionsService && (
-              <DirectionsRenderer
-                options={{ suppressMarkers: true }}
-                directions={directions}
-              />
-            )}
+            <DirectionsService
+              options={{
+                origin: 'San Francisco, CA',
+                destination: 'Los Angeles, CA',
+                travelMode: 'DRIVING'
+              }}
+              callback={onDirectionsFetched}
+            />
+            <DirectionsRenderer
+              directions={directions}
+              options={{
+                polylineOptions: {
+                  strokeColor: "#000",
+                },
+               // suppressMarkers: true,
+              }}
+            />
+
             <MarkerClusterer options={{ maxZoom: 14 }}>
               {(clusterer) =>
                 [...markers, ...presetMarkers].map((marker, index) =>
@@ -460,35 +463,3 @@ const Map = () => {
 export default React.memo(Map);
 
 
-/* Need to integrate callback functions, can put this snippet between the 
-// MarkerCluster and Googlemap component on the bottom once done
-  <DirectionsService
-      options=
-      {{
-          origin: { lat: presetMarkers[0].lat, lng: presetMarkers[0].lng },
-          destination: { lat: presetMarkers[5].lat, lng: presetMarkers[5].lng },
-          travelMode: 'DRIVING',
-      }}
-          callback={(result) => 
-          {
-            if (result !== null)
-            {
-              setDirectionsResponse(result); 
-            }
-          }}
-    />
-*/
-/*
- {selectedMarker && showInfoWindow &&
-                      (
-                        <MyInfoWindow
-                          lat={selectedMarker.lat}
-                          lng={selectedMarker.lng}
-                          type={selectedMarker.type}
-                          name={selectedMarker.name}
-                          description={selectedMarker.description}
-                          toggleWindow={showInfoWindow}
-                        >
-                        </MyInfoWindow>
-                      )}
-*/
