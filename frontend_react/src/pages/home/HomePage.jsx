@@ -14,6 +14,7 @@ import Map from '../../components/map/Map';
 import { hasLocalData, loadRoutes } from '../../utilities/offline_data/offline_data';
 import PinCreator from '../../components/pin_creator/PinCreator';
 import RouteCreator from '../../components/route_creator/RouteCreator';
+import Sidebar from '../../components/sidebar/Sidebar';
 
 import './home.css';
 import { useState } from 'react';
@@ -65,6 +66,7 @@ export default function HomePage()
   return (
     <>
       <div id='content' onLoad={pageLoad}>
+        <Sidebar/>
         <Map/>
         { showPinCreator && <PinCreator/> }
         { showRouteCreator && <RouteCreator/> }
