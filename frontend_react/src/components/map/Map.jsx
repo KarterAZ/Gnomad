@@ -16,7 +16,8 @@ import './map.css';
 
 // internal imports.
 import { get, isAuthenticated } from '../../utilities/api/api.js';
-import Sidebar from '../sidebar/Sidebar'
+import createPin from '../../utilities/api/create_pin';
+import Pin from '../../data/pin';
 
 import event from '../../utilities/event';
 import pin from '../../images/Pin.png';
@@ -84,17 +85,13 @@ const handleApiLoaded = async (map, maps) => {
 // array of markers that gets used to populate map, eventually will be filled with pin data from database.
 //used to test marker operations/google maps without having to render entire
 const presetMarkers = [
-  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", description: "Brevada" },
-  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", description: "Pilot" },
-  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", description: "Oregon Tech" },
-  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", description: "Oregon Tech Parking Lot F" },
-  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
+  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", name: "Brevada" },
+  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", name: "Pilot" },
+  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", name: "Oregon Tech" },
+  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", name: "Oregon Tech Parking Lot F" },
+  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", name: "College Union Guest Wifi" },
 
-  { lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", description: "testing" }, //extra added to test markercluster
-
-
-
-
+  { lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", name: "testing" }, //extra added to test markercluster
 ];
 
 // can still utilize our own infowindow, dont need to use google map's, realistically most of this code is just for infowindow
@@ -209,16 +206,14 @@ const containerStyle = {
 
 const Map = () => {
   //State declared for storing markers
-  const [markers, setMarkers] = useState("");
+  const [markers, setMarkers] = useState(presetMarkers);
 
 
   // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
   //States declared for Pin Names, Descriptions, and Types.
-  const [selectedPinName, setSelectedPinName] = useState("");
-  const [selectedPinDescription, setSelectedPinDescription] = useState("");
-  const [selectedPinType, setSelectedPinType] = useState("");
+  const [pinToCreate, setPinToCreate] = useState({});
 
   //States for getting onclick interactions with google maps markers & our custom infowindow
   const [selectedMarker, setSelectedMarker] = useState(null);
@@ -226,26 +221,30 @@ const Map = () => {
 
   //const [directionsResponse, setDirectionsResponse] = useState(null);
 
-
-  // function that toggles the sidebar's create pin option.
-  const toggleMarkerCreation = (pinName, pinDescription, pinType) => {
-    setMarkerCreationEnabled(!markerCreationEnabled);
-    setSelectedPinName(pinName);
-    setSelectedPinDescription(pinDescription);
-    setSelectedPinType(pinType);
-  };
-
-  event.on('create-pin', (data) => {
-    toggleMarkerCreation(data.pin.name, data.pin.description, data.pin.type)
+  // create a pin on the event.
+  event.on('create-pin', (data) => 
+  {
+    // allow on click to place a marker.
+    setMarkerCreationEnabled(true);
+    setPinToCreate({name: data.pin.name, type: data.pin.type});
   });
 
   // function handling onclick events on the map that will result in marker creation.
-  const handleCreatePin = (event) => {
-    console.log(event);
+  const handleCreatePin = async (event) => 
+  {
+    if (markerCreationEnabled && pinToCreate.type !== "") 
+    {
+      // disable marker creation to prevent double calling.
+      setMarkerCreationEnabled(false);
 
-    if (markerCreationEnabled && selectedPinType !== "") {
+      // some shorter variables.
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
+      const type = pinToCreate.type;
+      const name = pinToCreate.name;
+
       let pinImage = '';
-      switch (selectedPinType) {
+      switch (type) {
         case 'Pin':
           pinImage = pin;
           break;
@@ -271,21 +270,26 @@ const Map = () => {
       //Adds marker to array that gets rendered (TODO: Eventually will have to add a pin to the database)
       let marker =
       {
-        lat: event.latLng.lat(),
-        lng: event.latLng.lng(),
+        lat: lat,
+        lng: lng,
         image: pinImage,
-        type: selectedPinType,
-        name: selectedPinName,
-        description: selectedPinDescription,
-
+        type: type,
+        name: name,
       }
 
       setMarkers([...markers,
         marker
       ]);
 
-      console.log(marker);
-      setMarkerCreationEnabled(false);
+      // create the pin object.
+      let new_pin = new Pin(0, 0, lng, lat, name, '', []);
+      // call backend function to add pin to database.
+      const response = await createPin(new_pin);
+
+      if (response == null)
+      {
+        console.log('Could not create pin in database.');
+      }
     }
   };
 
@@ -305,7 +309,6 @@ const Map = () => {
     console.log('Lat:', lat);
     console.log('Lng:', lng);
     fetchData(lat, lng, latRange, longRange);
-
   };
 
   /* If getting the error:
@@ -368,15 +371,33 @@ const Map = () => {
     lat: 37.772,
     lng: -122.214
   }
-  console.log(markers);
+
+  const StatusWindow = ({text}) =>
+  {
+    return (
+      <div class='status-window'>
+        <p>{text}</p>
+      </div>
+    );
+  }
+
+  const mapOptions = 
+  {
+    fullscreenControl: false,
+    mapTypeControl: false
+  };
 
   return (
     <div id='wrapper'>
-      <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
+      {
+        markerCreationEnabled && 
+        <StatusWindow text="Click to place the marker."/>
+      }
       <div id='map'>
         <LoadScript googleMapsApiKey="AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o">
           <GoogleMap
-            defaultOptions={{mapTypeControl: false}}
+            className='map'
+            options={mapOptions}
             mapContainerStyle={containerStyle}
             center={defaultProps.center}
             zoom={defaultProps.zoom}
@@ -394,7 +415,7 @@ const Map = () => {
           >
             <MarkerClusterer options={{ maxZoom: 14 }}>
               {(clusterer) =>
-                [...markers, ...presetMarkers].map((marker, index) =>
+                markers.map((marker, index) =>
                 (
                   //...markers, removsed for meantime
                   // TODO: caledSize: new window. .maps.Size(50, 50), uses hard fixed pixels,
@@ -404,7 +425,7 @@ const Map = () => {
                     {{
                       // url works? path: doesnt?
                       url: marker.image,
-                      scaledSize: new window.google.maps.Size(60, 60),
+                      scaledSize: new window.google.maps.Size(56, 60),
                     }}
                     key={index}
                     position=

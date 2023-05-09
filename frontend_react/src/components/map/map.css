@@ -136,3 +136,35 @@
 {
   cursor: pointer !important;
 }
+
+.status-window
+{
+  position: absolute;
+
+  left: 50%;
+  top: 25px;
+
+  transform: translateX(-50%);
+
+  padding: 10px;
+
+  z-index: 1000;
+
+  background-color: var(--secondary-background);
+  color: var(--secondary-foreground);
+
+  border: 2px solid var(--secondary-background-accent);
+  border-radius: 4px;
+}
+
+.status-window p
+{
+  font-size: 1.2em;
+  padding: 0;
+  margin: 0;
+}
+
+#map
+{
+  cursor: crosshair;
+}
