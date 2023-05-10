@@ -66,18 +66,21 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
-            using (MySqlCommand command = new MySqlCommand())
+            if (pin != null)
             {
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
-                command.Parameters.AddWithValue("Id", id);
-
-                using (MySqlDataReader reader = command.ExecuteReader())
+                using (MySqlCommand command = new MySqlCommand())
                 {
-                    while (reader.Read())
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+                    command.Parameters.AddWithValue("Id", id);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        pin.Tags.Add(reader.GetInt32(0));
+                        while (reader.Read())
+                        {
+                            pin.Tags.Add(reader.GetInt32(0));
+                        }
                     }
                 }
             }

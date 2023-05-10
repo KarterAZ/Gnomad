@@ -15,6 +15,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 
 // internal imports.
 import { LoginButton } from '../login_button/LoginButton';
+import getRoutes from '../../utilities/api/get_routes';
 
 import './sidebar.css';
 import event from '../../utilities/event';
@@ -27,6 +28,7 @@ const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleuserc
 export default function Sidebar({ toggleMarkerCreation }) 
 {
   const [open, setOpen] = useState(true);
+  const [userRoutes, setUserRoutes] = useState([]);
 
   const sidebar = useRef();
 
@@ -40,6 +42,31 @@ export default function Sidebar({ toggleMarkerCreation })
     }
 
     setOpen(!open);
+  }
+
+  const loadRoutes = async (query) =>
+  {
+    // get the users routes.
+    let response = await getRoutes();
+
+    // check if the query was successful.
+    if (response != null)
+    {
+      // filter the response to match the search query.
+      response = response.filter(route => 
+        route.title.toLowerCase().includes(query.toLowerCase()));
+
+      // const to store the converted routes.
+      const routes = response.map((route, index) => <li key={index}>{route.title}</li>)
+
+      // update the state.
+      setUserRoutes(routes);
+    }
+    else
+    {
+      // the query failed, log an error.
+      console.log('Failed to get routes.');
+    }
   }
 
   // change the sidebar width when the open state variable changes.
@@ -104,12 +131,16 @@ export default function Sidebar({ toggleMarkerCreation })
         {/* search bar section */}
         <section className='section' id='search-section'>
           <label>Search</label>
-          <SearchBar/>
+          <SearchBar onSubmit={loadRoutes}/>
         </section>
 
         {/* pin list section */}
         <section className='section' id='pins-section'>
-          <div id='pins-list'></div>
+          <div id='pins-list'>
+            <ul>
+              {userRoutes}
+            </ul>
+          </div>
         </section>
 
         {/* buttons section */}
