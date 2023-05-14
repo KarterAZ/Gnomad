@@ -56,9 +56,6 @@ const options = {
     '../../images/Pin.png',
 }
 
-
-
-
 // fills in the cell coverage.
 const handleApiLoaded = async (map, maps) => {
 
@@ -101,6 +98,7 @@ const presetMarkers = [
   { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
   { lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", description: "testing" }, //extra added to test markercluster
 ];
+
 
 // can still utilize our own infowindow, dont need to use google map's, realistically most of this code is just for infowindow
 // renamed and repurposed.
@@ -213,9 +211,21 @@ const containerStyle = {
 };
 
 const Map = () => {
+
+
+  //testing directionsrender given array of unknown size with presetmarkers
+  //origin being the first,
+  //desitination being the last,
+  //waypoints being everything inbetween
+  const origin = { lat: presetMarkers[0].lat, lng: presetMarkers[0].lng };
+  const destination = { lat: presetMarkers[presetMarkers.length - 1].lat, lng: presetMarkers[presetMarkers.length - 1].lng };
+  const waypoints = presetMarkers.slice(1, -1).map(marker => ({
+    location: { lat: marker.lat, lng: marker.lng },
+    stopover: true
+  }));
+
   //State declared for storing markers
   const [markers, setMarkers] = useState("");
-
 
   // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
@@ -380,39 +390,16 @@ const Map = () => {
   }
   console.log(markers);
 
-function onDirectionsFetched(directions) 
-{
-  if (directions !== null) 
-  {
-    const steps = directions.routes[0].legs[0].steps;
-    const directionsPanelContent = steps.map(step => 
-    {
-      const sanitizedInstructions = DOMPurify.sanitize(step.html_instructions, { ALLOWED_TAGS: [] });
-      return `<p>${sanitizedInstructions}</p>`;
-    }).join('');
-    setDirections(directions);
-  }
-}
-  /*
-  //calculating outside of the render to figure out first, last, and every stop inbetween
-
-  const waypoints = presetMarkers.map((marker, index) =>
-  {
-    if (index === 0) 
-    {
-      // First marker is the origin
-      return { location: new window.google.maps.LatLng(marker.lat, marker.lng), stopover: false };
-    } else if (index === presetMarkers.length - 1) 
-    {
-      // Last marker is the destination
-      return { location: new window.google.maps.LatLng(marker.lat, marker.lng), stopover: true };
-    } else 
-    {
-      // Other markers are waypoints
-      return { location: new window.google.maps.LatLng(marker.lat, marker.lng), stopover: true };
+  function onDirectionsFetched(directions) {
+    if (directions !== null) {
+      const steps = directions.routes[0].legs[0].steps;
+      const directionsPanelContent = steps.map(step => {
+        const sanitizedInstructions = DOMPurify.sanitize(step.html_instructions, { ALLOWED_TAGS: [] });
+        return `<p>${sanitizedInstructions}</p>`;
+      }).join('');
+      setDirections(directions);
     }
-  });
-*/
+  }
   return (
     <div id='wrapper'>
       <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
@@ -430,7 +417,7 @@ function onDirectionsFetched(directions)
               console.log("Map object:", map);
               console.log("Maps object:", maps);
               setDirectionsService(new maps.DirectionsService());
-              handleApiLoaded(map, maps)
+              handleApiLoaded(map, maps);
             }}
 
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
@@ -438,18 +425,14 @@ function onDirectionsFetched(directions)
           >
             <DirectionsService
               options={{
-                origin: 'San Francisco, CA',
-                destination: 'Los Angeles, CA',
-                waypoints:
-                  [
-                    { location: 'San Jose, CA' },
-                    { location: 'Santa Barbara, CA' },
-                    { location: 'San Diego, CA' },
-                  ],
+                origin: origin,
+                destination: destination,
+                waypoints: waypoints,
                 travelMode: 'DRIVING',
               }}
               callback={onDirectionsFetched}
             />
+          
             <DirectionsRenderer
               directions={directions}
               options={{
@@ -460,42 +443,11 @@ function onDirectionsFetched(directions)
               }}
             />
             <DirectionsPanel directions={directions} />
-  
 
-            <MarkerClusterer options={{ maxZoom: 14 }}>
-              {(clusterer) =>
-                [...markers, ...presetMarkers].map((marker, index) =>
-                (
-                  //...markers, removsed for meantime
-                  // TODO: caledSize: new window. .maps.Size(50, 50), uses hard fixed pixels,
-                  // tried a few different ways to get screen size and scale it to a % of it but breaks  
-                  <Marker
-                    icon=
-                    {{
-                      // url works? path: doesnt?
-                      url: marker.image,
-                      scaledSize: new window.google.maps.Size(60, 60),
-                    }}
-                    key={index}
-                    position=
-                    {{
-                      lat: marker.lat,
-                      lng: marker.lng
-                    }}
-                    onClick={() => {
-                      setSelectedMarker(marker);
-                      console.log(selectedMarker); //is returning correct marker
-                      setShowInfoWindow(!showInfoWindow);
-                      console.log(showInfoWindow);
-                    }}
-                    clusterer={clusterer} // Add the clusterer prop to each marker
-                  >
-                  </Marker>
-                ))
-              }
-            </MarkerClusterer>
+
           </GoogleMap>
         </LoadScript>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o"></script>
       </div>
     </div>
   );
@@ -503,3 +455,61 @@ function onDirectionsFetched(directions)
 export default React.memo(Map);
 
 
+/**
+ *  // Testing directionrendering given an array of unknown size
+  const markersCount = presetMarkers.length;
+
+  // Set the origin as the first marker
+  const origin = new window.google.maps.LatLng(presetMarkers[0].lat, presetMarkers[0].lng);
+
+  // Set the destination as the last marker
+  const destination = new window.google.maps.LatLng(presetMarkers[markersCount - 1].lat, presetMarkers[markersCount - 1].lng);
+
+  // Set all markers in between as waypoints
+  const waypoints = [];
+  for (let i = 1; i < markersCount - 1; i++) {
+    const waypoint = new window.google.maps.LatLng(presetMarkers[i].lat, presetMarkers[i].lng);
+    waypoints.push({
+      location: waypoint,
+    });
+  }
+ */
+
+
+/*
+ 
+<MarkerClusterer options={{ maxZoom: 14 }}>
+            {(clusterer) =>
+              [...markers, ...presetMarkers].map((marker, index) =>
+              (
+                //...markers, removsed for meantime
+                // TODO: caledSize: new window. .maps.Size(50, 50), uses hard fixed pixels,
+                // tried a few different ways to get screen size and scale it to a % of it but breaks  
+                <Marker
+                  icon=
+                  {{
+                    // url works? path: doesnt?
+                    url: marker.image,
+                    scaledSize: new window.google.maps.Size(60, 60),
+                  }}
+                  key={index}
+                  position=
+                  {{
+                    lat: marker.lat,
+                    lng: marker.lng
+                  }}
+                  onClick={() => {
+                    setSelectedMarker(marker);
+                    console.log(selectedMarker); //is returning correct marker
+                    setShowInfoWindow(!showInfoWindow);
+                    console.log(showInfoWindow);
+                  }}
+                  clusterer={clusterer} // Add the clusterer prop to each marker
+                >
+                </Marker>
+              ))
+            }
+          </MarkerClusterer>
+          
+          
+          */

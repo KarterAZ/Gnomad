@@ -14,8 +14,10 @@ import React, { Component } from 'react';
 import './directions.css';
 
 // this class renders the Directions component
-const DirectionsPanel = ({ directions }) => {
-  if (!directions) {
+const DirectionsPanel = ({ directions }) => 
+{
+  if (!directions) 
+  {
     return null;
   }
 
@@ -32,6 +34,7 @@ const DirectionsPanel = ({ directions }) => {
   const parsedHtml = parser.parseFromString(directionsPanelContent, 'text/html');
   const textContent = parsedHtml.body.textContent;
   // parser is used to remove junk from text that was appearing before, such as <b> and </b>
+  
   return (
     <div className="directions-panel">
       <div className="directions-panel-next-turn">

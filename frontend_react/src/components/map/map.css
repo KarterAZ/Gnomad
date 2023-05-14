@@ -136,26 +136,3 @@
 {
   cursor: pointer !important;
 }
-
-.directions-panel {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #fff;
-  border: 1px solid #000000;
-  padding: 10px;
-  display: flex;
-  justify-content: space-between;
-  width: 300px;
-}
-
-.directions-panel-next-turn {
-  display: flex;
-  align-items: center;
-}
-
-.directions-panel-next-turn-icon {
-  margin-right: 10px;
-  color: #f00;
-}
