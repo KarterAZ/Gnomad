@@ -28,6 +28,7 @@ const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleuserc
 export default function Sidebar({ toggleMarkerCreation }) {
   const [open, setOpen] = useState(true);
   const [userRoutes, setUserRoutes] = useState([]);
+  const [excludedArr, setExcludedArray] = useState([]);
 
   const sidebar = useRef();
 
@@ -40,6 +41,20 @@ export default function Sidebar({ toggleMarkerCreation }) {
 
     setOpen(!open);
   }
+
+  function handleCheckboxClick(event) {
+    const checkboxValue = parseInt(event.target.value);
+    if (event.target.checked)
+    {
+      setExcludedArray([...excludedArr, checkboxValue]);
+    } else 
+    {
+      setExcludedArray(excludedArr.filter((num) => num !== checkboxValue));
+    }
+  }
+
+  console.log(excludedArr); //testing to make sure checkbox click retaining values in excludedArr.
+
 
   const loadRoutes = async (query) => {
     // get the users routes.
@@ -121,23 +136,28 @@ export default function Sidebar({ toggleMarkerCreation }) {
           <SearchBar onSubmit={loadRoutes} />
           <div id='checkboxes'>
             <label>
-              <input type='checkbox' name='checkbox1' />
+              <input type='checkbox' name='checkbox1' value='2' onClick={handleCheckboxClick}
+              />
               Bathrooms
             </label>
             <label>
-              <input type='checkbox' name='checkbox2' />
+              <input type='checkbox' name='checkbox2' value='3' onClick={handleCheckboxClick}
+              />
               Superchargers
             </label>
             <label>
-              <input type='checkbox' name='checkbox3' />
+              <input type='checkbox' name='checkbox3' value='4' onClick={handleCheckboxClick}
+              />
               Regular Fuel
             </label>
             <label>
-              <input type='checkbox' name='checkbox4' />
+              <input type='checkbox' name='checkbox4' value='5' onClick={handleCheckboxClick}
+              />
               Diesel
             </label>
             <label>
-              <input type='checkbox' name='checkbox5' />
+              <input type='checkbox' name='checkbox5'value='8' onClick={handleCheckboxClick} 
+              />
               Wifi
             </label>
           </div>
