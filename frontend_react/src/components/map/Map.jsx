@@ -92,11 +92,11 @@ const handleApiLoaded = async (map, maps) => {
 //used to test marker operations/google maps without having to render entire
 const presetMarkers = [
   { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", description: "Brevada" },
-  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", description: "Pilot" },
+  // { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", description: "Pilot" },
   { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", description: "Oregon Tech" },
   { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", description: "Oregon Tech Parking Lot F" },
-  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
-  { lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", description: "testing" }, //extra added to test markercluster
+  // { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
+  // { lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", description: "testing" }, //extra added to test markercluster
 ];
 
 
@@ -212,7 +212,6 @@ const containerStyle = {
 
 const Map = () => {
 
-
   //testing directionsrender given array of unknown size with presetmarkers
   //origin being the first,
   //desitination being the last,
@@ -240,10 +239,11 @@ const Map = () => {
   const [showInfoWindow, setShowInfoWindow] = useState(false);
 
   //States for direction rendering
+
   const [directions, setDirections] = useState(null);
   const [directionsService, setDirectionsService] = useState(null);
   //State for communicating with directions render
-  const [directionsEnabled, setDirectionsToggle] = useState(false);
+  const [showDirections, setShowDirections] = useState(false); // toggle true or false to show directions 
   const [wayPointsArr, setWayPointsArr] = useState([]);
 
 
@@ -384,13 +384,14 @@ const Map = () => {
     }
   }
 
-  const position = {
+  const position =
+  {
     lat: 37.772,
     lng: -122.214
   }
-  console.log(markers);
 
   function onDirectionsFetched(directions) {
+
     if (directions !== null) {
       const steps = directions.routes[0].legs[0].steps;
       const directionsPanelContent = steps.map(step => {
@@ -400,6 +401,13 @@ const Map = () => {
       setDirections(directions);
     }
   }
+
+  const handleCloseDirections = () => {
+    setShowDirections(prevState => !prevState);
+    setDirections(null);
+  };
+
+
   return (
     <div id='wrapper'>
       <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
@@ -423,60 +431,41 @@ const Map = () => {
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
             onChange={handleMapChange}
           >
-            <DirectionsService
-              options={{
-                origin: origin,
-                destination: destination,
-                waypoints: waypoints,
-                travelMode: 'DRIVING',
-              }}
-              callback={onDirectionsFetched}
-            />
-          
-            <DirectionsRenderer
-              directions={directions}
-              options={{
-                polylineOptions: {
-                  strokeColor: "#000",
-                },
-                panel: document.getElementById('directions-panel'),
-              }}
-            />
-            <DirectionsPanel directions={directions} />
-
+            {showDirections && (
+              <DirectionsService
+                options={{
+                  origin: origin,
+                  destination: destination,
+                  waypoints: waypoints,
+                  travelMode: 'DRIVING',
+                }}
+                callback={onDirectionsFetched}
+              />
+            )}
+            {directions && (
+              <DirectionsRenderer
+                directions={directions}
+                options={{
+                  polylineOptions: {
+                    strokeColor: "#000",
+                  },
+                  panel: document.getElementById('directions-panel'),
+                }}
+              />
+            )}
+            {showDirections && <DirectionsPanel directions={directions} onClose={handleCloseDirections} />}
 
           </GoogleMap>
         </LoadScript>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o"></script>
       </div>
-    </div>
+    </div >
   );
 };
 export default React.memo(Map);
 
 
-/**
- *  // Testing directionrendering given an array of unknown size
-  const markersCount = presetMarkers.length;
-
-  // Set the origin as the first marker
-  const origin = new window.google.maps.LatLng(presetMarkers[0].lat, presetMarkers[0].lng);
-
-  // Set the destination as the last marker
-  const destination = new window.google.maps.LatLng(presetMarkers[markersCount - 1].lat, presetMarkers[markersCount - 1].lng);
-
-  // Set all markers in between as waypoints
-  const waypoints = [];
-  for (let i = 1; i < markersCount - 1; i++) {
-    const waypoint = new window.google.maps.LatLng(presetMarkers[i].lat, presetMarkers[i].lng);
-    waypoints.push({
-      location: waypoint,
-    });
-  }
- */
-
-
-/*
+/**  
+/* taking this out to focus on rendering
  
 <MarkerClusterer options={{ maxZoom: 14 }}>
             {(clusterer) =>

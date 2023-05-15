@@ -14,8 +14,15 @@ import React, { Component } from 'react';
 import './directions.css';
 
 // this class renders the Directions component
-const DirectionsPanel = ({ directions }) => 
+const DirectionsPanel = ({ directions, onClose, setShowDirections  }) => 
 {
+  const handleClick = () => {
+    if (onClose) {
+      onClose();
+      setShowDirections(false); // set showDirections to false when closing the directions panel
+    }
+  };
+
   if (!directions) 
   {
     return null;
@@ -39,7 +46,8 @@ const DirectionsPanel = ({ directions }) =>
     <div className="directions-panel">
       <div className="directions-panel-next-turn">
         <div className="directions-panel-next-turn-icon">
-          <i className="fas fa-arrow-right"></i>
+          <i className="fas fa-arrow-right"></i>  
+          <button className="close-button" onClick={onClose}>X</button>
         </div>
         <div className="directions-panel-next-turn-text">
           {textContent}
