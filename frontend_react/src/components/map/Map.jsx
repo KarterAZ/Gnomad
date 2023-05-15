@@ -450,24 +450,14 @@ const Map = () => {
                     strokeColor: "#000",
                   },
                   panel: document.getElementById('directions-panel'),
+                  suppressMarkers: true,
+
                 }}
               />
             )}
             {showDirections && <DirectionsPanel directions={directions} onClose={handleCloseDirections} />}
 
-          </GoogleMap>
-        </LoadScript>
-      </div>
-    </div >
-  );
-};
-export default React.memo(Map);
-
-
-/**  
-/* taking this out to focus on rendering
- 
-<MarkerClusterer options={{ maxZoom: 14 }}>
+            <MarkerClusterer options={{ maxZoom: 14 }}>
             {(clusterer) =>
               [...markers, ...presetMarkers].map((marker, index) =>
               (
@@ -499,6 +489,15 @@ export default React.memo(Map);
               ))
             }
           </MarkerClusterer>
+          </GoogleMap>
+        </LoadScript>
+      </div>
+    </div >
+  );
+};
+export default React.memo(Map);
+
+
+
           
           
-          */
