@@ -205,10 +205,9 @@ const containerStyle = {
   height: '100%'
 };
 
-const Map = () => {
+const Map = ({excludedArr}) => {
   //State declared for storing markers
   const [markers, setMarkers] = useState(presetMarkers);
-
 
   // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
@@ -229,6 +228,9 @@ const Map = () => {
     setMarkerCreationEnabled(true);
     setPinToCreate({name: data.pin.name, type: data.pin.type});
   });
+
+  console.log("in Map.jsx")
+  console.log(excludedArr);
 
   // function handling onclick events on the map that will result in marker creation.
   const handleCreatePin = async (event) => 

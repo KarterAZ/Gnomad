@@ -25,10 +25,9 @@ import SearchBar from '../search_bar/SearchBar';
 const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com';
 
 // this class renders the Sidebar component.
-export default function Sidebar({ toggleMarkerCreation }) {
+export default function Sidebar({ setExcludedArray }) {
   const [open, setOpen] = useState(true);
   const [userRoutes, setUserRoutes] = useState([]);
-  const [excludedArr, setExcludedArray] = useState([]);
 
   const sidebar = useRef();
 
@@ -42,19 +41,19 @@ export default function Sidebar({ toggleMarkerCreation }) {
     setOpen(!open);
   }
 
-  function handleCheckboxClick(event) {
-    const checkboxValue = parseInt(event.target.value);
-    if (event.target.checked)
+  const handleCheckboxClick = (event) => 
+  {
+    const { value, checked } = event.target;
+    if (checked) 
     {
-      setExcludedArray([...excludedArr, checkboxValue]);
+      setExcludedArray((prevExcludedArr) => [...prevExcludedArr, value]);
     } else 
     {
-      setExcludedArray(excludedArr.filter((num) => num !== checkboxValue));
+      setExcludedArray((prevExcludedArr) => prevExcludedArr.filter((item) => item !== value));
     }
-  }
+  };
 
-  console.log(excludedArr); //testing to make sure checkbox click retaining values in excludedArr.
-
+  //console.log(excludedArr); //testing to make sure checkbox click retaining values in excludedArr.
 
   const loadRoutes = async (query) => {
     // get the users routes.
