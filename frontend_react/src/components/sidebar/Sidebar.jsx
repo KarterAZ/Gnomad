@@ -25,18 +25,15 @@ import SearchBar from '../search_bar/SearchBar';
 const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com';
 
 // this class renders the Sidebar component.
-export default function Sidebar({ toggleMarkerCreation }) 
-{
+export default function Sidebar({ toggleMarkerCreation }) {
   const [open, setOpen] = useState(true);
   const [userRoutes, setUserRoutes] = useState([]);
 
   const sidebar = useRef();
 
   // show / hide the Sidebar.
-  const handleClick = () => 
-  {
-    if (!open)
-    {
+  const handleClick = () => {
+    if (!open) {
       event.emit('close-pin-creator');
       event.emit('close-route-creator');
     }
@@ -44,16 +41,14 @@ export default function Sidebar({ toggleMarkerCreation })
     setOpen(!open);
   }
 
-  const loadRoutes = async (query) =>
-  {
+  const loadRoutes = async (query) => {
     // get the users routes.
     let response = await getRoutes();
 
     // check if the query was successful.
-    if (response != null)
-    {
+    if (response != null) {
       // filter the response to match the search query.
-      response = response.filter(route => 
+      response = response.filter(route =>
         route.title.toLowerCase().includes(query.toLowerCase()));
 
       // const to store the converted routes.
@@ -62,51 +57,43 @@ export default function Sidebar({ toggleMarkerCreation })
       // update the state.
       setUserRoutes(routes);
     }
-    else
-    {
+    else {
       // the query failed, log an error.
       console.log('Failed to get routes.');
     }
   }
 
   // change the sidebar width when the open state variable changes.
-  useEffect(()=>
-  {
-    if (!open) 
-    {
+  useEffect(() => {
+    if (!open) {
       // set max-width to 0px.
       sidebar.current.style.maxWidth = '0px';
     }
-    else 
-    {
+    else {
       // set max-width back to what the css specifies.
       sidebar.current.style.maxWidth = null;
     }
   }, [open]);
 
   // this function is called when the search button is clicked.
-  const search = async () => 
-  {
+  const search = async () => {
     const query = document.getElementById('search-bar').value;
     console.log(query);
   }
 
   // open the pin creation menu, close the sidebar if its open.
-  const showCreatePinMenu = () => 
-  {
+  const showCreatePinMenu = () => {
     setOpen(false);
     event.emit('show-pin-creator');
   }
 
   // show the cellular data.
-  const showCellularData = () => 
-  {
+  const showCellularData = () => {
     event.emit('toggle-cellular-creator');
   }
 
   // create a pin from the dialog.
-  const showCreateRouteMenu = (pinName, pinDescription, pinType) => 
-  {
+  const showCreateRouteMenu = (pinName, pinDescription, pinType) => {
     setOpen(false);
     event.emit('show-route-creator');
   }
@@ -119,7 +106,7 @@ export default function Sidebar({ toggleMarkerCreation })
         <section className='section' id='header-section'>
           <div id='user-section'>
             <GoogleOAuthProvider clientId={client_id}>
-              <LoginButton/>
+              <LoginButton />
             </GoogleOAuthProvider>
           </div>
 
@@ -131,7 +118,29 @@ export default function Sidebar({ toggleMarkerCreation })
         {/* search bar section */}
         <section className='section' id='search-section'>
           <label>Search</label>
-          <SearchBar onSubmit={loadRoutes}/>
+          <SearchBar onSubmit={loadRoutes} />
+          <div id='checkboxes'>
+            <label>
+              <input type='checkbox' name='checkbox1' />
+              Bathrooms
+            </label>
+            <label>
+              <input type='checkbox' name='checkbox2' />
+              Superchargers
+            </label>
+            <label>
+              <input type='checkbox' name='checkbox3' />
+              Regular Fuel
+            </label>
+            <label>
+              <input type='checkbox' name='checkbox4' />
+              Diesel
+            </label>
+            <label>
+              <input type='checkbox' name='checkbox5' />
+              Wifi
+            </label>
+          </div>
         </section>
 
         {/* pin list section */}
@@ -145,7 +154,7 @@ export default function Sidebar({ toggleMarkerCreation })
 
         {/* buttons section */}
         <section className='section' id='create-buttons-section'>
-        <button className='button' id='toggle-cellular-button' onClick={showCellularData}>
+          <button className='button' id='toggle-cellular-button' onClick={showCellularData}>
             Toggle Cellular Data
           </button>
 
