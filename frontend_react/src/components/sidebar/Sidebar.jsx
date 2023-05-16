@@ -25,18 +25,16 @@ import SearchBar from '../search_bar/SearchBar';
 const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com';
 
 // this class renders the Sidebar component.
-export default function Sidebar({ toggleMarkerCreation }) 
-{
+export default function Sidebar({ toggleMarkerCreation }) {
+  const toggle_ref = useRef();
   const [open, setOpen] = useState(true);
   const [userRoutes, setUserRoutes] = useState([]);
 
   const sidebar = useRef();
 
   // show / hide the Sidebar.
-  const handleClick = () => 
-  {
-    if (!open)
-    {
+  const handleClick = () => {
+    if (!open) {
       event.emit('close-pin-creator');
       event.emit('close-route-creator');
     }
@@ -69,44 +67,46 @@ export default function Sidebar({ toggleMarkerCreation })
     }
   }
 
-  // change the sidebar width when the open state variable changes.
-  useEffect(()=>
+  useEffect(() => 
   {
-    if (!open) 
+    event.on('cancel-cellular-overlay', () => 
     {
+      toggle_ref.current.checked = false;
+    });
+  }, []);
+
+  // change the sidebar width when the open state variable changes.
+  useEffect(() => {
+    if (!open) {
       // set max-width to 0px.
       sidebar.current.style.maxWidth = '0px';
     }
-    else 
-    {
+    else {
       // set max-width back to what the css specifies.
       sidebar.current.style.maxWidth = null;
     }
   }, [open]);
 
-  // this function is called when the search button is clicked.
-  const search = async () => 
-  {
-    const query = document.getElementById('search-bar').value;
-    console.log(query);
-  }
-
   // open the pin creation menu, close the sidebar if its open.
-  const showCreatePinMenu = () => 
-  {
+  const showCreatePinMenu = () => {
     setOpen(false);
     event.emit('show-pin-creator');
   }
 
   // show the cellular data.
-  const showCellularData = () => 
-  {
-    event.emit('toggle-cellular-creator');
+  const showCellularData = () => {
+    const element = document.getElementById('cellular_toggle_value'); //checkbox
+
+    if (element != null) {
+      if (element.checked)
+        event.emit('toggle-cellular-creator-on');
+      else
+        event.emit('toggle-cellular-creator-off');
+    }
   }
 
   // create a pin from the dialog.
-  const showCreateRouteMenu = (pinName, pinDescription, pinType) => 
-  {
+  const showCreateRouteMenu = (pinName, pinDescription, pinType) => {
     setOpen(false);
     event.emit('show-route-creator');
   }
@@ -119,7 +119,7 @@ export default function Sidebar({ toggleMarkerCreation })
         <section className='section' id='header-section'>
           <div id='user-section'>
             <GoogleOAuthProvider clientId={client_id}>
-              <LoginButton/>
+              <LoginButton />
             </GoogleOAuthProvider>
           </div>
 
@@ -145,9 +145,16 @@ export default function Sidebar({ toggleMarkerCreation })
 
         {/* buttons section */}
         <section className='section' id='create-buttons-section'>
-        <button className='button' id='toggle-cellular-button' onClick={showCellularData}>
-            Toggle Cellular Data
-          </button>
+
+          <div>
+            <label id='toggle-cellular-label'>
+              Toggle Cellular Data:
+            </label>
+            <label className="switch" id='cellular-toggle-switch'>
+              <input ref={toggle_ref} id='cellular_toggle_value' type="checkbox" onClick={showCellularData} />
+            <span className="slider round"></span>
+            </label>
+          </div>
 
           <button className='button' id='pin-add-button' onClick={showCreatePinMenu}>
             Create Pin
@@ -166,4 +173,5 @@ export default function Sidebar({ toggleMarkerCreation })
       </div>
     </div>
   );
+
 }
