@@ -76,9 +76,17 @@ export default function Sidebar({ setExcludedArray }) {
     }
   }
 
+  useEffect(() => 
+  {
+    loadRoutes('');
 
-  useEffect(() => {
-    event.on('cancel-cellular-overlay', () => {
+    event.on('close-route-creator', () => {
+      loadRoutes('');
+    });
+
+    event.on('cancel-cellular-overlay', () => 
+    {
+
       toggle_ref.current.checked = false;
     });
   }, []);
