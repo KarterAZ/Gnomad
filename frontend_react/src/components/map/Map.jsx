@@ -8,17 +8,17 @@
 //################################################################
 
 import React, { useState, useEffect, useRef } from 'react';
-import { GoogleMap, LoadScript, Marker, MarkerClusterer, DirectionsService, Polygon, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker, MarkerClusterer, Polygon, InfoWindow } from '@react-google-maps/api';
 
 // internal imports.
 import './map.css';
 
 
 // internal imports.
-import { get, isAuthenticated } from '../../utilities/api/api.js';
+import { get } from '../../utilities/api/api.js';
 import createPin from '../../utilities/api/create_pin';
 import Pin from '../../data/pin';
-import { ratePin, getPinRating, cancelVote } from '../../utilities/api/rating';
+import { ratePin, getPinRating } from '../../utilities/api/rating';
 
 import event from '../../utilities/event';
 import pin from '../../images/Pin.png';
@@ -41,12 +41,6 @@ const defaultProps =
     lng: -121.78,
   },
 };
-
-//marker cluster options
-const options = {
-  imagePath:
-    '../../images/Pin.png',
-}
 
 const polyOptions = {
   fillColor: "lightblue",
@@ -89,21 +83,6 @@ const MyInfoWindow = ({ marker }) => {
   // state declared for setting marker as a favorite true/false.
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // initially had an incrementer/decrementer but this version just stores one state
-  // of the user, eventually needs to be connected to the database to get a finalized
-  // reputation count on each marker.
-  const handleReputationClick = (value) => {
-    if (reputation === null) {
-      setReputation(value)
-    }
-    else {
-      // if currentRep is equal to value reset reputation value to null, else assign value.
-      setReputation((currentReputation) =>
-        currentReputation === value ? null : value
-      );
-    }
-  };
-
   const setRating = async (rating) =>
   {
     const response = await ratePin(marker.id, rating);
@@ -136,6 +115,7 @@ const MyInfoWindow = ({ marker }) => {
   useEffect(() => 
   {
     getRating();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // toggles favorite state between true/false on click. 
@@ -219,7 +199,7 @@ const Map = () => {
 
     //Events for cellular overlay
     event.on('toggle-cellular-creator-on', () => {
-      if (overlayPolygons.length == 0) {
+      if (overlayPolygons.length === 0) {
         getPolygons();
       }
       else {
@@ -231,6 +211,7 @@ const Map = () => {
     event.on('toggle-cellular-creator-off', () => {
       setOverlayPolygons([])
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // function handling onclick events on the map that will result in marker creation.
@@ -323,6 +304,7 @@ const Map = () => {
 
   //Blueprint for filtering through pins, can add elements in sidebar later
   //TODO: Make excludedPinTypes dynamic when sidebar has pin filtering. Currently used to reduce severe clutter.
+  // eslint-disable-next-line
   const excludedPinTypes = [3, 4, 8]; // array of pin types to exclude.
   const fetchData = async (latStart, longStart, latRange, longRange) => {
     try {
@@ -367,17 +349,6 @@ const Map = () => {
     } catch (error) {
       console.error(error);
     }
-  }
-
-  const position = {
-    lat: 37.772,
-    lng: -122.214
-  }
-
-  const reloadPoly = () => {
-    var container = document.getElementById("mypoly");
-    var content = container.innerHTML;
-    container.innerHTML = content;
   }
 
   const getPolygons = async () => {
