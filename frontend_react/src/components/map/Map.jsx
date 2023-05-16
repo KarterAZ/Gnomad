@@ -13,7 +13,6 @@ import { GoogleMap, LoadScript, Marker, MarkerClusterer, Polygon, InfoWindow } f
 // internal imports.
 import './map.css';
 
-
 // internal imports.
 import { get } from '../../utilities/api/api.js';
 import createPin from '../../utilities/api/create_pin';
@@ -44,10 +43,10 @@ const defaultProps =
 
 const polyOptions = {
   fillColor: "lightblue",
-  fillOpacity: 1,
-  strokeColor: "red",
-  strokeOpacity: 1,
-  strokeWeight: 2,
+  fillOpacity: .25,
+  strokeColor: "blue",
+  strokeOpacity: .25,
+  strokeWeight: .5,
   clickable: false,
   draggable: false,
   editable: false,
@@ -58,15 +57,13 @@ const polyOptions = {
 // array of markers that gets used to populate map, eventually will be filled with pin data from database.
 //used to test marker operations/google maps without having to render entire
 const presetMarkers = [
-  { id: 0, lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", name: "Brevada" },
-  { id: 0, lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", name: "Pilot" },
-  { id: 0, lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", name: "Oregon Tech" },
-  { id: 0, lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", name: "Oregon Tech Parking Lot F" },
-  { id: 0, lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", name: "College Union Guest Wifi" },
+  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", name: "Brevada", pinType: 2 },
+  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", name: "Pilot", pinType: 5 },
+  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", name: "Oregon Tech" , pinType: 2},
+  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", name: "Oregon Tech Parking Lot F", pinType: 3 },
+  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", name: "College Union Guest Wifi", pinType: 8 },
 
-  { id: 0, lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", name: "testing" }, //extra added to test markercluster
 ];
-
 // can still utilize our own infowindow, dont need to use google map's, realistically most of this code is just for infowindow
 // renamed and repurposed.
 const MyInfoWindow = ({ marker }) => {
@@ -171,12 +168,14 @@ const containerStyle = {
   height: '100%'
 };
 
-const Map = () => {
+
+const Map = ({excludedArr}) => {
   const map_ref = useRef();
   //State declared for storing markers
   const [markers, setMarkers] = useState(presetMarkers);
   const [overlayPolygons, setOverlayPolygons] = useState([]);
 
+  console.log(excludedArr);
   // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
@@ -198,7 +197,7 @@ const Map = () => {
     });
 
     //Events for cellular overlay
-    event.on('toggle-cellular-creator-on', () => {
+    event.on('toggle-cellular-creator', () => {
       if (overlayPolygons.length === 0) {
         getPolygons();
       }
@@ -299,8 +298,8 @@ const Map = () => {
       lngMin: map_bounds.Ha.lo,
       lngMax: map_bounds.Ha.hi
     }
-
     fetchData(bounds.latMin, bounds.lngMin, bounds.latMax, bounds.lngMax);
+
   };
 
   /* If getting the error:
@@ -314,14 +313,12 @@ const Map = () => {
 
   //Blueprint for filtering through pins, can add elements in sidebar later
   //TODO: Make excludedPinTypes dynamic when sidebar has pin filtering. Currently used to reduce severe clutter.
-  // eslint-disable-next-line
-  const excludedPinTypes = [3, 4, 8]; // array of pin types to exclude.
   const fetchData = async (latStart, longStart, latRange, longRange) => {
     try {
       const response = await get(`pins/getAllInArea?latStart=${latStart}&longStart=${longStart}&latRange=${latRange}&longRange=${longRange}`);
       let imageType;
       // adjusts marker imageType depending on json response .
-      const markers = response.map(marker => {
+      const markers = response.map(marker => { //TEMPORARILY CHANGED response.map to presetMarkers.map for TESTING
         switch (marker.tags[0]) {
           case 1:
           case 2:
@@ -353,8 +350,10 @@ const Map = () => {
           street: marker.street,
         };
       });
-
-      setMarkers(markers);
+      console.log(excludedArr);
+      console.log('Bathroom: ', pin);
+      //markers = markers.filter(marker => !excludedArr.includes(marker.pinType));
+      setMarkers(markers.filter(marker => !excludedArr.includes(marker.image)));
 
     } catch (error) {
       console.error(error);
@@ -387,7 +386,7 @@ const Map = () => {
     //Number of threads for backend
     let maxNum = 5;
 
-    const zoom_threshold = 11;
+    const zoom_threshold = 9;
 
     // only get the cellular data if the zoom is high enough.
     if (map_state.zoom > zoom_threshold) {
@@ -395,14 +394,22 @@ const Map = () => {
       let retArrays = await getAllCoords(maxNum, map_state.bounds.latMin, map_state.bounds.lngMin, map_state.bounds.latMax, map_state.bounds.lngMax);
       console.log(retArrays);
       //parse all the coords to api lat/lng
-      var latLngArray = [];
+        var latLngArray = [];
+        var overArray = [];
+        var sep = 1;
       for (let i = 0; i < retArrays.length; i += 2) {
         //let gData = new window.google.maps.LatLng(parseFloat(retArrays[i]), parseFloat(retArrays[i + 1]));
         //latLngArray.push(gData);
-        latLngArray.push({ lat: parseFloat(retArrays[i]), lng: parseFloat(retArrays[i + 1]) });
+          latLngArray.push({ lat: parseFloat(retArrays[i]), lng: parseFloat(retArrays[i + 1]) });
+          if (sep % 6 === 0) {
+              latLngArray.push({ lat: parseFloat(retArrays[i - 10]), lng: parseFloat(retArrays[i - 9]) });
+              overArray.push(latLngArray);
+              latLngArray = [];
+          }
+          sep++;
       }
-      console.log(latLngArray);
-      setOverlayPolygons(latLngArray);
+      //console.log(latLngArray);
+      setOverlayPolygons(overArray);
     }
     else {
       //Alert user to zoom in more
@@ -440,8 +447,6 @@ const Map = () => {
             center={defaultProps.center}
             zoom={defaultProps.zoom}
             draggable={!markerCreationEnabled}
-            //yesIWantToUseGoogleMapApiInternals //Please, for the love of god, stop deleting this
-            //onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
             onDragEnd={handleMapChange}
           >
@@ -477,9 +482,11 @@ const Map = () => {
                       setShowInfoWindow(true);
                     }}
                     clusterer={clusterer} // Add the clusterer prop to each marker
+                    
                   >
                   </Marker>
                 ))
+                
               }
             </MarkerClusterer>
             {
@@ -504,35 +511,3 @@ const Map = () => {
 };
 export default React.memo(Map);
 
-
-/* Need to integrate callback functions, can put this snippet between the 
-// MarkerCluster and Googlemap component on the bottom once done
-  <DirectionsService
-      options=
-      {{
-          origin: { lat: presetMarkers[0].lat, lng: presetMarkers[0].lng },
-          destination: { lat: presetMarkers[5].lat, lng: presetMarkers[5].lng },
-          travelMode: 'DRIVING',
-      }}
-          callback={(result) => 
-          {
-            if (result !== null)
-            {
-              setDirectionsResponse(result); 
-            }
-          }}
-    />
-*/
-/*
- {selectedMarker && showInfoWindow &&
-                      (
-                        <MyInfoWindow
-                          lat={selectedMarker.lat}
-                          lng={selectedMarker.lng}
-                          type={selectedMarker.type}
-                          name={selectedMarker.name}
-                          description={selectedMarker.description}
-                          toggleWindow={showInfoWindow}
-                        >
-                        </MyInfoWindow>
-                      )}*/
