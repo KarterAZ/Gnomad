@@ -197,7 +197,7 @@ const Map = ({excludedArr}) => {
     });
 
     //Events for cellular overlay
-    event.on('toggle-cellular-creator', () => {
+    event.on('toggle-cellular-creator-on', () => {
       if (overlayPolygons.length === 0) {
         getPolygons();
       }
@@ -386,7 +386,7 @@ const Map = ({excludedArr}) => {
     //Number of threads for backend
     let maxNum = 5;
 
-    const zoom_threshold = 9;
+    const zoom_threshold = 11;
 
     // only get the cellular data if the zoom is high enough.
     if (map_state.zoom > zoom_threshold) {

@@ -119,7 +119,10 @@ export default function Sidebar({ setExcludedArray }) {
 
   // show the cellular data.
   const showCellularData = () => {
-    event.emit('toggle-cellular-creator');
+    if (toggle_ref.current.checked)
+      event.emit('toggle-cellular-creator-on');
+    else
+      event.emit('toggle-cellular-creator-off');
   }
 
   // create a pin from the dialog.
