@@ -326,7 +326,7 @@ const Map = ({excludedArr}) => {
 
   //Blueprint for filtering through pins, can add elements in sidebar later
   //TODO: Make excludedPinTypes dynamic when sidebar has pin filtering. Currently used to reduce severe clutter.
-  const excludedPinTypes = [2,3,4]; // array of pin types to exclude.
+  //const excludedPinTypes = [2,3,4]; // array of pin types to exclude.
   const fetchData = async (latStart, longStart, latRange, longRange) => {
     try {
       const response = await get(`pins/getAllInArea?latStart=${latStart}&longStart=${longStart}&latRange=${latRange}&longRange=${longRange}`);
@@ -365,7 +365,7 @@ const Map = ({excludedArr}) => {
       });
       console.log(markers);
       
-      markers = markers.filter(marker => !excludedPinTypes.includes(marker.pinType));
+      markers = markers.filter(marker => !excludedArr.includes(marker.pinType));
       setMarkers(markers);
 
     } catch (error) {
@@ -417,7 +417,7 @@ const Map = ({excludedArr}) => {
             }}
 
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
-            onChange={handleMapChange}
+            onCenterChanged={handleMapChange}
           >
             <MarkerClusterer options={{ maxZoom: 14 }}>
               {(clusterer) =>

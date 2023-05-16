@@ -135,27 +135,27 @@ export default function Sidebar({ setExcludedArray }) {
           <SearchBar onSubmit={loadRoutes} />
           <div id='checkboxes'>
             <label>
-              <input type='checkbox' name='checkbox1' value='2' onClick={handleCheckboxClick}
+              <input type='checkbox' name='checkboxBathrooms' value='2' onClick={handleCheckboxClick}
               />
               Bathrooms
             </label>
             <label>
-              <input type='checkbox' name='checkbox2' value='3' onClick={handleCheckboxClick}
+              <input type='checkbox' name='checkboxSuperchargers' value='3' onClick={handleCheckboxClick}
               />
               Superchargers
             </label>
             <label>
-              <input type='checkbox' name='checkbox3' value='4' onClick={handleCheckboxClick}
+              <input type='checkbox' name='checkboxFuel' value='4' onClick={handleCheckboxClick}
               />
               Regular Fuel
             </label>
             <label>
-              <input type='checkbox' name='checkbox4' value='5' onClick={handleCheckboxClick}
+              <input type='checkbox' name='checkboxDiesel' value='5' onClick={handleCheckboxClick}
               />
               Diesel
             </label>
             <label>
-              <input type='checkbox' name='checkbox5'value='8' onClick={handleCheckboxClick} 
+              <input type='checkbox' name='checkboxWifi'value='8' onClick={handleCheckboxClick} 
               />
               Wifi
             </label>
