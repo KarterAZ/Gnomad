@@ -197,7 +197,7 @@ const Map = ({excludedArr}) => {
     });
 
     //Events for cellular overlay
-    event.on('toggle-cellular-creator', () => {
+    event.on('toggle-cellular-creator-on', () => {
       if (overlayPolygons.length === 0) {
         getPolygons();
       }
