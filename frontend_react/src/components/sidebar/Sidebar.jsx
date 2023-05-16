@@ -69,6 +69,12 @@ export default function Sidebar({ toggleMarkerCreation }) {
 
   useEffect(() => 
   {
+    loadRoutes('');
+
+    event.on('close-route-creator', () => {
+      loadRoutes('');
+    });
+
     event.on('cancel-cellular-overlay', () => 
     {
       toggle_ref.current.checked = false;

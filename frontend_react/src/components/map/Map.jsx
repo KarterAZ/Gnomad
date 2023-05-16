@@ -226,6 +226,16 @@ const Map = () => {
       const type = pinToCreate.type;
       const name = pinToCreate.name;
 
+      const type_map = 
+      {
+        'Pin': 0,
+        'Bathroom': 1,
+        'Supercharger': 3,
+        'Fuel': 4,
+        'Diesel': 5,
+        'Wi-Fi': 7 
+      }
+
       let pinImage = '';
       switch (type) {
         case 'Pin':
@@ -260,18 +270,18 @@ const Map = () => {
         name: name,
       }
 
-      setMarkers([...markers,
-        marker
-      ]);
-
        // create the pin object.
-       let new_pin = new Pin(0, 0, lng, lat, name, '', []);
+       let new_pin = new Pin(0, 0, lng, lat, name, '', [type_map[type]]);
        // call backend function to add pin to database.
        const response = await createPin(new_pin);
  
        if (response == null)
        {
-         console.log('Could not create pin in database.');
+        console.log('Could not create pin in database.');
+       }
+       else
+       {
+        handleMapChange();
        }
     }
   };
