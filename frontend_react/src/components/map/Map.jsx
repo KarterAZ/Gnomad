@@ -108,32 +108,34 @@ const MyInfoWindow = ({ marker }) => {
   {
     const response = await ratePin(marker.id, rating);
 
-    console.log(response);
-
     if (response == null)
     {
       console.log('Set vote failed.');
     }
+    else
+    {
+      getRating();
+    }
   }
 
+  async function getRating()
+  {
+    const response = await getPinRating(marker.id);
+
+    if (response == null)
+    {
+      console.log('Failed to get pin rating.');
+    }
+    else
+    {
+      setReputation(response);
+    }
+  }
+
+  // on load call get rating.
   useEffect(() => 
   {
-    async function fetchData()
-    {
-      const response = await getPinRating(marker.id);
-
-      if (response == null)
-      {
-        console.log('Failed to get pin rating.');
-      }
-      else
-      {
-        setReputation(response);
-        console.log(response);
-      }
-    }
-
-    fetchData();
+    getRating();
   }, []);
 
   // toggles favorite state between true/false on click. 
@@ -294,21 +296,20 @@ const Map = () => {
   };
 
   // handles changes to lat/lng depending on position and zoom
-  const handleMapChange = async ({ center, zoom, bounds }) => {
-    //extract lat/lng out of bounds & center
-    let { lat, lng } = center;
-    const { lat: latStart, lng: lngStart } = bounds.sw;
+  const handleMapChange = async () => {
+    const map = map_ref.current.state.map;
 
-    // set lng to a valid coordinate
-    lng = ((lng + 180) % 360 + 360) % 360 - 180;
+    const map_bounds = map.getBounds();
 
-    // set the ranges
-    const latRange = bounds.ne.lat - bounds.sw.lat;
-    const longRange = bounds.ne.lng - bounds.sw.lng;
+    const bounds =
+    {
+      latMin: map_bounds.Ua.lo,
+      latMax: map_bounds.Ua.hi,
+      lngMin: map_bounds.Ha.lo,
+      lngMax: map_bounds.Ha.hi
+    }
 
-    console.log('Lat:', lat);
-    console.log('Lng:', lng);
-    fetchData(lat, lng, latRange, longRange);
+    fetchData(bounds.latMin, bounds.lngMin, bounds.latMax, bounds.lngMax);
   };
 
   /* If getting the error:
@@ -352,6 +353,7 @@ const Map = () => {
             break;
         }
         return {
+          id: marker.id,
           lat: marker.latitude,
           lng: marker.longitude,
           image: imageType,
@@ -460,6 +462,7 @@ const Map = () => {
             //yesIWantToUseGoogleMapApiInternals //Please, for the love of god, stop deleting this
             //onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
+            onDragEnd={handleMapChange}
           >
             <Polygon
               editable={true}
@@ -490,7 +493,6 @@ const Map = () => {
 
                     onClick={() => {
                       setSelectedMarker(marker);
-                      console.log('Clicked Marker:', marker); //is returning correct marker
                       setShowInfoWindow(true);
                     }}
                     clusterer={clusterer} // Add the clusterer prop to each marker
