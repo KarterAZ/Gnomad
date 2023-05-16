@@ -412,7 +412,7 @@ const Map = () => {
   }
   const StatusWindow = ({ text }) => {
     return (
-      <div class='status-window'>
+      <div className='status-window'>
         <p>{text}</p>
       </div>
     );
