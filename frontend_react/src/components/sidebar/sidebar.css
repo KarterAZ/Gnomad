@@ -253,6 +253,15 @@
   }
 }
 
+#checkboxes label {
+  font-size: 0.95em;
+}
+
+.wifi-label {
+  padding-right: 70px; 
+  padding-left: 33px; 
+}
+
 /* Slider css */
 /* The switch - the box around the slider */
 .switch {

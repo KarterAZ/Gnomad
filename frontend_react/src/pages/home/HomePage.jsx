@@ -25,6 +25,7 @@ export default function HomePage()
 {
   const [showPinCreator, setShowPinCreator] = useState(false);
   const [showRouteCreator, setShowRouteCreator] = useState(false);
+  const [excludedArr, setExcludedArray] = useState([]);
 
   const pageLoad = () =>
   {
@@ -66,8 +67,8 @@ export default function HomePage()
   return (
     <>
       <div id='content' onLoad={pageLoad}>
-        <Sidebar/>
-        <Map/>
+        <Sidebar setExcludedArray={setExcludedArray}/>
+        <Map excludedArr={excludedArr}/>
         { showPinCreator && <PinCreator/> }
         { showRouteCreator && <RouteCreator/> }
       </div>
