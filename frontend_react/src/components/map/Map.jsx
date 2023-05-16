@@ -197,7 +197,7 @@ const Map = ({excludedArr}) => {
     });
 
     //Events for cellular overlay
-    event.on('toggle-cellular-creator-on', () => {
+    event.on('toggle-cellular-creator', () => {
       if (overlayPolygons.length === 0) {
         getPolygons();
       }
@@ -392,7 +392,7 @@ const Map = ({excludedArr}) => {
     if (map_state.zoom > zoom_threshold) {
       // calls all the async functions and waits for all of them to return.
       let retArrays = await getAllCoords(maxNum, map_state.bounds.latMin, map_state.bounds.lngMin, map_state.bounds.latMax, map_state.bounds.lngMax);
-      //console.log(retArrays);
+      console.log(retArrays);
       //parse all the coords to api lat/lng
         var latLngArray = [];
         var overArray = [];
