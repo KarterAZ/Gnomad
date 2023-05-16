@@ -8,7 +8,7 @@
 //################################################################
 
 import React, { useState, useEffect, useRef } from 'react';
-import { GoogleMap, LoadScript, Marker, MarkerClusterer, DirectionsService, Polygon } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker, MarkerClusterer, DirectionsService, Polygon, InfoWindow } from '@react-google-maps/api';
 
 // internal imports.
 import './map.css';
@@ -18,6 +18,7 @@ import './map.css';
 import { get, isAuthenticated } from '../../utilities/api/api.js';
 import createPin from '../../utilities/api/create_pin';
 import Pin from '../../data/pin';
+import { ratePin, getPinRating, cancelVote } from '../../utilities/api/rating';
 
 import event from '../../utilities/event';
 import pin from '../../images/Pin.png';
@@ -63,27 +64,24 @@ const polyOptions = {
 // array of markers that gets used to populate map, eventually will be filled with pin data from database.
 //used to test marker operations/google maps without having to render entire
 const presetMarkers = [
-  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", name: "Brevada" },
-  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", name: "Pilot" },
-  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", name: "Oregon Tech" },
-  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", name: "Oregon Tech Parking Lot F" },
-  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", name: "College Union Guest Wifi" },
+  { id: 0, lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", name: "Brevada" },
+  { id: 0, lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", name: "Pilot" },
+  { id: 0, lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", name: "Oregon Tech" },
+  { id: 0, lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", name: "Oregon Tech Parking Lot F" },
+  { id: 0, lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", name: "College Union Guest Wifi" },
 
-  { lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", name: "testing" }, //extra added to test markercluster
+  { id: 0, lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", name: "testing" }, //extra added to test markercluster
 ];
 
 // can still utilize our own infowindow, dont need to use google map's, realistically most of this code is just for infowindow
 // renamed and repurposed.
-const MyInfoWindow = ({ lat, lng, type, name, description, toggleWindow }) => {
+const MyInfoWindow = ({ marker }) => {
   // named constants for the rating values.
   const THUMBS_UP = "1";
   const THUMBS_DOWN = "-1";
 
   // TODO: custom marker is starting to get really big, consider making it into a component in it's own class?
   // such as Marker.jsx , could benefit from having it's own .css file.
-
-  // state declared for InfoWindow displaying.
-  const [showInfoWindow, setShowInfoWindow] = useState(toggleWindow);
 
   // state declared for reputation thumbs up (1) down (-1) No selection (null).
   const [reputation, setReputation] = useState(null);
@@ -106,75 +104,84 @@ const MyInfoWindow = ({ lat, lng, type, name, description, toggleWindow }) => {
     }
   };
 
+  const setRating = async (rating) =>
+  {
+    const response = await ratePin(marker.id, rating);
+
+    console.log(response);
+
+    if (response == null)
+    {
+      console.log('Set vote failed.');
+    }
+  }
+
+  useEffect(() => 
+  {
+    async function fetchData()
+    {
+      const response = await getPinRating(marker.id);
+
+      if (response == null)
+      {
+        console.log('Failed to get pin rating.');
+      }
+      else
+      {
+        setReputation(response);
+        console.log(response);
+      }
+    }
+
+    fetchData();
+  }, []);
+
   // toggles favorite state between true/false on click. 
   const handleFavoriteClick = () => {
     setIsFavorite((currentIsFavorite) => !currentIsFavorite);
   }
-  //REQUIRED TO FORMAT LIKE THIS
-  // or else it will not load from lat/lng, needs position 
-
-  const position = {
-    lat: lat,
-    lng: lng,
-  }
 
   return (
-    <div>
-
-      {showInfoWindow && (
-        // customized InfoWindow, was having too much trouble using google map's (plus ours looks nicer).
-        <div className='info-window' >
-          <div className='info-window-header'>
-            {/* favorite button */}
-            <div className='header-button-wrapper'>
-              <button className='header-button' onClick={handleFavoriteClick}>
-                {isFavorite ? "❤️" : "🖤"}
-              </button>
-            </div>
-
-            {/* show pin type as the title */}
-            <div className='pin-title'>{type}</div>
-
-            {/* header with reputation */}
-            <div className='header-button-wrapper'>
-              <button
-                className='header-button'
-                disabled={reputation === THUMBS_UP}
-                onClick={() => handleReputationClick(THUMBS_UP)}
-              >
-                👍
-              </button>
-              <button
-                className='header-button'
-                disabled={reputation === THUMBS_DOWN}
-                onClick={() => handleReputationClick(THUMBS_DOWN)}
-              >
-                👎
-              </button>
-            </div>
-          </div>
-          {/* show name and description */}
-          <div className='info-window-body'>
-            <div>{name}</div>
-            <div>{description}</div>
-          </div>
-
-          <div className='info-window-reputation'>
-            <div style={{ marginBottom: '10px' }}>
-              Reputation: {" "}
-              {/* conditional: if null "None" | else if 1 thumbsUp | else -1 thumbsDown */}
-              {reputation === null ? "None" : reputation === THUMBS_UP ? "👍" : "👎"}
-            </div>
-          </div>
+    <div className='info-window' >
+      <div className='info-window-header'>
+        {/* favorite button */}
+        <div className='header-button-wrapper'>
+          <button className='header-button' onClick={handleFavoriteClick}>
+            {isFavorite ? "❤️" : "🖤"}
+          </button>
         </div>
-      )}
+
+        {/* show pin type as the title */}
+        <div className='pin-title'>{marker.type}</div>
+
+        {/* header with reputation */}
+        <div className='header-button-wrapper'>
+          <button
+            className='header-button'
+            onClick={() => setRating(THUMBS_UP)}
+          >
+            👍
+          </button>
+          <button
+            className='header-button'
+            onClick={() => setRating(THUMBS_DOWN)}
+          >
+            👎
+          </button>
+        </div>
+      </div>
+      {/* show name and description */}
+      <div className='info-window-body'>
+        <div>{marker.name}</div>
+      </div>
+
+      <div className='info-window-reputation'>
+        <div style={{ marginBottom: '10px' }}>
+          Rating: {'⭐'.repeat(reputation)}
+        </div>
+      </div>
     </div>
   );
-};
-
-const center = {
-  lat: -3.745,
-  lng: -38.523
 };
 
 const containerStyle = {
@@ -350,7 +357,6 @@ const Map = () => {
           image: imageType,
           type: marker.title,
           street: marker.street,
-
         };
       });
 
@@ -474,17 +480,18 @@ const Map = () => {
                       url: marker.image,
                       scaledSize: new window.google.maps.Size(56, 60),
                     }}
+
                     key={index}
                     position=
                     {{
                       lat: marker.lat,
                       lng: marker.lng
                     }}
+
                     onClick={() => {
                       setSelectedMarker(marker);
-                      console.log(selectedMarker); //is returning correct marker
-                      setShowInfoWindow(!showInfoWindow);
-                      console.log(showInfoWindow);
+                      console.log('Clicked Marker:', marker); //is returning correct marker
+                      setShowInfoWindow(true);
                     }}
                     clusterer={clusterer} // Add the clusterer prop to each marker
                   >
@@ -492,6 +499,20 @@ const Map = () => {
                 ))
               }
             </MarkerClusterer>
+            {
+              showInfoWindow && 
+              <InfoWindow
+                position=
+                {{
+                  lat: selectedMarker.lat,
+                  lng: selectedMarker.lng
+                }}
+
+                onCloseClick={() => setShowInfoWindow(false)}
+              >
+                <MyInfoWindow marker={selectedMarker}/>
+              </InfoWindow>
+            }
           </GoogleMap>
         </LoadScript>
       </div>

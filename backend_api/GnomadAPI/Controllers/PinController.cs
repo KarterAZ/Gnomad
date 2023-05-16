@@ -270,12 +270,12 @@ namespace TravelCompanionAPI.Controllers
         /// <returns>
         /// Returns the review
         ///</returns>
-        [HttpGet("getReview /{pinid}")]
-        public double getReview(int pinid)
+        [HttpGet("getReview/{pinid}")]
+        public JsonResult getReview(int pinid)
         {
             double review = _pin_repo.getAverageVote(pinid);
 
-            return review;
+            return new JsonResult(Ok(review));
         }
 
         /// <summary>
