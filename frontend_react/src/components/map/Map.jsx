@@ -196,7 +196,7 @@ const Map = ({excludedArr}) => {
   const [markers, setMarkers] = useState(presetMarkers);
   const [overlayPolygons, setOverlayPolygons] = useState([]);
 
-
+  console.log(excludedArr);
   // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
@@ -361,10 +361,10 @@ const Map = ({excludedArr}) => {
           street: marker.street,
         };
       });
-      console.log(markers);
-      
-      markers = markers.filter(marker => !excludedArr.includes(marker.pinType));
-      setMarkers(markers);
+      console.log(excludedArr);
+      console.log('Bathroom: ', pin);
+      //markers = markers.filter(marker => !excludedArr.includes(marker.pinType));
+      setMarkers(markers.filter(marker => !excludedArr.includes(marker.image)));
 
     } catch (error) {
       console.error(error);

@@ -142,31 +142,34 @@ export default function Sidebar({ setExcludedArray }) {
           <label>Search</label>
           <SearchBar onSubmit={loadRoutes} />
           <div id='checkboxes'>
-            <label>
-              <input type='checkbox' name='checkboxBathrooms' value='2' onClick={handleCheckboxClick}
-              />
-              Bathrooms
-            </label>
-            <label>
-              <input type='checkbox' name='checkboxSuperchargers' value='3' onClick={handleCheckboxClick}
-              />
-              Superchargers
-            </label>
-            <label>
-              <input type='checkbox' name='checkboxFuel' value='4' onClick={handleCheckboxClick}
-              />
-              Regular Fuel
-            </label>
-            <label>
-              <input type='checkbox' name='checkboxDiesel' value='5' onClick={handleCheckboxClick}
-              />
-              Diesel
-            </label>
-            <label>
-              <input type='checkbox' name='checkboxWifi' value='8' onClick={handleCheckboxClick}
-              />
-              Wifi
-            </label>
+            <div className='checkbox-group'>
+              <label>
+                <input type='checkbox' name='checkboxBathrooms' value='/static/media/Restroom.bd2c8abecc2db6e2f278.png' onClick={handleCheckboxClick} />
+                Bathrooms
+              </label>
+              <label>
+                <input type='checkbox' name='checkboxSuperchargers' value='/static/media/Charger.63912282ba06bd3b8c0a.png' onClick={handleCheckboxClick} />
+                Superchargers
+              </label>
+              <label>
+                <input type='checkbox' name='checkboxFuel' value='/static/media/Gas.3accb04e10d7ce18c293.png' onClick={handleCheckboxClick} />
+                Regular Fuel
+              </label>
+            </div>
+            <div className='checkbox-group'>
+              <label>
+                <input type='checkbox' name='checkboxDiesel' value='/static/media/Diesel.59635fc105450eb3246e.png' onClick={handleCheckboxClick} />
+                Diesel
+              </label>
+              <label class="wifi-label">
+                <input type='checkbox' name='checkboxWifi' value='/static/media/WiFi.7f5ccf4e56885ffb49d4.png' onClick={handleCheckboxClick} />
+                Wifi
+              </label>
+              <label>
+                <input type='checkbox' name='checkboxGnome' value='/static/media/Pin.70731107db4fbfc9454c.png' onClick={handleCheckboxClick} />
+                Gnome
+              </label>
+            </div>
           </div>
         </section>
 
