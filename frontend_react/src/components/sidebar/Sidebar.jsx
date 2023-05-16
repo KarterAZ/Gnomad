@@ -25,7 +25,9 @@ import SearchBar from '../search_bar/SearchBar';
 const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com';
 
 // this class renders the Sidebar component.
+
 export default function Sidebar({ setExcludedArray }) {
+  const toggle_ref = useRef();
   const [open, setOpen] = useState(true);
   const [userRoutes, setUserRoutes] = useState([]);
 
@@ -41,14 +43,11 @@ export default function Sidebar({ setExcludedArray }) {
     setOpen(!open);
   }
 
-  const handleCheckboxClick = (event) => 
-  {
+  const handleCheckboxClick = (event) => {
     const { value, checked } = event.target;
-    if (checked) 
-    {
+    if (checked) {
       setExcludedArray((prevExcludedArr) => [...prevExcludedArr, value]);
-    } else 
-    {
+    } else {
       setExcludedArray((prevExcludedArr) => prevExcludedArr.filter((item) => item !== value));
     }
   };
@@ -77,6 +76,14 @@ export default function Sidebar({ setExcludedArray }) {
     }
   }
 
+
+  useEffect(() => {
+    event.on('cancel-cellular-overlay', () => {
+      toggle_ref.current.checked = false;
+    });
+  }, []);
+
+
   // change the sidebar width when the open state variable changes.
   useEffect(() => {
     if (!open) {
@@ -94,6 +101,7 @@ export default function Sidebar({ setExcludedArray }) {
     const query = document.getElementById('search-bar').value;
     console.log(query);
   }
+
 
   // open the pin creation menu, close the sidebar if its open.
   const showCreatePinMenu = () => {
@@ -155,7 +163,7 @@ export default function Sidebar({ setExcludedArray }) {
               Diesel
             </label>
             <label>
-              <input type='checkbox' name='checkboxWifi'value='8' onClick={handleCheckboxClick} 
+              <input type='checkbox' name='checkboxWifi' value='8' onClick={handleCheckboxClick}
               />
               Wifi
             </label>
@@ -173,9 +181,18 @@ export default function Sidebar({ setExcludedArray }) {
 
         {/* buttons section */}
         <section className='section' id='create-buttons-section'>
-          <button className='button' id='toggle-cellular-button' onClick={showCellularData}>
-            Toggle Cellular Data
-          </button>
+
+
+          <div>
+            <label id='toggle-cellular-label'>
+              Toggle Cellular Data:
+            </label>
+            <label className="switch" id='cellular-toggle-switch'>
+              <input ref={toggle_ref} id='cellular_toggle_value' type="checkbox" onClick={showCellularData} />
+              <span className="slider round"></span>
+            </label>
+          </div>
+
 
           <button className='button' id='pin-add-button' onClick={showCreatePinMenu}>
             Create Pin
@@ -195,3 +212,4 @@ export default function Sidebar({ setExcludedArray }) {
     </div>
   );
 }
+

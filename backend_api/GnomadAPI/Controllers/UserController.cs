@@ -91,12 +91,12 @@ namespace TravelCompanionAPI.Controllers
 
             _user_database.review(uid, pinid, vote);
             
-            return new JsonResult(Ok());
+            return new JsonResult(Ok("Success"));
         }
 
         //Gets the user's review value from the user_review table
         [HttpGet("getVote/{pinid}")]
-        public int getVote(int pinid)
+        public JsonResult getVote(int pinid)
         {
             var identity = (User.Identity as ClaimsIdentity);
 
@@ -108,7 +108,7 @@ namespace TravelCompanionAPI.Controllers
 
             int uVote = _user_database.getVote(uid, pinid);
 
-            return uVote;
+            return new JsonResult(Ok(uVote));
         }
 
         [HttpPost("cancelVote/{pinid}")]
@@ -124,7 +124,7 @@ namespace TravelCompanionAPI.Controllers
 
             _user_database.cancelReview(uid, pinid);
 
-            return new JsonResult(Ok());
+            return new JsonResult(Ok("Success"));
         }
     }
 }
