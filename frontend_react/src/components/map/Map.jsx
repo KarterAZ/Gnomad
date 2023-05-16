@@ -13,7 +13,6 @@ import { GoogleMap, LoadScript, Marker, MarkerClusterer, Polygon, InfoWindow } f
 // internal imports.
 import './map.css';
 
-
 // internal imports.
 import { get } from '../../utilities/api/api.js';
 import createPin from '../../utilities/api/create_pin';
@@ -44,10 +43,10 @@ const defaultProps =
 
 const polyOptions = {
   fillColor: "lightblue",
-  fillOpacity: 1,
-  strokeColor: "red",
-  strokeOpacity: 1,
-  strokeWeight: 2,
+  fillOpacity: .25,
+  strokeColor: "blue",
+  strokeOpacity: .25,
+  strokeWeight: .5,
   clickable: false,
   draggable: false,
   editable: false,
@@ -377,22 +376,30 @@ const Map = () => {
     //Number of threads for backend
     let maxNum = 5;
 
-    const zoom_threshold = 11;
+    const zoom_threshold = 9;
 
     // only get the cellular data if the zoom is high enough.
     if (map_state.zoom > zoom_threshold) {
       // calls all the async functions and waits for all of them to return.
       let retArrays = await getAllCoords(maxNum, map_state.bounds.latMin, map_state.bounds.lngMin, map_state.bounds.latMax, map_state.bounds.lngMax);
-      console.log(retArrays);
+      //console.log(retArrays);
       //parse all the coords to api lat/lng
-      var latLngArray = [];
+        var latLngArray = [];
+        var overArray = [];
+        var sep = 1;
       for (let i = 0; i < retArrays.length; i += 2) {
         //let gData = new window.google.maps.LatLng(parseFloat(retArrays[i]), parseFloat(retArrays[i + 1]));
         //latLngArray.push(gData);
-        latLngArray.push({ lat: parseFloat(retArrays[i]), lng: parseFloat(retArrays[i + 1]) });
+          latLngArray.push({ lat: parseFloat(retArrays[i]), lng: parseFloat(retArrays[i + 1]) });
+          if (sep % 6 === 0) {
+              latLngArray.push({ lat: parseFloat(retArrays[i - 10]), lng: parseFloat(retArrays[i - 9]) });
+              overArray.push(latLngArray);
+              latLngArray = [];
+          }
+          sep++;
       }
-      console.log(latLngArray);
-      setOverlayPolygons(latLngArray);
+      //console.log(latLngArray);
+      setOverlayPolygons(overArray);
     }
     else {
       //Alert user to zoom in more
@@ -430,8 +437,6 @@ const Map = () => {
             center={defaultProps.center}
             zoom={defaultProps.zoom}
             draggable={!markerCreationEnabled}
-            //yesIWantToUseGoogleMapApiInternals //Please, for the love of god, stop deleting this
-            //onGoogleApiLoaded={({ map, maps }) => handleApiLoaded(map, maps)}
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
             onDragEnd={handleMapChange}
           >

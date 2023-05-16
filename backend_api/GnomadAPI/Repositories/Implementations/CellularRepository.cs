@@ -171,11 +171,18 @@ namespace TravelCompanionAPI.Data
                     {
                         //Compare centers (beginning) before (start at 2)
                         //Then go to 13 (<14) for all data received from sql statement
-                        for (int i = 2; i < 14; i++)
+                        int i;
+                        float coord;
+                        for (i = 2; i < 14; i++)
                         {
-                            float coord = reader.GetFloat(i);
+                            coord = reader.GetFloat(i);
                             latLng_coord_data.Add(coord);
                         }
+                        //adds the first coord again to close the shape
+                        /*coord = reader.GetFloat(2);
+                        latLng_coord_data.Add(coord);
+                        coord = reader.GetFloat(3);
+                        latLng_coord_data.Add(coord);*/
                     }
                 }
                 command.Connection.Close();
