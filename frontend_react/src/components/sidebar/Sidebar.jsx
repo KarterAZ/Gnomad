@@ -38,6 +38,7 @@ export default function Sidebar({ setExcludedArray }) {
     if (!open) {
       event.emit('close-pin-creator');
       event.emit('close-route-creator');
+      event.emit('close-settings-page');
     }
 
     setOpen(!open);
@@ -86,9 +87,19 @@ export default function Sidebar({ setExcludedArray }) {
 
     event.on('cancel-cellular-overlay', () => 
     {
-
       toggle_ref.current.checked = false;
     });
+
+    event.on('show-settings-page', () =>
+    {
+      
+    });
+
+    event.on('close-settings-page', () =>
+    {
+
+    });
+
   }, []);
 
 
@@ -131,6 +142,11 @@ export default function Sidebar({ setExcludedArray }) {
     event.emit('show-route-creator');
   }
 
+  // Show settings page
+  const showSettings = () => {
+    event.emit('show-settings-page');
+  }
+
   // render the sidebar.
   return (
     <div ref={sidebar} id='sidebar-container'>
@@ -144,7 +160,7 @@ export default function Sidebar({ setExcludedArray }) {
           </div>
 
           <div id='settings-button-wrapper'>
-            <Icon id='settings-button' icon='ph:gear-six-duotone' />
+            <Icon id='settings-button' icon='ph:gear-six-duotone' onClick={loadSettings()}/>
           </div>
         </section>
 
