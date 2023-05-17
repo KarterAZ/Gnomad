@@ -89,17 +89,6 @@ export default function Sidebar({ setExcludedArray }) {
     {
       toggle_ref.current.checked = false;
     });
-
-    event.on('show-settings-page', () =>
-    {
-      
-    });
-
-    event.on('close-settings-page', () =>
-    {
-
-    });
-
   }, []);
 
 
@@ -143,7 +132,8 @@ export default function Sidebar({ setExcludedArray }) {
   }
 
   // Show settings page
-  const showSettings = () => {
+  const loadSettings = () => {
+    setOpen(false);
     event.emit('show-settings-page');
   }
 
@@ -160,7 +150,7 @@ export default function Sidebar({ setExcludedArray }) {
           </div>
 
           <div id='settings-button-wrapper'>
-            <Icon id='settings-button' icon='ph:gear-six-duotone' onClick={loadSettings()}/>
+            <Icon id='settings-button' icon='ph:gear-six-duotone' onClick={loadSettings}/>
           </div>
         </section>
 
