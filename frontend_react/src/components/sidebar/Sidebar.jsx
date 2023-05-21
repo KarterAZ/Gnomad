@@ -86,7 +86,7 @@ export default function Sidebar({ setExcludedArray }) {
 
     event.on('cancel-cellular-overlay', () => 
     {
-
+      event.emit('toggle-cellular-creator-off');
       toggle_ref.current.checked = false;
     });
   }, []);

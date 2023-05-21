@@ -175,7 +175,8 @@ const Map = ({excludedArr}) => {
   const [markers, setMarkers] = useState(presetMarkers);
   const [overlayPolygons, setOverlayPolygons] = useState([]);
 
-  console.log(excludedArr);
+  console.log(excludedArr); //TODO: Delete console.log
+
   // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
@@ -185,6 +186,9 @@ const Map = ({excludedArr}) => {
   //States for getting onclick interactions with google maps markers & our custom infowindow
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [showInfoWindow, setShowInfoWindow] = useState(false);
+
+  // state declared for limiting cellular toggle spam.
+  const [cellularToggleEnabled, setCellularToggleEnabled] = useState(true);
 
   //const [directionsResponse, setDirectionsResponse] = useState(null);
 
@@ -198,11 +202,12 @@ const Map = ({excludedArr}) => {
 
     //Events for cellular overlay
     event.on('toggle-cellular-creator-on', () => {
-      if (overlayPolygons.length === 0) {
+      if(!cellularToggleEnabled)
+        return;
+      else if (overlayPolygons.length === 0) {
         getPolygons();
       }
       else {
-        console.log(overlayPolygons);
         setOverlayPolygons([])
       }
     });
@@ -289,6 +294,11 @@ const Map = ({excludedArr}) => {
   const handleMapChange = async () => {
     const map = map_ref.current.state.map;
 
+    //useEffect(() => {
+      // untoggle to the cellular data.
+      event.emit('cancel-cellular-overlay')
+    //});
+
     const map_bounds = map.getBounds();
 
     const bounds =
@@ -361,6 +371,15 @@ const Map = ({excludedArr}) => {
   }
 
   const getPolygons = async () => {
+    //Verify if valid and change state
+    if(!cellularToggleEnabled)
+    {
+      event.emit('cancel-cellular-overlay');
+      return;
+    }
+
+    setCellularToggleEnabled(false);
+
     //variables for the bounds of the screen
     const map = map_ref.current.state.map;
 
@@ -416,6 +435,9 @@ const Map = ({excludedArr}) => {
       alert("Please zoom in more to access cellular data :)");
       event.emit('cancel-cellular-overlay');
     }
+
+    //Allow another call to cellular toggle
+    setCellularToggleEnabled(true);
   }
   const StatusWindow = ({ text }) => {
     return (
