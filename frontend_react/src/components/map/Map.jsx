@@ -553,7 +553,7 @@ const Map = ({ excludedArr }) => {
                 console.log("Maps object:", maps);
                 setDirectionsService(new maps.DirectionsService());
               }}
-              onCenterChanged={fetchRoute(31)}// test for routes
+              //onCenterChanged={fetchRoute(31)}// test for routes
               onClick={markerCreationEnabled ? handleCreatePin : undefined}
               onDragEnd={handleMapChange}
             >
