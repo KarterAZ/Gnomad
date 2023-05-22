@@ -8,7 +8,7 @@
 //################################################################
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   GoogleMap,
   LoadScript,
@@ -24,27 +24,27 @@ import DOMPurify from 'dompurify';
 
 // internal imports.
 import './map.css';
-
-
-import Sidebar from '../sidebar/Sidebar';
-import DirectionsPanel from '../directions/directions';
-import { get } from '../../utilities/api/api.js';
-import createPin from '../../utilities/api/create_pin';
-import Pin from '../../data/pin';
-import { ratePin, getPinRating } from '../../utilities/api/rating';
-
-import RouteCreator from '../route_creator/RouteCreator'
 import event from '../../utilities/event';
 import pin from '../../images/Pin.png';
 import bathroom from '../../images/Restroom.png';
 import fuel from '../../images/Gas.png';
-
 import diesel from '../../images/Diesel.png';
 import wifi from '../../images/WiFi.png';
 import electric from '../../images/Charger.png';
 
-
+//apis
+import getRoutes from '../../utilities/api/get_routes';
+import { get } from '../../utilities/api/api.js';
+import createPin from '../../utilities/api/create_pin';
+import { ratePin, getPinRating } from '../../utilities/api/rating';
+import Pin from '../../data/pin';
 import getAllCoords from '../../utilities/api/get_cell_coords';
+
+//Compoennts
+import Sidebar from '../sidebar/Sidebar';
+import DirectionsPanel from '../directions/directions';
+import RouteCreator from '../route_creator/RouteCreator'
+
 
 // can later make the default lat/lng be user's location?
 const defaultProps =
@@ -63,36 +63,6 @@ const options = {
     '../../images/Pin.png',
 }
 
-// fills in the cell coverage.
-const handleApiLoaded = async (map, maps) => {
-
-  //variables for the bounds of the screen
-  var bounds = map.getBounds();
-  var ne = bounds.getNorthEast();
-  var sw = bounds.getSouthWest();
-
-  //fill an array with data using maxNum threads on backend
-  let maxNum = 5;
-  let retArrays = getAllCoords(maxNum, ne.lat(), ne.lng(), sw.lat(), sw.lng());
-
-  //parse all the coords to api lat/lng
-  var latLngArray = [];
-  for (let i = 0; i < retArrays.length; i += 2) {
-    let gData = new maps.LatLng(parseFloat(retArrays[i]), parseFloat(retArrays[i + 1]));
-    latLngArray.push(gData);
-  }
-
-  //draw the map
-  var bermudaTriangle = new maps.Polygon({
-    paths: latLngArray,
-    strokeColor: "#3393FF",
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-    fillColor: "#3393FF",
-    fillOpacity: 0.35
-  });
-  bermudaTriangle.setMap(map);
-
 const polyOptions = {
   fillColor: "lightblue",
   fillOpacity: .25,
@@ -104,7 +74,6 @@ const polyOptions = {
   editable: false,
   geodesic: false,
   zIndex: 1
-
 }
 
 // array of markers that gets used to populate map, eventually will be filled with pin data from database.
@@ -134,37 +103,30 @@ const MyInfoWindow = ({ marker }) => {
   // state declared for setting marker as a favorite true/false.
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const setRating = async (rating) =>
-  {
+  const setRating = async (rating) => {
     const response = await ratePin(marker.id, rating);
 
-    if (response == null)
-    {
+    if (response == null) {
       console.log('Set vote failed.');
     }
-    else
-    {
+    else {
       getRating();
     }
   }
 
-  async function getRating()
-  {
+  async function getRating() {
     const response = await getPinRating(marker.id);
 
-    if (response == null)
-    {
+    if (response == null) {
       console.log('Failed to get pin rating.');
     }
-    else
-    {
+    else {
       setReputation(response);
     }
   }
 
   // on load call get rating.
-  useEffect(() => 
-  {
+  useEffect(() => {
     getRating();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -223,9 +185,9 @@ const containerStyle = {
 };
 
 
-const Map = ({excludedArr}) => {
+const Map = ({ excludedArr }) => {
   const map_ref = useRef();
-  
+
   //testing directionsrender given array of unknown size with presetmarkers
   //origin being the first,
   //desitination being the last,
@@ -236,7 +198,9 @@ const Map = ({excludedArr}) => {
     location: { lat: marker.lat, lng: marker.lng },
     stopover: true
   }));
-  
+
+
+
   //State declared for storing markers
   const [markers, setMarkers] = useState(presetMarkers);
   const [overlayPolygons, setOverlayPolygons] = useState([]);
@@ -257,9 +221,10 @@ const Map = ({excludedArr}) => {
 
   const [directions, setDirections] = useState(null);
   const [directionsService, setDirectionsService] = useState(null);
+  const [directionsMarkers, setDirectionsMarkers] = useState([]);
   //State for communicating with directions render
   const [showDirections, setShowDirections] = useState(false); // toggle true or false to show directions 
-  const [wayPointsArr, setWayPointsArr] = useState([]);
+
 
   useEffect(() => {
     // create a pin on the event.
@@ -298,14 +263,14 @@ const Map = ({excludedArr}) => {
       const type = pinToCreate.type;
       const name = pinToCreate.name;
 
-      const type_map = 
+      const type_map =
       {
         'Pin': 0,
         'Bathroom': 1,
         'Supercharger': 3,
         'Fuel': 4,
         'Diesel': 5,
-        'Wi-Fi': 7 
+        'Wi-Fi': 7
       }
 
       let pinImage = '';
@@ -342,19 +307,17 @@ const Map = ({excludedArr}) => {
         name: name,
       }
 
-       // create the pin object.
-       let new_pin = new Pin(0, 0, lng, lat, name, '', [type_map[type]]);
-       // call backend function to add pin to database.
-       const response = await createPin(new_pin);
- 
-       if (response == null)
-       {
+      // create the pin object.
+      let new_pin = new Pin(0, 0, lng, lat, name, '', [type_map[type]]);
+      // call backend function to add pin to database.
+      const response = await createPin(new_pin);
+
+      if (response == null) {
         console.log('Could not create pin in database.');
-       }
-       else
-       {
+      }
+      else {
         handleMapChange();
-       }
+      }
     }
   };
 
@@ -375,261 +338,272 @@ const Map = ({excludedArr}) => {
 
   };
 
-  /* If getting the error:
-  // -----------------------------------------------------------------------
-  //  getting error "Failed to load resource: net::ERR_CONNECTION_REFUSED" 
-  // -----------------------------------------------------------------------
-  // Make sure to run backend TravelCompanionApi to fix
-  // TODO: Update switch statement to separate between customer/free wifi/bathroom when marker resources finalized
-  // TODO: always goes to the default option, fix tag reading from DB.
-  */
-
-  //Blueprint for filtering through pins, can add elements in sidebar later
-  //TODO: Make excludedPinTypes dynamic when sidebar has pin filtering. Currently used to reduce severe clutter.
-  const fetchData = async (latStart, longStart, latRange, longRange) => {
+  const fetchRoute = async (selectedID) => {
     try {
-      const response = await get(`pins/getAllInArea?latStart=${latStart}&longStart=${longStart}&latRange=${latRange}&longRange=${longRange}`);
-      let imageType;
-      // adjusts marker imageType depending on json response .
-      const markers = response.map(marker => { //TEMPORARILY CHANGED response.map to presetMarkers.map for TESTING
-        switch (marker.tags[0]) {
-          case 1:
-          case 2:
-            imageType = bathroom;
-            break;
-          case 3:
-            imageType = electric;
-            break;
-          case 4:
-            imageType = fuel;
-            break;
-          case 5:
-            imageType = diesel;
-            break;
-          case 7:
-          case 8:
-            imageType = wifi;
-            break;
-          default:
-            imageType = pin;
-            break;
-        }
-        return {
-          id: marker.id,
-          lat: marker.latitude,
-          lng: marker.longitude,
-          image: imageType,
-          type: marker.title,
-          street: marker.street,
-        };
-      });
-      console.log(excludedArr);
-      console.log('Bathroom: ', pin);
-      //markers = markers.filter(marker => !excludedArr.includes(marker.pinType));
-      setMarkers(markers.filter(marker => !excludedArr.includes(marker.image)));
-
-    } catch (error) {
+      //Grab all routes 
+      let response = await getRoutes();
+      console.log("Response ", response);
+      //filter by selected route ID depending on onClick event from searchbar      
+      const selectedRoute = response.filter(pin => pin.id === selectedID);
+      console.log("Selected Route ",selectedRoute);
+    }
+    catch (error) {
       console.error(error);
     }
   }
 
+    /* If getting the error:
+    // -----------------------------------------------------------------------
+    //  getting error "Failed to load resource: net::ERR_CONNECTION_REFUSED" 
+    // -----------------------------------------------------------------------
+    // Make sure to run backend TravelCompanionApi to fix
+    // TODO: Update switch statement to separate between customer/free wifi/bathroom when marker resources finalized
+    // TODO: always goes to the default option, fix tag reading from DB.
+    */
 
-  const position =
-  {
-    lat: 37.772,
-    lng: -122.214
-  }
+    //Blueprint for filtering through pins, can add elements in sidebar later
+    //TODO: Make excludedPinTypes dynamic when sidebar has pin filtering. Currently used to reduce severe clutter.
+    const fetchData = async (latStart, longStart, latRange, longRange) => {
+      try {
+        const response = await get(`pins/getAllInArea?latStart=${latStart}&longStart=${longStart}&latRange=${latRange}&longRange=${longRange}`);
+        let imageType;
+        // adjusts marker imageType depending on json response .
+        const markers = response.map(marker => { //TEMPORARILY CHANGED response.map to presetMarkers.map for TESTING
+          switch (marker.tags[0]) {
+            case 1:
+            case 2:
+              imageType = bathroom;
+              break;
+            case 3:
+              imageType = electric;
+              break;
+            case 4:
+              imageType = fuel;
+              break;
+            case 5:
+              imageType = diesel;
+              break;
+            case 7:
+            case 8:
+              imageType = wifi;
+              break;
+            default:
+              imageType = pin;
+              break;
+          }
+          return {
+            id: marker.id,
+            lat: marker.latitude,
+            lng: marker.longitude,
+            image: imageType,
+            type: marker.title,
+            street: marker.street,
+          };
+        });
+        console.log(excludedArr);
+        console.log('Bathroom: ', pin);
+        //markers = markers.filter(marker => !excludedArr.includes(marker.pinType));
+        setMarkers(markers.filter(marker => !excludedArr.includes(marker.image)));
 
-  function onDirectionsFetched(directions) {
-
-    if (directions !== null) {
-      const steps = directions.routes[0].legs[0].steps;
-      const directionsPanelContent = steps.map(step => {
-        const sanitizedInstructions = DOMPurify.sanitize(step.html_instructions, { ALLOWED_TAGS: [] });
-        return `<p>${sanitizedInstructions}</p>`;
-      }).join('');
-      setDirections(directions);
+      } catch (error) {
+        console.error(error);
+      }
     }
-  }
-
-  const handleCloseDirections = () => {
-    setShowDirections(prevState => !prevState);
-    setDirections(null);
-  };
 
 
-  const getPolygons = async () => {
-    //variables for the bounds of the screen
-    const map = map_ref.current.state.map;
-
-    const map_bounds = map.getBounds();
-    const map_zoom = map.getZoom();
-    const map_center = map.getCenter();
-
-    const bounds =
+    const position =
     {
-      latMin: map_bounds.Ua.lo,
-      latMax: map_bounds.Ua.hi,
-      lngMin: map_bounds.Ha.lo,
-      lngMax: map_bounds.Ha.hi
+      lat: 37.772,
+      lng: -122.214
     }
 
-    const map_state =
-    {
-      bounds: bounds,
-      zoom: map_zoom,
-      center: map_center
+    function onDirectionsFetched(directions) {
+
+      if (directions !== null) {
+        const steps = directions.routes[0].legs[0].steps;
+        const directionsPanelContent = steps.map(step => {
+          const sanitizedInstructions = DOMPurify.sanitize(step.html_instructions, { ALLOWED_TAGS: [] });
+          return `<p>${sanitizedInstructions}</p>`;
+        }).join('');
+        setDirections(directions);
+      }
+    }
+
+    const handleCloseDirections = () => {
+      setShowDirections(prevState => !prevState);
+      setDirections(null);
     };
 
-    //Number of threads for backend
-    let maxNum = 5;
 
-    const zoom_threshold = 11;
+    const getPolygons = async () => {
+      //variables for the bounds of the screen
+      const map = map_ref.current.state.map;
 
-    // only get the cellular data if the zoom is high enough.
-    if (map_state.zoom > zoom_threshold) {
-      // calls all the async functions and waits for all of them to return.
-      let retArrays = await getAllCoords(maxNum, map_state.bounds.latMin, map_state.bounds.lngMin, map_state.bounds.latMax, map_state.bounds.lngMax);
-      console.log(retArrays);
-      //parse all the coords to api lat/lng
+      const map_bounds = map.getBounds();
+      const map_zoom = map.getZoom();
+      const map_center = map.getCenter();
+
+      const bounds =
+      {
+        latMin: map_bounds.Ua.lo,
+        latMax: map_bounds.Ua.hi,
+        lngMin: map_bounds.Ha.lo,
+        lngMax: map_bounds.Ha.hi
+      }
+
+      const map_state =
+      {
+        bounds: bounds,
+        zoom: map_zoom,
+        center: map_center
+      };
+
+      //Number of threads for backend
+      let maxNum = 5;
+
+      const zoom_threshold = 11;
+
+      // only get the cellular data if the zoom is high enough.
+      if (map_state.zoom > zoom_threshold) {
+        // calls all the async functions and waits for all of them to return.
+        let retArrays = await getAllCoords(maxNum, map_state.bounds.latMin, map_state.bounds.lngMin, map_state.bounds.latMax, map_state.bounds.lngMax);
+        console.log(retArrays);
+        //parse all the coords to api lat/lng
         var latLngArray = [];
         var overArray = [];
         var sep = 1;
-      for (let i = 0; i < retArrays.length; i += 2) {
-        //let gData = new window.google.maps.LatLng(parseFloat(retArrays[i]), parseFloat(retArrays[i + 1]));
-        //latLngArray.push(gData);
+        for (let i = 0; i < retArrays.length; i += 2) {
+          //let gData = new window.google.maps.LatLng(parseFloat(retArrays[i]), parseFloat(retArrays[i + 1]));
+          //latLngArray.push(gData);
           latLngArray.push({ lat: parseFloat(retArrays[i]), lng: parseFloat(retArrays[i + 1]) });
           if (sep % 6 === 0) {
-              latLngArray.push({ lat: parseFloat(retArrays[i - 10]), lng: parseFloat(retArrays[i - 9]) });
-              overArray.push(latLngArray);
-              latLngArray = [];
+            latLngArray.push({ lat: parseFloat(retArrays[i - 10]), lng: parseFloat(retArrays[i - 9]) });
+            overArray.push(latLngArray);
+            latLngArray = [];
           }
           sep++;
+        }
+        //console.log(latLngArray);
+        setOverlayPolygons(overArray);
       }
-      //console.log(latLngArray);
-      setOverlayPolygons(overArray);
+      else {
+        //Alert user to zoom in more
+        alert("Please zoom in more to access cellular data :)");
+        event.emit('cancel-cellular-overlay');
+      }
     }
-    else {
-      //Alert user to zoom in more
-      alert("Please zoom in more to access cellular data :)");
-      event.emit('cancel-cellular-overlay');
+    const StatusWindow = ({ text }) => {
+      return (
+        <div className='status-window'>
+          <p>{text}</p>
+        </div>
+      );
     }
-  }
-  const StatusWindow = ({ text }) => {
+
+    const mapOptions =
+    {
+      fullscreenControl: false,
+      mapTypeControl: false
+    };
+
     return (
-      <div className='status-window'>
-        <p>{text}</p>
-      </div>
+      <div id='wrapper'>
+        {
+          markerCreationEnabled &&
+          <StatusWindow text="Click to place the marker." />
+        }
+        <div id='map'>
+          <LoadScript googleMapsApiKey="AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o">
+            <GoogleMap
+
+              defaultOptions={{ mapTypeControl: false }}
+
+              ref={map_ref}
+              className='map'
+              options={mapOptions}
+
+              mapContainerStyle={containerStyle}
+              center={defaultProps.center}
+              zoom={defaultProps.zoom}
+              draggable={!markerCreationEnabled}
+
+              onGoogleApiLoaded={({ map, maps }) => {
+                console.log("Google Maps API loaded successfully!");
+                console.log("Map object:", map);
+                console.log("Maps object:", maps);
+                setDirectionsService(new maps.DirectionsService());
+              }}
+
+              onClick={markerCreationEnabled ? handleCreatePin : undefined}
+              onDragEnd={handleMapChange}
+            >
+              <Polygon
+                editable={true}
+                paths={overlayPolygons}
+                options={polyOptions}
+              />
+
+              {showDirections && (
+                <DirectionsService
+                  options={{
+                    origin: origin,
+                    destination: destination,
+                    waypoints: waypoints,
+                    travelMode: 'DRIVING',
+                  }}
+                  callback={onDirectionsFetched}
+                />
+              )}
+              {directions && (
+                <DirectionsRenderer
+                  directions={directions}
+                  options={{
+                    polylineOptions: {
+                      strokeColor: "#000",
+                    },
+                    panel: document.getElementById('directions-panel'),
+                    suppressMarkers: true,
+
+                  }}
+                />
+              )}
+              {showDirections && <DirectionsPanel directions={directions} onClose={handleCloseDirections} />}
+
+              <MarkerClusterer options={{ maxZoom: 14 }}>
+                {(clusterer) =>
+                  [...markers, ...presetMarkers].map((marker, index) =>
+                  (
+                    //...markers, removsed for meantime
+                    // TODO: caledSize: new window. .maps.Size(50, 50), uses hard fixed pixels,
+                    <Marker
+                      icon=
+                      {{
+                        // url works? path: doesnt?
+                        url: marker.image,
+                        scaledSize: new window.google.maps.Size(60, 60),
+                      }}
+                      key={index}
+                      position=
+                      {{
+                        lat: marker.lat,
+                        lng: marker.lng
+                      }}
+                      onClick={() => {
+                        setSelectedMarker(marker);
+                        console.log(selectedMarker); //is returning correct marker
+                        setShowInfoWindow(!showInfoWindow);
+                        console.log(showInfoWindow);
+                      }}
+                      clusterer={clusterer} // Add the clusterer prop to each marker
+                    >
+                    </Marker>
+                  ))
+                }
+              </MarkerClusterer>
+            </GoogleMap>
+          </LoadScript>
+        </div>
+      </div >
     );
-  }
-
-  const mapOptions =
-  {
-    fullscreenControl: false,
-    mapTypeControl: false
   };
-
-  return (
-    <div id='wrapper'>
-      {
-        markerCreationEnabled &&
-        <StatusWindow text="Click to place the marker." />
-      }
-      <div id='map'>
-        <LoadScript googleMapsApiKey="AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o">
-          <GoogleMap
-
-            defaultOptions={{ mapTypeControl: false }}
-
-            ref={map_ref}
-            className='map'
-            options={mapOptions}
-
-            mapContainerStyle={containerStyle}
-            center={defaultProps.center}
-            zoom={defaultProps.zoom}
-            draggable={!markerCreationEnabled}
-
-
-            onGoogleApiLoaded={({ map, maps }) => {
-              console.log("Google Maps API loaded successfully!");
-              console.log("Map object:", map);
-              console.log("Maps object:", maps);
-              setDirectionsService(new maps.DirectionsService());
-              handleApiLoaded(map, maps);
-            }}
-
-            onClick={markerCreationEnabled ? handleCreatePin : undefined}
-            onDragEnd={handleMapChange}
-          >
-               <Polygon
-              editable={true}
-              paths={overlayPolygons}
-              options={polyOptions}
-            />
-
-            {showDirections && (
-              <DirectionsService
-                options={{
-                  origin: origin,
-                  destination: destination,
-                  waypoints: waypoints,
-                  travelMode: 'DRIVING',
-                }}
-                callback={onDirectionsFetched}
-              />
-            )}
-            {directions && (
-              <DirectionsRenderer
-                directions={directions}
-                options={{
-                  polylineOptions: {
-                    strokeColor: "#000",
-                  },
-                  panel: document.getElementById('directions-panel'),
-                  suppressMarkers: true,
-
-                }}
-              />
-            )}
-            {showDirections && <DirectionsPanel directions={directions} onClose={handleCloseDirections} />}
-            
-            <MarkerClusterer options={{ maxZoom: 14 }}>
-            {(clusterer) =>
-              [...markers, ...presetMarkers].map((marker, index) =>
-              (
-                //...markers, removsed for meantime
-                // TODO: caledSize: new window. .maps.Size(50, 50), uses hard fixed pixels,
-                <Marker
-                  icon=
-                  {{
-                    // url works? path: doesnt?
-                    url: marker.image,
-                    scaledSize: new window.google.maps.Size(60, 60),
-                  }}
-                  key={index}
-                  position=
-                  {{
-                    lat: marker.lat,
-                    lng: marker.lng
-                  }}
-                  onClick={() => {
-                    setSelectedMarker(marker);
-                    console.log(selectedMarker); //is returning correct marker
-                    setShowInfoWindow(!showInfoWindow);
-                    console.log(showInfoWindow);
-                  }}
-                  clusterer={clusterer} // Add the clusterer prop to each marker
-                >
-                </Marker>
-              ))
-            }
-          </MarkerClusterer>
-          </GoogleMap>
-        </LoadScript>
-      </div>
-    </div >
-  );
-};
-export default React.memo(Map);
-
+  export default React.memo(Map);
