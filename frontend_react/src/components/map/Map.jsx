@@ -192,20 +192,13 @@ const Map = ({ excludedArr }) => {
   //origin being the first,
   //desitination being the last,
   //waypoints being everything inbetween
-  const origin = { lat: presetMarkers[0].lat, lng: presetMarkers[0].lng };
-  const destination = { lat: presetMarkers[presetMarkers.length - 1].lat, lng: presetMarkers[presetMarkers.length - 1].lng };
-  const waypoints = presetMarkers.slice(1, -1).map(marker => ({
-    location: { lat: marker.lat, lng: marker.lng },
-    stopover: true
-  }));
+
 
 
 
   //State declared for storing markers
   const [markers, setMarkers] = useState(presetMarkers);
   const [overlayPolygons, setOverlayPolygons] = useState([]);
-
-  console.log(excludedArr);
 
   // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
@@ -222,6 +215,11 @@ const Map = ({ excludedArr }) => {
   const [directions, setDirections] = useState(null);
   const [directionsService, setDirectionsService] = useState(null);
   const [directionsMarkers, setDirectionsMarkers] = useState([]);
+
+  const [origin, setOrigin] = useState();
+  const [destination, setDestination] = useState();
+  const [waypoints, setWaypoints] = useState([]);
+
   //State for communicating with directions render
   const [showDirections, setShowDirections] = useState(false); // toggle true or false to show directions 
 
@@ -342,10 +340,32 @@ const Map = ({ excludedArr }) => {
     try {
       //Grab all routes 
       let response = await getRoutes();
-      console.log("Response ", response);
-      //filter by selected route ID depending on onClick event from searchbar      
-      const selectedRoute = response.filter(pin => pin.id === selectedID);
-      console.log("Selected Route ",selectedRoute);
+      //console.log("Response ", response);
+      //filter by selected route ID depending on onClick event from search      
+      const selectedRoute = response.filter(route => route.id === selectedID);
+      //console.log("Selected Route ",selectedRoute[0].pins);
+      setDirectionsMarkers(selectedRoute[0].pins);
+      console.log(selectedRoute[0].pins);
+
+      const origin = directionsMarkers.length > 0 ? {
+        lat: directionsMarkers[0].latitude,
+        lng: directionsMarkers[0].longitude
+      } : null;
+      
+      setOrigin(origin)
+
+      const destination = directionsMarkers.length > 0 ? {
+        lat: directionsMarkers[directionsMarkers.length - 1].latitude,
+        lng: directionsMarkers[directionsMarkers.length - 1].longitude
+      } : null;
+
+      setDestination(destination);
+
+      const waypoints = directionsMarkers.slice(1, -1).map(marker => ({
+        location: { lat: marker.latitude, lng: marker.longitude },
+        stopover: true
+      }));
+      setWaypoints(waypoints);
     }
     catch (error) {
       console.error(error);
@@ -533,7 +553,7 @@ const Map = ({ excludedArr }) => {
                 console.log("Maps object:", maps);
                 setDirectionsService(new maps.DirectionsService());
               }}
-
+              onCenterChanged={fetchRoute(31)}// test for routes
               onClick={markerCreationEnabled ? handleCreatePin : undefined}
               onDragEnd={handleMapChange}
             >
