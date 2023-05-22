@@ -427,8 +427,7 @@ const Map = ({excludedArr}) => {
 
   const mapOptions =
   {
-    fullscreenControl: false,
-    mapTypeControl: false
+    fullscreenControl: false
   };
 
   return (
