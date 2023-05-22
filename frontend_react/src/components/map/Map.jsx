@@ -463,7 +463,6 @@ const Map = () => {
               (
                 //...markers, removsed for meantime
                 // TODO: caledSize: new window. .maps.Size(50, 50), uses hard fixed pixels,
-                // tried a few different ways to get screen size and scale it to a % of it but breaks  
                 <Marker
                   icon=
                   {{
