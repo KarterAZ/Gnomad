@@ -26,7 +26,7 @@ namespace TravelCompanionAPI.Data
     //******************************************************************************
     public class CellularRepository : ICellularRepository
     {
-        const string COORDTABLE = "oregon_cellular_coords";
+        const string COORDTABLE = "codenome_testing.oregon_cellular_coords";
 
         public CellularRepository()
         {}
@@ -144,51 +144,116 @@ namespace TravelCompanionAPI.Data
 
         public List<float> getAllCoordsThreaded(int max_pass, float latMin, float lngMin, float latMax, float lngMax)
         {
-            List<float> coords = new List<float>();
-            List<Thread> threads = new List<Thread>();
-            
-            for(int i = 0; i < max_pass; i++)
-            {
-                Thread thread = new Thread(new ThreadStart(() => coords.AddRange(getAllCoordsSingle(max_pass, i, latMin, lngMin, latMax, lngMax))));
-                thread.Start();
-                threads.Add(thread);
-            }
-
-            foreach(Thread thread in threads)
-            {
-                thread.Join();
-            }
-
-            return coords;
-        }
-
-        public List<float> getAllCoordsSingle(int max_pass, int pass, float latMin, float lngMin, float latMax, float lngMax)
-        {
             List<float> latLng_coord_data = new List<float>();
 
+            //Convert coords from degrees to radians
             lngMin = lngMin * ((float)Math.PI / 180);
             lngMax = lngMax * ((float)Math.PI / 180);
             latMin = latMin * ((float)Math.PI / 180);
             latMax = latMax * ((float)Math.PI / 180);
 
-            int offset = 0, lim = 0;
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = DatabaseConnection.getInstance().getConnection();
+                command.CommandType = CommandType.Text;
+
+                command.CommandText = @"SELECT centerLongitude, centerLatitude, latitude1, longitude1, latitude2, longitude2,"
+                    + " latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + COORDTABLE
+                    + " WHERE centerLongitude BETWEEN @lngMin and @lngMax and centerLatitude BETWEEN @latMin and @latMax;";
+                command.Parameters.AddWithValue("lngMin", lngMin);
+                command.Parameters.AddWithValue("lngMax", lngMax);
+                command.Parameters.AddWithValue("latMin", latMin);
+                command.Parameters.AddWithValue("latMax", latMax);
+
+                using (MySqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        //Compare centers (beginning) before (start at 2)
+                        //Then go to 13 (<14) for all data received from sql statement
+                        int i;
+                        float coord;
+                        for (i = 2; i < 14; i++)
+                        {
+                            coord = reader.GetFloat(i);
+                            latLng_coord_data.Add(coord);
+                        }
+                        //adds the first coord again to close the shape
+                        /*coord = reader.GetFloat(2);
+                        latLng_coord_data.Add(coord);
+                        coord = reader.GetFloat(3);
+                        latLng_coord_data.Add(coord);*/
+                    }
+                }
+                command.Connection.Close();
+            }
+
+            return latLng_coord_data;
+            /*List<float> coords = new List<float>();
+            List<Thread> threads = new List<Thread>();
+            int lim = 0;
+            int count = 0;
 
             using (MySqlCommand command = new MySqlCommand())
             {
                 command.Connection = DatabaseConnection.getInstance().getConnection();
                 command.CommandType = CommandType.Text;
+
                 command.CommandText = @"SELECT COUNT(id) FROM " + COORDTABLE + ";";
+
                 using (MySqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        lim = reader.GetInt32(0) / max_pass;
-                        offset = lim * pass;
+                        count = reader.GetInt32(0);
+                        lim = count / max_pass;
                     }
                 }
+                command.Connection.Close();
+            }
+
+            //Start up threads
+            for (int i = 0; i < max_pass; i++)
+            {
+                Thread thread;
+
+                //Account for extra data points.
+                if (i == max_pass)
+                    thread = new Thread(new ThreadStart(() => coords.AddRange(getAllCoordsSingle(lim + (lim % count), lim * i, latMin, lngMin, latMax, lngMax))));
+                else
+                    thread = new Thread(new ThreadStart(() => coords.AddRange(getAllCoordsSingle(lim, lim * i, latMin, lngMin, latMax, lngMax))));
+
+                thread.Start();
+                threads.Add(thread);
+            }
+
+            //Join threads
+            foreach(Thread thread in threads)
+            {
+                thread.Join();
+            }
+
+            return coords;*/
+        }
+
+        public List<float> getAllCoordsSingle(int lim, int offset, float latMin, float lngMin, float latMax, float lngMax)
+        {
+            List<float> latLng_coord_data = new List<float>();
+
+            //Convert coords from degrees to radians
+            lngMin = lngMin * ((float)Math.PI / 180);
+            lngMax = lngMax * ((float)Math.PI / 180);
+            latMin = latMin * ((float)Math.PI / 180);
+            latMax = latMax * ((float)Math.PI / 180);
+
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = DatabaseConnection.getInstance().getConnection();
+                command.CommandType = CommandType.Text;
+
                 command.CommandText = @"SELECT centerLongitude, centerLatitude, latitude1, longitude1, latitude2, longitude2,"
                     + " latitude3, longitude3, latitude4, longitude4, latitude5, longitude5, latitude6, longitude6 FROM " + COORDTABLE
-                    + " WHERE centerLongitude BETWEEN @lngMax and @lngMin and centerLatitude BETWEEN @latMax and @latMin LIMIT @lim OFFSET @offset;";
+                    + " WHERE centerLongitude BETWEEN @lngMin and @lngMax and centerLatitude BETWEEN @latMin and @latMax LIMIT @lim OFFSET @offset;";
                 command.Parameters.AddWithValue("lngMin", lngMin);
                 command.Parameters.AddWithValue("lngMax", lngMax);
                 command.Parameters.AddWithValue("latMin", latMin);
@@ -209,6 +274,7 @@ namespace TravelCompanionAPI.Data
                         }
                     }
                 }
+                command.Connection.Close();
             }
 
             return latLng_coord_data;

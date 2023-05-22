@@ -10,6 +10,8 @@
 
   --gradient-background: linear-gradient(#64b6ac, #64b68a);
 
+  --toggle-background: rgb(22, 136, 154);
+
   background-color: var(--secondary-background);
 
   user-select: none;

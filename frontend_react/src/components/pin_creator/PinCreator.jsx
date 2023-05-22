@@ -7,12 +7,10 @@ export default function PinCreator()
 {
   // variable states.
   const [pinName, setPinName] = useState('');
-  const [pinDescription, setPinDescription] = useState('');
   const [pinType, setPinType] = useState('');
 
   // error states.
   const [nameError, setNameError] = useState('');
-  const [descriptionError, setDescriptionError] = useState('');
   const [typeError, setTypeError] = useState('');
 
   // this function verifies that the input in each field is valid.
@@ -24,12 +22,6 @@ export default function PinCreator()
     if (pinName.trim().length === 0)
     {
       setNameError('This cannot be left blank.');
-      status = false;
-    }
-
-    if (pinDescription.trim().length === 0)
-    {
-      setDescriptionError('This cannot be left blank.');
       status = false;
     }
 
@@ -50,7 +42,6 @@ export default function PinCreator()
       let pin = 
       {
         name: pinName, 
-        description: pinDescription, 
         type: pinType
       };
 
@@ -82,21 +73,6 @@ export default function PinCreator()
             {
               setPinName(event.target.value); 
               setNameError('');
-            }} 
-          />
-        </div>
-          
-        {/* section to enter pin description */}
-        <div className='input-section' id='pin-description-input-wrapper'>
-          <span id='input-label-wrapper'><label>Pin Description</label> <label className='error'>{descriptionError}</label></span>
-          <textarea 
-            className='text-input' 
-            id='pin-description-input' 
-            type='text' 
-            onChange={(event) => 
-            {
-              setPinDescription(event.target.value);
-              setDescriptionError('');
             }} 
           />
         </div>

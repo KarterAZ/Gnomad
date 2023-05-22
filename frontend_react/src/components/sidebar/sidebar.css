@@ -101,10 +101,15 @@
 #settings-button {
   font-size: 2em;
   color: var(--primary-foreground);
+
+  transition-duration: 0.15s;
+  transition-property: transform;
+  transition-timing-function: ease-in;
 }
 
 #settings-button:hover {
   color: var(--primary-foreground-hover);
+  transform: rotate(90deg);
 }
 
 #search-section {
@@ -161,6 +166,7 @@
   overflow-y: scroll;
 
   background-color: var(--secondary-background);
+  color: var(--secondary-foreground);
 
   border-radius: 4px;
 }
@@ -178,25 +184,6 @@
 ::-webkit-scrollbar-thumb {
   background: var(--primary-background-accent);
   border-radius: 10px;
-}
-
-#pin-creator {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  top: 50%;
-  right: 50%;
-  transform: translate(50%, -50%);
-
-  width: 500px;
-  height: 300px;
-
-  padding: 10px;
-  border-radius: 4px;
-
-  background: var(--gradient-background);
-  color: var(--primary-foreground);
-  z-index: 999;
 }
 
 #creator-header {
@@ -217,15 +204,6 @@
   overflow: hidden;
 
   height: 100%;
-}
-
-#pin-description-input {
-  height: 100%;
-  resize: none;
-}
-
-#pin-description-input-wrapper {
-  flex-grow: 1;
 }
 
 .input-section {
@@ -274,3 +252,90 @@
     width: calc(100% - 20px);
   }
 }
+
+#checkboxes label {
+  font-size: 0.95em;
+}
+
+.wifi-label {
+  padding-right: 70px; 
+  padding-left: 33px; 
+}
+
+/* Slider css */
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 26px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--primary-foreground);
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  bottom: 4px;
+  background-color: var(--primary-background);
+  -webkit-transition: .3s;
+  transition: .3s;
+}
+
+input:checked + .slider {
+  background-color: var(--toggle-background);
+}
+
+/*input:focus + .slider {
+  box-shadow: 0 0 100px #FEE9E1;
+}*/
+
+/* How far over the slider goes */
+input:checked + .slider:before {
+  -webkit-transform: translateX(34px);
+  -ms-transform: translateX(34px);
+  transform: translateX(34px);
+}
+
+/* Rounded sliders, more px = more round (max ~ 30px) */
+.slider.round {
+  border-radius: 30px;
+}
+
+/* Rounded ball in slider (higher % = more round, max ~ 50%) */
+.slider.round:before {
+  border-radius: 50%;
+}
+
+#cellular-toggle-switch {
+  float: left;
+}
+
+#toggle-cellular-label {
+  float: left;
+  padding-right: 20px;
+}
+
+/* end of slider css */

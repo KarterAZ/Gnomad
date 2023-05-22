@@ -7,6 +7,7 @@
 //
 //################################################################
 
+
 import React, { useState, useEffect } from 'react';
 import {
   GoogleMap,
@@ -14,18 +15,23 @@ import {
   Marker,
   MarkerClusterer,
   DirectionsService,
-  DirectionsRenderer
+  DirectionsRenderer,
+  Polygon,
+  InfoWindow
 } from '@react-google-maps/api';
 import DOMPurify from 'dompurify';
+
 
 // internal imports.
 import './map.css';
 
 
-// internal imports.
-import { get, isAuthenticated } from '../../utilities/api/api.js';
 import Sidebar from '../sidebar/Sidebar';
 import DirectionsPanel from '../directions/directions';
+import { get } from '../../utilities/api/api.js';
+import createPin from '../../utilities/api/create_pin';
+import Pin from '../../data/pin';
+import { ratePin, getPinRating } from '../../utilities/api/rating';
 
 import RouteCreator from '../route_creator/RouteCreator'
 import event from '../../utilities/event';
@@ -49,6 +55,7 @@ const defaultProps =
     lng: -121.78,
   },
 };
+
 
 //marker cluster options
 const options = {
@@ -85,8 +92,20 @@ const handleApiLoaded = async (map, maps) => {
     fillOpacity: 0.35
   });
   bermudaTriangle.setMap(map);
-}
 
+const polyOptions = {
+  fillColor: "lightblue",
+  fillOpacity: .25,
+  strokeColor: "blue",
+  strokeOpacity: .25,
+  strokeWeight: .5,
+  clickable: false,
+  draggable: false,
+  editable: false,
+  geodesic: false,
+  zIndex: 1
+
+}
 
 // array of markers that gets used to populate map, eventually will be filled with pin data from database.
 //used to test marker operations/google maps without having to render entire
@@ -99,10 +118,9 @@ const presetMarkers = [
   // { lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", description: "testing" }, //extra added to test markercluster
 ];
 
-
 // can still utilize our own infowindow, dont need to use google map's, realistically most of this code is just for infowindow
 // renamed and repurposed.
-const MyInfoWindow = ({ lat, lng, type, name, description, toggleWindow }) => {
+const MyInfoWindow = ({ marker }) => {
   // named constants for the rating values.
   const THUMBS_UP = "1";
   const THUMBS_DOWN = "-1";
@@ -110,99 +128,93 @@ const MyInfoWindow = ({ lat, lng, type, name, description, toggleWindow }) => {
   // TODO: custom marker is starting to get really big, consider making it into a component in it's own class?
   // such as Marker.jsx , could benefit from having it's own .css file.
 
-  // state declared for InfoWindow displaying.
-  const [showInfoWindow, setShowInfoWindow] = useState(toggleWindow);
-
   // state declared for reputation thumbs up (1) down (-1) No selection (null).
   const [reputation, setReputation] = useState(null);
 
   // state declared for setting marker as a favorite true/false.
   const [isFavorite, setIsFavorite] = useState(false);
 
-  // initially had an incrementer/decrementer but this version just stores one state
-  // of the user, eventually needs to be connected to the database to get a finalized
-  // reputation count on each marker.
-  const handleReputationClick = (value) => {
-    if (reputation === null) {
-      setReputation(value)
+  const setRating = async (rating) =>
+  {
+    const response = await ratePin(marker.id, rating);
+
+    if (response == null)
+    {
+      console.log('Set vote failed.');
     }
-    else {
-      // if currentRep is equal to value reset reputation value to null, else assign value.
-      setReputation((currentReputation) =>
-        currentReputation === value ? null : value
-      );
+    else
+    {
+      getRating();
     }
-  };
+  }
+
+  async function getRating()
+  {
+    const response = await getPinRating(marker.id);
+
+    if (response == null)
+    {
+      console.log('Failed to get pin rating.');
+    }
+    else
+    {
+      setReputation(response);
+    }
+  }
+
+  // on load call get rating.
+  useEffect(() => 
+  {
+    getRating();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // toggles favorite state between true/false on click. 
   const handleFavoriteClick = () => {
     setIsFavorite((currentIsFavorite) => !currentIsFavorite);
   }
-  //REQUIRED TO FORMAT LIKE THIS
-  // or else it will not load from lat/lng, needs position 
-
-  const position = {
-    lat: lat,
-    lng: lng,
-  }
 
   return (
-    <div>
-
-      {showInfoWindow && (
-        // customized InfoWindow, was having too much trouble using google map's (plus ours looks nicer).
-        <div className='info-window' >
-          <div className='info-window-header'>
-            {/* favorite button */}
-            <div className='header-button-wrapper'>
-              <button className='header-button' onClick={handleFavoriteClick}>
-                {isFavorite ? "❤️" : "🖤"}
-              </button>
-            </div>
-
-            {/* show pin type as the title */}
-            <div className='pin-title'>{type}</div>
-
-            {/* header with reputation */}
-            <div className='header-button-wrapper'>
-              <button
-                className='header-button'
-                disabled={reputation === THUMBS_UP}
-                onClick={() => handleReputationClick(THUMBS_UP)}
-              >
-                👍
-              </button>
-              <button
-                className='header-button'
-                disabled={reputation === THUMBS_DOWN}
-                onClick={() => handleReputationClick(THUMBS_DOWN)}
-              >
-                👎
-              </button>
-            </div>
-          </div>
-          {/* show name and description */}
-          <div className='info-window-body'>
-            <div>{name}</div>
-            <div>{description}</div>
-          </div>
-
-          <div className='info-window-reputation'>
-            <div style={{ marginBottom: '10px' }}>
-              Reputation: {" "}
-              {/* conditional: if null "None" | else if 1 thumbsUp | else -1 thumbsDown */}
-              {reputation === null ? "None" : reputation === THUMBS_UP ? "👍" : "👎"}
-            </div>
-          </div>
+    <div className='info-window' >
+      <div className='info-window-header'>
+        {/* favorite button */}
+        <div className='header-button-wrapper'>
+          <button className='header-button' onClick={handleFavoriteClick}>
+            {isFavorite ? "❤️" : "🖤"}
+          </button>
         </div>
-      )}
+
+        {/* show pin type as the title */}
+        <div className='pin-title'>{marker.type}</div>
+
+        {/* header with reputation */}
+        <div className='header-button-wrapper'>
+          <button
+            className='header-button'
+            onClick={() => setRating(THUMBS_UP)}
+          >
+            👍
+          </button>
+          <button
+            className='header-button'
+            onClick={() => setRating(THUMBS_DOWN)}
+          >
+            👎
+          </button>
+        </div>
+      </div>
+      {/* show name and description */}
+      <div className='info-window-body'>
+        <div>{marker.name}</div>
+      </div>
+
+      <div className='info-window-reputation'>
+        <div style={{ marginBottom: '10px' }}>
+          Rating: {'⭐'.repeat(reputation)}
+        </div>
+      </div>
     </div>
   );
-};
-
-const center = {
-  lat: -3.745,
-  lng: -38.523
 };
 
 const containerStyle = {
@@ -210,8 +222,10 @@ const containerStyle = {
   height: '100%'
 };
 
-const Map = () => {
 
+const Map = ({excludedArr}) => {
+  const map_ref = useRef();
+  
   //testing directionsrender given array of unknown size with presetmarkers
   //origin being the first,
   //desitination being the last,
@@ -222,17 +236,18 @@ const Map = () => {
     location: { lat: marker.lat, lng: marker.lng },
     stopover: true
   }));
-
+  
   //State declared for storing markers
-  const [markers, setMarkers] = useState("");
+  const [markers, setMarkers] = useState(presetMarkers);
+  const [overlayPolygons, setOverlayPolygons] = useState([]);
+
+  console.log(excludedArr);
 
   // state declared for enabling/disabling marker creation on click with sidebar.
   const [markerCreationEnabled, setMarkerCreationEnabled] = useState(false);
 
   //States declared for Pin Names, Descriptions, and Types.
-  const [selectedPinName, setSelectedPinName] = useState("");
-  const [selectedPinDescription, setSelectedPinDescription] = useState("");
-  const [selectedPinType, setSelectedPinType] = useState("");
+  const [pinToCreate, setPinToCreate] = useState({});
 
   //States for getting onclick interactions with google maps markers & our custom infowindow
   const [selectedMarker, setSelectedMarker] = useState(null);
@@ -246,26 +261,55 @@ const Map = () => {
   const [showDirections, setShowDirections] = useState(false); // toggle true or false to show directions 
   const [wayPointsArr, setWayPointsArr] = useState([]);
 
+  useEffect(() => {
+    // create a pin on the event.
+    event.on('create-pin', (data) => {
+      // allow on click to place a marker.
+      setMarkerCreationEnabled(true);
+      setPinToCreate({ name: data.pin.name, type: data.pin.type });
+    });
 
-  // function that toggles the sidebar's create pin option.
-  const toggleMarkerCreation = (pinName, pinDescription, pinType) => {
-    setMarkerCreationEnabled(!markerCreationEnabled);
-    setSelectedPinName(pinName);
-    setSelectedPinDescription(pinDescription);
-    setSelectedPinType(pinType);
-  };
+    //Events for cellular overlay
+    event.on('toggle-cellular-creator-on', () => {
+      if (overlayPolygons.length === 0) {
+        getPolygons();
+      }
+      else {
+        console.log(overlayPolygons);
+        setOverlayPolygons([])
+      }
+    });
 
-  event.on('create-pin', (data) => {
-    toggleMarkerCreation(data.pin.name, data.pin.description, data.pin.type)
-  });
+    event.on('toggle-cellular-creator-off', () => {
+      setOverlayPolygons([])
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // function handling onclick events on the map that will result in marker creation.
-  const handleCreatePin = (event) => {
-    console.log(event);
+  const handleCreatePin = async (event) => {
+    if (markerCreationEnabled && pinToCreate.type !== "") {
+      // disable marker creation to prevent double calling.
+      setMarkerCreationEnabled(false);
 
-    if (markerCreationEnabled && selectedPinType !== "") {
+      // some shorter variables.
+      const lat = event.latLng.lat();
+      const lng = event.latLng.lng();
+      const type = pinToCreate.type;
+      const name = pinToCreate.name;
+
+      const type_map = 
+      {
+        'Pin': 0,
+        'Bathroom': 1,
+        'Supercharger': 3,
+        'Fuel': 4,
+        'Diesel': 5,
+        'Wi-Fi': 7 
+      }
+
       let pinImage = '';
-      switch (selectedPinType) {
+      switch (type) {
         case 'Pin':
           pinImage = pin;
           break;
@@ -291,40 +335,43 @@ const Map = () => {
       //Adds marker to array that gets rendered (TODO: Eventually will have to add a pin to the database)
       let marker =
       {
-        lat: event.latLng.lat(),
-        lng: event.latLng.lng(),
+        lat: lat,
+        lng: lng,
         image: pinImage,
-        type: selectedPinType,
-        name: selectedPinName,
-        description: selectedPinDescription,
-
+        type: type,
+        name: name,
       }
 
-      setMarkers([...markers,
-        marker
-      ]);
-
-      console.log(marker);
-      setMarkerCreationEnabled(false);
+       // create the pin object.
+       let new_pin = new Pin(0, 0, lng, lat, name, '', [type_map[type]]);
+       // call backend function to add pin to database.
+       const response = await createPin(new_pin);
+ 
+       if (response == null)
+       {
+        console.log('Could not create pin in database.');
+       }
+       else
+       {
+        handleMapChange();
+       }
     }
   };
 
   // handles changes to lat/lng depending on position and zoom
-  const handleMapChange = async ({ center, zoom, bounds }) => {
-    //extract lat/lng out of bounds & center
-    let { lat, lng } = center;
-    const { lat: latStart, lng: lngStart } = bounds.sw;
+  const handleMapChange = async () => {
+    const map = map_ref.current.state.map;
 
-    // set lng to a valid coordinate
-    lng = ((lng + 180) % 360 + 360) % 360 - 180;
+    const map_bounds = map.getBounds();
 
-    // set the ranges
-    const latRange = bounds.ne.lat - bounds.sw.lat;
-    const longRange = bounds.ne.lng - bounds.sw.lng;
-
-    console.log('Lat:', lat);
-    console.log('Lng:', lng);
-    fetchData(lat, lng, latRange, longRange);
+    const bounds =
+    {
+      latMin: map_bounds.Ua.lo,
+      latMax: map_bounds.Ua.hi,
+      lngMin: map_bounds.Ha.lo,
+      lngMax: map_bounds.Ha.hi
+    }
+    fetchData(bounds.latMin, bounds.lngMin, bounds.latMax, bounds.lngMax);
 
   };
 
@@ -339,13 +386,12 @@ const Map = () => {
 
   //Blueprint for filtering through pins, can add elements in sidebar later
   //TODO: Make excludedPinTypes dynamic when sidebar has pin filtering. Currently used to reduce severe clutter.
-  const excludedPinTypes = [3, 4, 8]; // array of pin types to exclude.
   const fetchData = async (latStart, longStart, latRange, longRange) => {
     try {
       const response = await get(`pins/getAllInArea?latStart=${latStart}&longStart=${longStart}&latRange=${latRange}&longRange=${longRange}`);
       let imageType;
       // adjusts marker imageType depending on json response .
-      const markers = response.map(marker => {
+      const markers = response.map(marker => { //TEMPORARILY CHANGED response.map to presetMarkers.map for TESTING
         switch (marker.tags[0]) {
           case 1:
           case 2:
@@ -363,26 +409,30 @@ const Map = () => {
           case 7:
           case 8:
             imageType = wifi;
+            break;
           default:
             imageType = pin;
             break;
         }
         return {
+          id: marker.id,
           lat: marker.latitude,
           lng: marker.longitude,
           image: imageType,
           type: marker.title,
           street: marker.street,
-
         };
       });
-
-      setMarkers(markers);
+      console.log(excludedArr);
+      console.log('Bathroom: ', pin);
+      //markers = markers.filter(marker => !excludedArr.includes(marker.pinType));
+      setMarkers(markers.filter(marker => !excludedArr.includes(marker.image)));
 
     } catch (error) {
       console.error(error);
     }
   }
+
 
   const position =
   {
@@ -408,17 +458,98 @@ const Map = () => {
   };
 
 
+  const getPolygons = async () => {
+    //variables for the bounds of the screen
+    const map = map_ref.current.state.map;
+
+    const map_bounds = map.getBounds();
+    const map_zoom = map.getZoom();
+    const map_center = map.getCenter();
+
+    const bounds =
+    {
+      latMin: map_bounds.Ua.lo,
+      latMax: map_bounds.Ua.hi,
+      lngMin: map_bounds.Ha.lo,
+      lngMax: map_bounds.Ha.hi
+    }
+
+    const map_state =
+    {
+      bounds: bounds,
+      zoom: map_zoom,
+      center: map_center
+    };
+
+    //Number of threads for backend
+    let maxNum = 5;
+
+    const zoom_threshold = 11;
+
+    // only get the cellular data if the zoom is high enough.
+    if (map_state.zoom > zoom_threshold) {
+      // calls all the async functions and waits for all of them to return.
+      let retArrays = await getAllCoords(maxNum, map_state.bounds.latMin, map_state.bounds.lngMin, map_state.bounds.latMax, map_state.bounds.lngMax);
+      console.log(retArrays);
+      //parse all the coords to api lat/lng
+        var latLngArray = [];
+        var overArray = [];
+        var sep = 1;
+      for (let i = 0; i < retArrays.length; i += 2) {
+        //let gData = new window.google.maps.LatLng(parseFloat(retArrays[i]), parseFloat(retArrays[i + 1]));
+        //latLngArray.push(gData);
+          latLngArray.push({ lat: parseFloat(retArrays[i]), lng: parseFloat(retArrays[i + 1]) });
+          if (sep % 6 === 0) {
+              latLngArray.push({ lat: parseFloat(retArrays[i - 10]), lng: parseFloat(retArrays[i - 9]) });
+              overArray.push(latLngArray);
+              latLngArray = [];
+          }
+          sep++;
+      }
+      //console.log(latLngArray);
+      setOverlayPolygons(overArray);
+    }
+    else {
+      //Alert user to zoom in more
+      alert("Please zoom in more to access cellular data :)");
+      event.emit('cancel-cellular-overlay');
+    }
+  }
+  const StatusWindow = ({ text }) => {
+    return (
+      <div className='status-window'>
+        <p>{text}</p>
+      </div>
+    );
+  }
+
+  const mapOptions =
+  {
+    fullscreenControl: false,
+    mapTypeControl: false
+  };
+
   return (
     <div id='wrapper'>
-      <Sidebar toggleMarkerCreation={toggleMarkerCreation} />
+      {
+        markerCreationEnabled &&
+        <StatusWindow text="Click to place the marker." />
+      }
       <div id='map'>
         <LoadScript googleMapsApiKey="AIzaSyCHOIzfsDzudB0Zlw5YnxLpjXQvwPmTI2o">
           <GoogleMap
+
             defaultOptions={{ mapTypeControl: false }}
+
+            ref={map_ref}
+            className='map'
+            options={mapOptions}
+
             mapContainerStyle={containerStyle}
             center={defaultProps.center}
             zoom={defaultProps.zoom}
             draggable={!markerCreationEnabled}
+
 
             onGoogleApiLoaded={({ map, maps }) => {
               console.log("Google Maps API loaded successfully!");
@@ -429,8 +560,14 @@ const Map = () => {
             }}
 
             onClick={markerCreationEnabled ? handleCreatePin : undefined}
-            onChange={handleMapChange}
+            onDragEnd={handleMapChange}
           >
+               <Polygon
+              editable={true}
+              paths={overlayPolygons}
+              options={polyOptions}
+            />
+
             {showDirections && (
               <DirectionsService
                 options={{
@@ -456,7 +593,7 @@ const Map = () => {
               />
             )}
             {showDirections && <DirectionsPanel directions={directions} onClose={handleCloseDirections} />}
-
+            
             <MarkerClusterer options={{ maxZoom: 14 }}>
             {(clusterer) =>
               [...markers, ...presetMarkers].map((marker, index) =>
@@ -496,7 +633,3 @@ const Map = () => {
 };
 export default React.memo(Map);
 
-
-
-          
-          

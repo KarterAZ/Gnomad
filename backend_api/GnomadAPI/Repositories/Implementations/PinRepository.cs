@@ -66,18 +66,21 @@ namespace TravelCompanionAPI.Data
                 }
             }
 
-            using (MySqlCommand command = new MySqlCommand())
+            if (pin != null)
             {
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
-                command.Parameters.AddWithValue("Id", id);
-
-                using (MySqlDataReader reader = command.ExecuteReader())
+                using (MySqlCommand command = new MySqlCommand())
                 {
-                    while (reader.Read())
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT tag_id FROM " + TAG_TABLE + " WHERE(`pin_id` = @Id);";
+                    command.Parameters.AddWithValue("Id", id);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        pin.Tags.Add(reader.GetInt32(0));
+                        while (reader.Read())
+                        {
+                            pin.Tags.Add(reader.GetInt32(0));
+                        }
                     }
                 }
             }
@@ -93,12 +96,13 @@ namespace TravelCompanionAPI.Data
         /// <returns>
         /// A list of all Pins in the specified area.
         /// </returns>
-        public List<Pin> getAllInArea(double latStart = 42.257, double longStart = 121.7852, double latRange = 1, double longRange = 1)
+        public List<Pin> getAllInArea(double minLat = 0, double minLong = 0, double maxLat = 0, double maxLong = 0)
         {
-            double minLat = latStart - latRange;
+            /*double minLat = latStart - latRange;
             double maxLat = latStart + latRange;
             double minLong = longStart - longRange;
             double maxLong = longStart + longRange;
+            */
 
             List<Pin> pins_in_area = new List<Pin>();
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();

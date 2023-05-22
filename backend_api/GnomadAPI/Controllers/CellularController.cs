@@ -53,5 +53,13 @@ namespace TravelCompanionAPI.Controllers
 
             return new JsonResult(Ok(latLngList));
         }
+
+        [HttpGet("allCoordsSingleThreadless/{max_pass}/{pass}/{latMin}/{lngMin}/{latMax}/{lngMax}")]
+        public JsonResult getAllCoordsSingleThreadless(int max_pass, int pass, float latMin, float lngMin, float latMax, float lngMax)
+        {
+            List<float> latLngList = _repo.getAllCoordsSingle(max_pass, pass, latMin, lngMin, latMax, lngMax);
+
+            return new JsonResult(Ok(latLngList));
+        }
     }
 }

@@ -103,9 +103,16 @@ namespace TravelCompanionAPI.Controllers
         /// <returns>
         /// Returns a JsonResult of NotFound() if no pins, or Ok(pins) if there are pins.
         ///</returns>
-        [HttpGet("getPins/{user}")]
-        public JsonResult getPins(int uid)
+        [HttpGet("getPins")]
+        public JsonResult getPins()
         {
+            var identity = (User.Identity as ClaimsIdentity);
+
+            User user = new User(identity);
+
+            int uid = -1;
+
+            uid = _user_repo.getId(user);
 
             List<Pin> pins = _pin_repo.getAllByUser(uid);
 
@@ -133,6 +140,8 @@ namespace TravelCompanionAPI.Controllers
             int uid = -1;
 
             uid = _user_repo.getId(user);
+
+            pin.UserId= uid;
 
             _pin_repo.add(pin);
 
@@ -261,12 +270,12 @@ namespace TravelCompanionAPI.Controllers
         /// <returns>
         /// Returns the review
         ///</returns>
-        [HttpGet("getReview /{pinid}")]
-        public double getReview(int pinid)
+        [HttpGet("getReview/{pinid}")]
+        public JsonResult getReview(int pinid)
         {
             double review = _pin_repo.getAverageVote(pinid);
 
-            return review;
+            return new JsonResult(Ok(review));
         }
 
         /// <summary>
