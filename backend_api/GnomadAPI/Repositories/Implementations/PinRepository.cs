@@ -608,11 +608,12 @@ namespace TravelCompanionAPI.Data
             return pins;
         }
 
-        //Gets the up_vote and down_vote values by pin id, then returns the average
+        //Gets the up_vote and down_vote values by pin id, then returns the ranking: 0 for no votes, else 1 to 5
         public double getAverageVote(int pinid)
         {
+            int upVote = 0;
+            int downVote = 0;
             MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
-            double voteDifference = 0;
 
             using (MySqlCommand command = new MySqlCommand())
             {
@@ -625,16 +626,33 @@ namespace TravelCompanionAPI.Data
                 {
                     if (reader.Read())
                     {
-                        int upVote = reader.GetInt32("up_vote");
-                        int downVote = reader.GetInt32("down_vote");
-                        voteDifference = ((upVote + 1.0) / (upVote + downVote + 2.0)) * 5.0;
+                        upVote = reader.GetInt32("up_vote");
+                        downVote = reader.GetInt32("down_vote");
                     }
                 }
 
                 connection.Close();
             }
 
-            return voteDifference;
+            if (upVote  == 0 && downVote == 0)
+            {
+                return 0;
+            }
+            else if (upVote > 0 && downVote == 0)
+            {
+                return 5;
+            }
+            else if (upVote == 0 && downVote > 0)
+            {
+                return 1;
+            }
+            else
+            {
+                int totalVotes = upVote + downVote;
+                double upVoteRatio = upVote / totalVotes;
+                double ranking = upVoteRatio * 4.0 + 1.0;
+                return (int)Math.Round(ranking, MidpointRounding.AwayFromZero);
+            }
         }
 
         //Global Search function that takes in a string and searches for the string in Names, Addresses, and Cities.

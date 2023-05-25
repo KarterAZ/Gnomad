@@ -17,7 +17,7 @@ import './map.css';
 import { get } from '../../utilities/api/api.js';
 import createPin from '../../utilities/api/create_pin';
 import Pin from '../../data/pin';
-import { ratePin, getPinRating } from '../../utilities/api/rating';
+import { ratePin, getPinRating, cancelVote, haveVoted, getVote } from '../../utilities/api/rating';
 
 import event from '../../utilities/event';
 import pin from '../../images/Pin.png';
@@ -77,22 +77,89 @@ const MyInfoWindow = ({ marker }) => {
   // state declared for reputation thumbs up (1) down (-1) No selection (null).
   const [reputation, setReputation] = useState(null);
 
+  const [votedup, setUpVote] = useState(false);
+
+  const [voteddown, setDownVote] = useState(false);
+
   // state declared for setting marker as a favorite true/false.
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const setRating = async (rating) =>
+  useEffect(() => 
   {
-    const response = await ratePin(marker.id, rating);
+    checkUserVote();
+  }, []);
 
-    if (response == null)
-    {
-      console.log('Set vote failed.');
+  const checkUserVote = async () => {
+    const pinId = marker.id;
+    const hasVoted = await haveVoted(pinId);
+  
+    if (hasVoted) {
+      const vote = await getVote(pinId);
+      if (vote === 1) {
+        setUpVote(true);
+        setDownVote(false);
+      } else if (vote === -1) {
+        setUpVote(false);
+        setDownVote(true);
+      } else {
+        setUpVote(false);
+        setDownVote(false);
+      }
+    } else {
+      setUpVote(false);
+      setDownVote(false);
     }
-    else
+  };
+
+  const setRating = async (rating) => 
+{
+  const pinId = marker.id;
+  console.log('pinId:', pinId);
+
+  try 
     {
-      getRating();
+    const hasVoted = await haveVoted(pinId);
+    console.log('hasVoted:', hasVoted);
+
+    if (hasVoted) 
+    {
+      const response = await cancelVote(pinId);
+      console.log('cancelVote response:', response);
+
+      if (response == null) 
+      {
+        console.log('Cancel vote failed.');
+      } 
+      else 
+      {
+        getRating();
+        checkUserVote();
+        console.log('Rating updated successfully.');
+      }
+    } 
+    else 
+    {
+      const response = await ratePin(pinId, rating);
+      console.log('ratePin response:', response);
+
+      if (response == null) 
+      {
+        console.log('Set vote failed.');
+      } 
+      else 
+      {
+        getRating();
+        checkUserVote();
+        console.log('Rating updated successfully.');
+      }
     }
+  } 
+  catch (error) 
+  {
+    console.log('Error:', error);
   }
+};
+
 
   async function getRating()
   {
@@ -112,6 +179,7 @@ const MyInfoWindow = ({ marker }) => {
   useEffect(() => 
   {
     getRating();
+    checkUserVote();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -135,17 +203,17 @@ const MyInfoWindow = ({ marker }) => {
 
         {/* header with reputation */}
         <div className='header-button-wrapper'>
-          <button
-            className='header-button'
-            onClick={() => setRating(THUMBS_UP)}
-          >
-            👍
+        <button
+          className={`header-button ${votedup ? 'voted' : ''}`}
+          onClick={() => setRating(THUMBS_UP)}
+        >
+          {votedup ? "👍🏼" : "👍"}
           </button>
-          <button
-            className='header-button'
-            onClick={() => setRating(THUMBS_DOWN)}
+        <button
+          className={`header-button ${votedup ? 'voted' : ''}`}
+          onClick={() => setRating(THUMBS_DOWN)}
           >
-            👎
+            {voteddown ? "👎🏼" : "👎"}
           </button>
         </div>
       </div>

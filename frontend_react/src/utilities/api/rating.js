@@ -43,3 +43,20 @@ export async function cancelVote(pinId)
     return response;
   
 }
+
+export async function haveVoted(pinId)
+{
+    if (!isAuthenticated()) return null;
+
+    const response = await get(`user/voted/${pinId}`);
+    return response;
+  
+}
+
+export async function getVote(pinId)
+{
+    if (!isAuthenticated()) return null;
+
+    const response = await get(`user/getVote/${pinId}`);
+    return response;
+}

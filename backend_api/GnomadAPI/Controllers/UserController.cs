@@ -69,7 +69,7 @@ namespace TravelCompanionAPI.Controllers
 
             return new JsonResult(Ok(user));
         }
-        [HttpPost("voted/{pinid}")]
+        [HttpGet("voted/{pinid}")]
         public JsonResult voted(int pinid)
         {
             var identity = (User.Identity as ClaimsIdentity);
