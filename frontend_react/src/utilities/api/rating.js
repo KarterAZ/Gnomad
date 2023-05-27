@@ -60,3 +60,12 @@ export async function getVote(pinId)
     const response = await get(`user/getVote/${pinId}`);
     return response;
 }
+
+export async function aRemove(pinId)
+{
+    if (!isAuthenticated()) return null;
+
+    const response = await post(`user/autodelete/${pinId}`);
+    return response;
+  
+}

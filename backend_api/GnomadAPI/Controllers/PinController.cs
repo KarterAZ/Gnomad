@@ -321,5 +321,12 @@ namespace TravelCompanionAPI.Controllers
 
             return new JsonResult(Ok(pins));
         }
+
+        [HttpPost("autodelete")]
+        public JsonResult autodelete(int pinId)
+        {
+            return new JsonResult(_pin_repo.autoRemove(pinId));
+        }
+
     }
 }

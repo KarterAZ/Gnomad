@@ -699,58 +699,66 @@ namespace TravelCompanionAPI.Data
             return stickers;
         }
 
-        public void autoRemove(int pinId)
+        public bool autoRemove(int pinId)
         {
-            int totalVotes = 0;
-            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
-
-            using (MySqlCommand command = new MySqlCommand())
+            try
             {
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "SELECT up_vote, down_vote FROM " + PIN_TABLE + " WHERE id=@PinId;";
-                command.Parameters.AddWithValue("@PinId", pinId);
+                int totalVotes = 0;
+                MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
-                using (MySqlDataReader reader = command.ExecuteReader())
+                using (MySqlCommand command = new MySqlCommand())
                 {
-                    if (reader.Read())
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT up_vote, down_vote FROM " + PIN_TABLE + " WHERE id=@PinId;";
+                    command.Parameters.AddWithValue("@PinId", pinId);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
                     {
-                        int upVote = reader.GetInt32("up_vote");
-                        int downVote = reader.GetInt32("down_vote");
-                        totalVotes = upVote + downVote;
-                    }
-                }
-
-                connection.Close();
-            }
-
-            if (totalVotes >= 10)
-            {
-                double averageVote = getAverageVote(pinId);
-
-                if (averageVote <= 1.0)
-                {
-                    connection = DatabaseConnection.getInstance().getConnection();
-
-                    using (MySqlCommand deleteCommand = new MySqlCommand())
-                    {
-                        deleteCommand.Connection = connection;
-                        deleteCommand.CommandType = CommandType.Text;
-                        deleteCommand.CommandText = "DELETE FROM " + PIN_TABLE + " WHERE id=@PinId;";
-                        deleteCommand.Parameters.AddWithValue("@PinId", pinId);
-
-                        // Delete pin from PIN_TABLE
-                        deleteCommand.ExecuteNonQuery();
-
-                        // Delete related rows from user_review table
-                        deleteCommand.CommandText = "DELETE FROM user_review WHERE pin_id=@PinId;";
-                        deleteCommand.ExecuteNonQuery();
+                        if (reader.Read())
+                        {
+                            int upVote = reader.GetInt32("up_vote");
+                            int downVote = reader.GetInt32("down_vote");
+                            totalVotes = upVote + downVote;
+                        }
                     }
 
                     connection.Close();
-
-                    Console.WriteLine("Pin with ID " + pinId + " has been successfully deleted.");
                 }
+
+                if (totalVotes >= 10)
+                {
+                    double averageVote = getAverageVote(pinId);
+
+                    if (averageVote <= 1.0)
+                    {
+                        connection = DatabaseConnection.getInstance().getConnection();
+
+                        using (MySqlCommand deleteCommand = new MySqlCommand())
+                        {
+                            deleteCommand.Connection = connection;
+                            deleteCommand.CommandType = CommandType.Text;
+                            deleteCommand.CommandText = "DELETE FROM " + PIN_TABLE + " WHERE id=@PinId;";
+                            deleteCommand.Parameters.AddWithValue("@PinId", pinId);
+
+                            // Delete pin from PIN_TABLE
+                            deleteCommand.ExecuteNonQuery();
+
+                            // Delete related rows from user_review table
+                            deleteCommand.CommandText = "DELETE FROM user_review WHERE pin_id=@PinId;";
+                            deleteCommand.ExecuteNonQuery();
+                        }
+
+                        connection.Close();
+                        return true;
+                    }
+                    return true;
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
     }

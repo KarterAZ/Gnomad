@@ -17,7 +17,7 @@ import './map.css';
 import { get } from '../../utilities/api/api.js';
 import createPin from '../../utilities/api/create_pin';
 import Pin from '../../data/pin';
-import { ratePin, getPinRating, cancelVote, haveVoted, getVote } from '../../utilities/api/rating';
+import { ratePin, getPinRating, cancelVote, haveVoted, getVote, aremove } from '../../utilities/api/rating';
 
 import event from '../../utilities/event';
 import pin from '../../images/Pin.png';
@@ -151,6 +151,8 @@ const MyInfoWindow = ({ marker }) => {
         getRating();
         checkUserVote();
         console.log('Rating updated successfully.');
+        const response = await aremove(pinId);
+        console.log('aremove response:', response);
       }
     }
   } 
