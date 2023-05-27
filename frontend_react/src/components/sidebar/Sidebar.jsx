@@ -135,8 +135,15 @@ export default function Sidebar({ setExcludedArray }) {
 
   // create a pin from the dialog.
   const showCreateRouteMenu = (pinName, pinDescription, pinType) => {
-    setOpen(false);
-    event.emit('show-route-creator');
+    if(isLoggedIn())
+    {
+      setOpen(false);
+      event.emit('show-route-creator');
+    }
+    else
+    {
+      alert("Must be signed in to create routes.");
+    }
   }
 
   // Show settings page
