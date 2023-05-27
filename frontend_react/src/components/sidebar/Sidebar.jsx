@@ -38,6 +38,7 @@ export default function Sidebar({ setExcludedArray }) {
     if (!open) {
       event.emit('close-pin-creator');
       event.emit('close-route-creator');
+      event.emit('close-settings-page');
     }
 
     setOpen(!open);
@@ -131,6 +132,12 @@ export default function Sidebar({ setExcludedArray }) {
     event.emit('show-route-creator');
   }
 
+  // Show settings page
+  const loadSettings = () => {
+    setOpen(false);
+    event.emit('show-settings-page');
+  }
+
   // render the sidebar.
   return (
     <div ref={sidebar} id='sidebar-container'>
@@ -144,7 +151,7 @@ export default function Sidebar({ setExcludedArray }) {
           </div>
 
           <div id='settings-button-wrapper'>
-            <Icon id='settings-button' icon='ph:gear-six-duotone' />
+            <Icon id='settings-button' icon='ph:gear-six-duotone' onClick={loadSettings}/>
           </div>
         </section>
 
