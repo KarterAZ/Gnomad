@@ -408,6 +408,51 @@ namespace TravelCompanionAPI.Data
             }
         }
 
+        public bool delete(int pinId)
+        {
+            try
+            {
+                MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "DELETE FROM " + PIN_TABLE + " WHERE id=@pinId;";
+                    command.Parameters.AddWithValue("@pinId", pinId);
+
+                    command.ExecuteNonQuery();
+                }
+
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "DELETE FROM " + TAG_TABLE + " WHERE pin_id=@pinId;";
+                    command.Parameters.AddWithValue("@pinId", pinId);
+
+                    command.ExecuteNonQuery();
+                }
+
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "DELETE FROM user_review WHERE pin_id=@pinId;";
+                    command.Parameters.AddWithValue("@pinId", pinId);
+
+                    command.ExecuteNonQuery();
+                }
+
+                connection.Close();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Checks if a pin already exists
         /// </summary>
