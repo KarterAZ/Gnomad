@@ -11,7 +11,7 @@
 import { getCookie } from '../cookies';
 
 // set the api_url, should be loaded from an environment variable.
-const api_uri = 'https://travel.bryceschultz.com:5001/';
+const api_uri = 'http://localhost:5000/';
 
 // this function provides handy access to the auth token.
 export function getToken()
