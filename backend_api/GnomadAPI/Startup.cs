@@ -53,7 +53,11 @@ namespace TravelCompanionAPI
             services.AddCors(options => options.AddPolicy(
                 CorsPolicyName,
                 builder => builder
-                .WithOrigins("http://localhost:5000", "https://*.google.com", "https://*.googleusercontent.com")
+                .WithOrigins("http://localhost:5000", 
+                "https://*.google.com", 
+                "https://*.googleusercontent.com", 
+                "https://travel.bryceschultz.com:5001", 
+                "https://travel.bryceschultz.com")
                 .SetIsOriginAllowedToAllowWildcardSubdomains()
                 .AllowAnyHeader()
                 .AllowAnyMethod()
