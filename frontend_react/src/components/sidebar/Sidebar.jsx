@@ -10,12 +10,12 @@
 // external imports.
 import { Icon } from '@iconify/react';
 import { useEffect, useState, useRef } from 'react';
-import baselineSearch from '@iconify/icons-ic/baseline-search';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 
 // internal imports.
 import { LoginButton } from '../login_button/LoginButton';
 import getRoutes from '../../utilities/api/get_routes';
+import searchPins from '../../utilities/api/search_pins';
 
 import './sidebar.css';
 import event from '../../utilities/event';
@@ -26,16 +26,20 @@ const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleuserc
 
 // this class renders the Sidebar component.
 
-export default function Sidebar({ setExcludedArray }) {
+export default function Sidebar({ setExcludedArray })
+{
   const toggle_ref = useRef();
   const [open, setOpen] = useState(true);
   const [userRoutes, setUserRoutes] = useState([]);
+  const [userPins, setUserPins] = useState([]);
 
   const sidebar = useRef();
 
   // show / hide the Sidebar.
-  const handleClick = () => {
-    if (!open) {
+  const handleClick = () =>
+  {
+    if (!open)
+    {
       event.emit('close-pin-creator');
       event.emit('close-route-creator');
       event.emit('close-settings-page');
@@ -44,23 +48,34 @@ export default function Sidebar({ setExcludedArray }) {
     setOpen(!open);
   }
 
-  const handleCheckboxClick = (event) => {
+  const handleCheckboxClick = (event) =>
+  {
     const { value, checked } = event.target;
-    if (checked) {
+    if (checked)
+    {
       setExcludedArray((prevExcludedArr) => [...prevExcludedArr, value]);
-    } else {
+    } else
+    {
       setExcludedArray((prevExcludedArr) => prevExcludedArr.filter((item) => item !== value));
     }
   };
 
   //console.log(excludedArr); //testing to make sure checkbox click retaining values in excludedArr.
 
-  const loadRoutes = async (query) => {
+  const loadData = async (query) =>
+  {
+    loadRoutes(query);
+    loadPins(query);
+  }
+
+  const loadRoutes = async (query) =>
+  {
     // get the users routes.
     let response = await getRoutes();
 
     // check if the query was successful.
-    if (response != null) {
+    if (response != null)
+    {
       // filter the response to match the search query.
       response = response.filter(route =>
         route.title.toLowerCase().includes(query.toLowerCase()));
@@ -71,9 +86,29 @@ export default function Sidebar({ setExcludedArray }) {
       // update the state.
       setUserRoutes(routes);
     }
-    else {
+    else
+    {
       // the query failed, log an error.
       console.log('Failed to get routes.');
+    }
+  }
+
+  const loadPins = async (query) =>
+  {
+    let response = await searchPins(query);
+
+    if (response != null)
+    {
+      // const to store the converted routes.
+      const pins = response.map((pin, index) => <li key={-index}>{pin.title}</li>)
+
+      // update the state.
+      setUserPins(pins);
+    }
+    else
+    {
+      // the query failed, log an error.
+      console.log('Failed to get pins.');
     }
   }
 
@@ -81,7 +116,8 @@ export default function Sidebar({ setExcludedArray }) {
   {
     loadRoutes('');
 
-    event.on('close-route-creator', () => {
+    event.on('close-route-creator', () =>
+    {
       loadRoutes('');
     });
 
@@ -91,34 +127,31 @@ export default function Sidebar({ setExcludedArray }) {
     });
   }, []);
 
-
   // change the sidebar width when the open state variable changes.
-  useEffect(() => {
-    if (!open) {
+  useEffect(() =>
+  {
+    if (!open)
+    {
       // set max-width to 0px.
       sidebar.current.style.maxWidth = '0px';
     }
-    else {
+    else
+    {
       // set max-width back to what the css specifies.
       sidebar.current.style.maxWidth = null;
     }
   }, [open]);
 
-  // this function is called when the search button is clicked.
-  const search = async () => {
-    const query = document.getElementById('search-bar').value;
-    console.log(query);
-  }
-
-
   // open the pin creation menu, close the sidebar if its open.
-  const showCreatePinMenu = () => {
+  const showCreatePinMenu = () =>
+  {
     setOpen(false);
     event.emit('show-pin-creator');
   }
 
   // show the cellular data.
-  const showCellularData = () => {
+  const showCellularData = () =>
+  {
     if (toggle_ref.current.checked)
       event.emit('toggle-cellular-creator-on');
     else
@@ -126,13 +159,15 @@ export default function Sidebar({ setExcludedArray }) {
   }
 
   // create a pin from the dialog.
-  const showCreateRouteMenu = (pinName, pinDescription, pinType) => {
+  const showCreateRouteMenu = (pinName, pinDescription, pinType) =>
+  {
     setOpen(false);
     event.emit('show-route-creator');
   }
 
   // Show settings page
-  const loadSettings = () => {
+  const loadSettings = () =>
+  {
     setOpen(false);
     event.emit('show-settings-page');
   }
@@ -150,14 +185,14 @@ export default function Sidebar({ setExcludedArray }) {
           </div>
 
           <div id='settings-button-wrapper'>
-            <Icon id='settings-button' icon='ph:gear-six-duotone' onClick={loadSettings}/>
+            <Icon id='settings-button' icon='ph:gear-six-duotone' onClick={loadSettings} />
           </div>
         </section>
 
         {/* search bar section */}
         <section className='section' id='search-section'>
           <label>Search</label>
-          <SearchBar onSubmit={loadRoutes} />
+          <SearchBar onSubmit={loadData} />
           <div id='checkboxes'>
             <div className='checkbox-group'>
               <label>
@@ -193,8 +228,11 @@ export default function Sidebar({ setExcludedArray }) {
         {/* pin list section */}
         <section className='section' id='pins-section'>
           <div id='pins-list'>
-            <ul>
+            <ul id='sidebar-list'>
+              <li>Routes:</li>
               {userRoutes}
+              <li>Pins:</li>
+              {userPins}
             </ul>
           </div>
         </section>
