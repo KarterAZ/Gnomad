@@ -12,7 +12,7 @@ import { getCookie } from '../cookies';
 import { isLoggedIn } from './login';
 
 // set the api_url, should be loaded from an environment variable.
-const api_uri = 'https://localhost:5000/';
+const api_uri = 'https://travel.bryceschultz.com:5001/';
 
 // this function provides handy access to the auth token.
 export function getToken()
