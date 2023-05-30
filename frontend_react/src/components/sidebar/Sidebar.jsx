@@ -66,7 +66,7 @@ export default function Sidebar({ setExcludedArray })
   {
     loadRoutes(query);
 
-    if (query.trim.length == 0)
+    if (query.trim().length === 0)
     {
       setUserPins([]);
     }
