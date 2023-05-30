@@ -42,7 +42,6 @@ namespace TravelCompanionAPI.Fuel
 
                         pin.Tags.Add((int)TagValues.tags.Regular);
 
-                        pin_repo.removePin(pin); //Ensure no duplicates
                         pin_repo.add(pin);
                     }
                 }

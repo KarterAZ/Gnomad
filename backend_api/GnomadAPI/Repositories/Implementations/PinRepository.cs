@@ -29,6 +29,9 @@ namespace TravelCompanionAPI.Data
         //Defines tables for sql
         const string PIN_TABLE = "pins";
         const string TAG_TABLE = "pin_tags";
+        const string ROUTES_TABLE = "routes";
+        const string ROUTE_PINS_TABLE = "route_pins";
+        const string USER_TABLE = "user_review";
         /// <summary>
         /// Constructor
         /// </summary>
@@ -411,10 +414,12 @@ namespace TravelCompanionAPI.Data
 
         public bool delete(int pinId)
         {
+            List<int> route_ids = new List<int>();
             try
             {
                 MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
 
+                //Deletes all instances from pins table
                 using (MySqlCommand command = new MySqlCommand())
                 {
                     command.Connection = connection;
@@ -425,6 +430,7 @@ namespace TravelCompanionAPI.Data
                     command.ExecuteNonQuery();
                 }
 
+                //Deletes all instances from pin_tags table
                 using (MySqlCommand command = new MySqlCommand())
                 {
                     command.Connection = connection;
@@ -435,14 +441,68 @@ namespace TravelCompanionAPI.Data
                     command.ExecuteNonQuery();
                 }
 
+                //Deletes all instances from user table
                 using (MySqlCommand command = new MySqlCommand())
                 {
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;
-                    command.CommandText = "DELETE FROM user_review WHERE pin_id=@pinId;";
+                    command.CommandText = "DELETE FROM " + USER_TABLE + " WHERE pin_id=@pinId;";
                     command.Parameters.AddWithValue("@pinId", pinId);
 
                     command.ExecuteNonQuery();
+                }
+
+                //Selects all instances from route_pins table
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT route_id FROM " + ROUTE_PINS_TABLE + " WHERE pin_id=@pinID;";
+                    command.Parameters.AddWithValue("@pinId", pinId);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            route_ids.Add(reader.GetInt32(0));
+                        }
+                    }
+                }
+
+                //Deletes all instances from route_pins table
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "DELETE FROM " + ROUTE_PINS_TABLE + " WHERE route_id=@routeId;";
+
+                    MySqlParameter routeIdParameter;
+                    foreach (int route in route_ids)
+                    {
+                        routeIdParameter = new MySqlParameter("@routeId", route);
+                        command.Parameters.Add(routeIdParameter);
+
+                        command.ExecuteNonQuery();
+                        command.Parameters.Remove(routeIdParameter);
+                    }
+                }
+
+                //Deletes all instances from routes table
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "DELETE FROM " + ROUTES_TABLE + " WHERE id=@routeId;";
+
+                    MySqlParameter routeIdParameter;
+                    foreach (int route in route_ids)
+                    {
+                        routeIdParameter = new MySqlParameter("@routeId", route);
+                        command.Parameters.Add(routeIdParameter);
+
+                        command.ExecuteNonQuery();
+                        command.Parameters.Remove(routeIdParameter);
+                    }
                 }
 
                 connection.Close();
@@ -744,29 +804,6 @@ namespace TravelCompanionAPI.Data
 
             return stickers;
         }
-        
-        public bool removePin(Pin pin)
-        {
-            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
-
-            //Remove pin from database using lat/long
-            using (MySqlCommand command = new MySqlCommand())
-            {
-                command.Connection = connection;
-                command.CommandType = CommandType.Text;
-                command.CommandText = "DELETE FROM " + PIN_TABLE + " WHERE(`longitude` = @Longitude AND `latitude` = @Latitude AND `title` = @Title);";
-
-                command.Parameters.AddWithValue("@Longitude", pin.Longitude);
-                command.Parameters.AddWithValue("@Latitude", pin.Latitude);
-                command.Parameters.AddWithValue("@Title", pin.Title);
-
-                command.ExecuteNonQuery();
-            }
-
-            connection.Close();
-
-              return true; //TODO: Make return value true if deleted, else false.
-        }
 
         public bool autoRemove(int pinId)
         {
@@ -801,29 +838,29 @@ namespace TravelCompanionAPI.Data
 
                     if (averageVote <= 1.0)
                     {
-                        connection = DatabaseConnection.getInstance().getConnection();
+                        //connection = DatabaseConnection.getInstance().getConnection();
 
-                        using (MySqlCommand deleteCommand = new MySqlCommand())
-                        {
-                            deleteCommand.Connection = connection;
-                            deleteCommand.CommandType = CommandType.Text;
-                            deleteCommand.CommandText = "DELETE FROM " + PIN_TABLE + " WHERE id=@PinId;";
-                            deleteCommand.Parameters.AddWithValue("@PinId", pinId);
+                        //using (MySqlCommand deleteCommand = new MySqlCommand())
+                        //{
+                        //    deleteCommand.Connection = connection;
+                        //    deleteCommand.CommandType = CommandType.Text;
+                        //    deleteCommand.CommandText = "DELETE FROM " + PIN_TABLE + " WHERE id=@PinId;";
+                        //    deleteCommand.Parameters.AddWithValue("@PinId", pinId);
 
-                            // Delete pin from PIN_TABLE
-                            deleteCommand.ExecuteNonQuery();
+                        //    // Delete pin from PIN_TABLE
+                        //    deleteCommand.ExecuteNonQuery();
 
-                            // Delete related rows from user_review table
-                            deleteCommand.CommandText = "DELETE FROM user_review WHERE pin_id=@PinId;";
-                            deleteCommand.ExecuteNonQuery();
+                        //    // Delete related rows from user_review table
+                        //    deleteCommand.CommandText = "DELETE FROM " + USER_TABLE + " WHERE pin_id=@PinId;";
+                        //    deleteCommand.ExecuteNonQuery();
 
-                            // Delete related rows from pins_tag table
-                            deleteCommand.CommandText = "DELETE FROM pins_tag WHERE pin_id=@PinId;";
-                            deleteCommand.ExecuteNonQuery();
-                        }
+                        //    // Delete related rows from pins_tag table
+                        //    deleteCommand.CommandText = "DELETE FROM " + TAG_TABLE + " WHERE pin_id=@PinId;";
+                        //    deleteCommand.ExecuteNonQuery();
+                        //}
 
-                        connection.Close();
-                        return true;
+                        //connection.Close();
+                        return delete(pinId);
                     }
                     return true;
                 }
