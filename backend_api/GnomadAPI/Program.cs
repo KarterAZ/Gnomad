@@ -25,6 +25,14 @@ namespace TravelCompanionAPI
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureKestrel(options =>
+                    {
+                        options.ListenLocalhost(5000);
+                        options.ListenAnyIP(5001, listen =>
+                        {
+                            listen.UseHttps("mycertificate.pfx", "gnome");
+                        });
+                    });
                 });
     }
 }

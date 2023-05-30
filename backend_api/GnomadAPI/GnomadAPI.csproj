@@ -39,4 +39,10 @@
     <Folder Include="Fuel\FuelData\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="mycertificate.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

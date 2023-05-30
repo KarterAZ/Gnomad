@@ -11,6 +11,7 @@
 import { post } from './api';
 import { session_store, session_get } from '../session_storage';
 import { setCookie } from '../cookies';
+import event from '../event';
 
 // named constant to keep track of storage key.
 const logged_in_key = 'logged_in';
@@ -31,6 +32,7 @@ export default async function login(token)
     if (user !== undefined)
     {
         session_store(logged_in_key, true);
+        event.emit('user-login');
     }
 
     // return the user
@@ -42,6 +44,7 @@ export async function logout()
     // on logout set the session variable to 
     // false, and remove the id_token cookie.
     session_store(logged_in_key, false);
+    event.emit('user-logout');
 }
 
 export function isLoggedIn()
