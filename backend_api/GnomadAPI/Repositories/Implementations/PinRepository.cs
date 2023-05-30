@@ -14,6 +14,7 @@ using TravelCompanionAPI.Models;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 //using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace TravelCompanionAPI.Data
@@ -697,6 +698,29 @@ namespace TravelCompanionAPI.Data
             }
 
             return stickers;
+        }
+        
+        public bool removePin(Pin pin)
+        {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+
+            //Remove pin from database using lat/long
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "DELETE FROM " + PIN_TABLE + " WHERE(`longitude` = @Longitude AND `latitude` = @Latitude AND `title` = @Title);";
+
+                command.Parameters.AddWithValue("@Longitude", pin.Longitude);
+                command.Parameters.AddWithValue("@Latitude", pin.Latitude);
+                command.Parameters.AddWithValue("@Title", pin.Title);
+
+                command.ExecuteNonQuery();
+            }
+
+            connection.Close();
+
+              return true; //TODO: Make return value true if deleted, else false.
         }
 
         public bool autoRemove(int pinId)
