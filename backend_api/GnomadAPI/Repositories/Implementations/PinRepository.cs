@@ -747,6 +747,10 @@ namespace TravelCompanionAPI.Data
                             // Delete related rows from user_review table
                             deleteCommand.CommandText = "DELETE FROM user_review WHERE pin_id=@PinId;";
                             deleteCommand.ExecuteNonQuery();
+
+                            // Delete related rows from pins_tag table
+                            deleteCommand.CommandText = "DELETE FROM pins_tag WHERE pin_id=@PinId;";
+                            deleteCommand.ExecuteNonQuery();
                         }
 
                         connection.Close();
