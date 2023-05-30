@@ -65,7 +65,7 @@ export async function aRemove(pinId)
 {
     if (!isAuthenticated()) return null;
 
-    const response = await post(`user/autodelete/${pinId}`);
+    const response = await post(`pins/autodelete/${pinId}`);
     return response;
   
 }

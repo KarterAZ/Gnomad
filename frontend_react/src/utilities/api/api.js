@@ -11,7 +11,7 @@
 import { getCookie } from '../cookies';
 
 // set the api_url, should be loaded from an environment variable.
-const api_uri = 'http://localhost:5000/';
+const api_uri = 'https://localhost:5000/';
 
 // this function provides handy access to the auth token.
 export function getToken()
@@ -61,7 +61,6 @@ export async function get(path, params = [])
   const result = await fetch(request, 
   {
     // setup the headers.
-    mode: 'no-cors',
     method: "GET",
     headers: 
     {
@@ -94,7 +93,6 @@ export async function post(path, data = {})
   // make a POST request to the api.
   const result = await fetch(request, 
   {
-    mode: 'no-cors',
     // use POST method.
     method: 'POST',
     // set the headers.
