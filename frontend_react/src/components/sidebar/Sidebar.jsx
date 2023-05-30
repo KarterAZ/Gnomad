@@ -20,6 +20,7 @@ import searchPins from '../../utilities/api/search_pins';
 import './sidebar.css';
 import event from '../../utilities/event';
 import SearchBar from '../search_bar/SearchBar';
+import { isLoggedIn } from '../../utilities/api/login';
 
 // key for google login api.
 const client_id = '55413052184-k25ip3n0vl3uf641htstqn71pg9p01fl.apps.googleusercontent.com';
@@ -178,10 +179,16 @@ export default function Sidebar({ setExcludedArray })
   }, [open]);
 
   // open the pin creation menu, close the sidebar if its open.
-  const showCreatePinMenu = () =>
-  {
-    setOpen(false);
-    event.emit('show-pin-creator');
+  const showCreatePinMenu = () => {
+    if(isLoggedIn())
+    {
+      setOpen(false);
+      event.emit('show-pin-creator');
+    }
+    else
+    {
+      alert("Must be signed in to create pins.");
+    }
   }
 
   // show the cellular data.
@@ -194,10 +201,16 @@ export default function Sidebar({ setExcludedArray })
   }
 
   // create a pin from the dialog.
-  const showCreateRouteMenu = (pinName, pinDescription, pinType) =>
-  {
-    setOpen(false);
-    event.emit('show-route-creator');
+  const showCreateRouteMenu = (pinName, pinDescription, pinType) => {
+    if(isLoggedIn())
+    {
+      setOpen(false);
+      event.emit('show-route-creator');
+    }
+    else
+    {
+      alert("Must be signed in to create routes.");
+    }
   }
 
   // Show settings page
@@ -219,6 +232,7 @@ export default function Sidebar({ setExcludedArray })
             </GoogleOAuthProvider>
           </div>
 
+          {/* settings gear button */}
           <div id='settings-button-wrapper'>
             <Icon id='settings-button' icon='ph:gear-six-duotone' onClick={loadSettings} />
           </div>
