@@ -65,7 +65,15 @@ export default function Sidebar({ setExcludedArray })
   const loadData = async (query) =>
   {
     loadRoutes(query);
-    loadPins(query);
+
+    if (query.trim.length == 0)
+    {
+      setUserPins([]);
+    }
+    else
+    {
+      loadPins(query);
+    }
   }
 
   const loadRoutes = async (query) =>
@@ -81,7 +89,16 @@ export default function Sidebar({ setExcludedArray })
         route.title.toLowerCase().includes(query.toLowerCase()));
 
       // const to store the converted routes.
-      const routes = response.map((route, index) => <li key={index}>{route.title}</li>)
+      const routes = response.map((route, index) => 
+      <li key={index}>
+        <div className='route-list-item'>
+          <div>{route.title}</div>
+          <div>
+            <button className='invert-button' onClick={event.emit('draw-route', route)}>Draw Route</button>
+          </div>
+        </div>
+      </li>
+      )
 
       // update the state.
       setUserRoutes(routes);
@@ -100,7 +117,13 @@ export default function Sidebar({ setExcludedArray })
     if (response != null)
     {
       // const to store the converted routes.
-      const pins = response.map((pin, index) => <li key={-index}>{pin.title}</li>)
+      const pins = response.map((pin, index) => 
+      <li key={-index}>
+        <div className='route-list-item'>
+          <div>{pin.title}</div>
+        </div>
+      </li>
+      )
 
       // update the state.
       setUserPins(pins);
@@ -125,6 +148,18 @@ export default function Sidebar({ setExcludedArray })
     {
       toggle_ref.current.checked = false;
     });
+
+    event.on('user-logout', () =>
+    {
+      setUserRoutes([]);
+      setUserPins([]);
+    });
+
+    event.on('user-login', () =>
+    {
+      loadRoutes('');
+    });
+
   }, []);
 
   // change the sidebar width when the open state variable changes.
@@ -180,7 +215,7 @@ export default function Sidebar({ setExcludedArray })
         <section className='section' id='header-section'>
           <div id='user-section'>
             <GoogleOAuthProvider clientId={client_id}>
-              <LoginButton />
+              <LoginButton/>
             </GoogleOAuthProvider>
           </div>
 
@@ -229,9 +264,13 @@ export default function Sidebar({ setExcludedArray })
         <section className='section' id='pins-section'>
           <div id='pins-list'>
             <ul id='sidebar-list'>
-              <li>Routes:</li>
+              <li className='sidebar-list-header'>
+                Routes
+              </li>
               {userRoutes}
-              <li>Pins:</li>
+              <li className='sidebar-list-header'>
+                Pins
+              </li>
               {userPins}
             </ul>
           </div>
