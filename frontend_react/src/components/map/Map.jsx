@@ -24,6 +24,13 @@ import DOMPurify from 'dompurify';
 
 // internal imports.
 import './map.css';
+
+// internal imports.
+import { get } from '../../utilities/api/api.js';
+import createPin from '../../utilities/api/create_pin';
+import Pin from '../../data/pin';
+import { ratePin, getPinRating, cancelVote, haveVoted, getVote } from '../../utilities/api/rating';
+
 import event from '../../utilities/event';
 import pin from '../../images/Pin.png';
 import bathroom from '../../images/Restroom.png';
@@ -79,12 +86,12 @@ const polyOptions = {
 // array of markers that gets used to populate map, eventually will be filled with pin data from database.
 //used to test marker operations/google maps without having to render entire
 const presetMarkers = [
-  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", description: "Brevada" },
-  // { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", description: "Pilot" },
-  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", description: "Oregon Tech" },
-  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", description: "Oregon Tech Parking Lot F" },
-  // { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", description: "College Union Guest Wifi" },
-  // { lat: 42.216694982977884, lng: -121.7335159821316, image: pin, type: "Pin", description: "testing" }, //extra added to test markercluster
+  { lat: 42.248914596430176, lng: -121.78688309747336, image: bathroom, type: "Restroom", name: "Brevada", pinTag: 2 },
+  { lat: 42.25850950074424, lng: -121.79943326457828, image: fuel, type: "Gas Station", name: "Pilot", pinTag: 5 },
+  { lat: 42.25644490904306, lng: -121.7859578463942, image: pin, type: "Pin", name: "Oregon Tech" , pinTag: 2},
+  { lat: 42.256846864827104, lng: -121.78922109474301, image: electric, type: "Supercharger", name: "Oregon Tech Parking Lot F", pinTag: 3 },
+  { lat: 42.25609775858464, lng: -121.78464735517863, image: wifi, type: "Free Wifi", name: "College Union Guest Wifi", pinTag: 8 },
+
 ];
 
 // can still utilize our own infowindow, dont need to use google map's, realistically most of this code is just for infowindow
@@ -100,34 +107,109 @@ const MyInfoWindow = ({ marker }) => {
   // state declared for reputation thumbs up (1) down (-1) No selection (null).
   const [reputation, setReputation] = useState(null);
 
+  const [votedup, setUpVote] = useState(false);
+
+  const [voteddown, setDownVote] = useState(false);
+
   // state declared for setting marker as a favorite true/false.
   const [isFavorite, setIsFavorite] = useState(false);
 
-  const setRating = async (rating) => {
-    const response = await ratePin(marker.id, rating);
+  useEffect(() => 
+  {
+    checkUserVote();
+  }, []);
 
-    if (response == null) {
-      console.log('Set vote failed.');
+  const checkUserVote = async () => {
+    const pinId = marker.id;
+    const hasVoted = await haveVoted(pinId);
+  
+    if (hasVoted) {
+      const vote = await getVote(pinId);
+      if (vote === 1) {
+        setUpVote(true);
+        setDownVote(false);
+      } else if (vote === -1) {
+        setUpVote(false);
+        setDownVote(true);
+      } else {
+        setUpVote(false);
+        setDownVote(false);
+      }
+    } else {
+      setUpVote(false);
+      setDownVote(false);
     }
-    else {
-      getRating();
+  };
+
+  const setRating = async (rating) => 
+{
+  const pinId = marker.id;
+  console.log('pinId:', pinId);
+
+  try 
+    {
+    const hasVoted = await haveVoted(pinId);
+    console.log('hasVoted:', hasVoted);
+
+    if (hasVoted) 
+    {
+      const response = await cancelVote(pinId);
+      console.log('cancelVote response:', response);
+
+      if (response == null) 
+      {
+        console.log('Cancel vote failed.');
+      } 
+      else 
+      {
+        getRating();
+        checkUserVote();
+        console.log('Rating updated successfully.');
+      }
+    } 
+    else 
+    {
+      const response = await ratePin(pinId, rating);
+      console.log('ratePin response:', response);
+
+      if (response == null) 
+      {
+        console.log('Set vote failed.');
+      } 
+      else 
+      {
+        getRating();
+        checkUserVote();
+        console.log('Rating updated successfully.');
+      }
     }
+  } 
+  catch (error) 
+  {
+    console.log('Error:', error);
   }
+};
 
-  async function getRating() {
+
+  async function getRating()
+  {
     const response = await getPinRating(marker.id);
 
-    if (response == null) {
+    if (response == null)
+    {
       console.log('Failed to get pin rating.');
     }
-    else {
+    else
+    {
       setReputation(response);
     }
   }
 
+
   // on load call get rating.
   useEffect(() => {
     getRating();
+    checkUserVote();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -151,17 +233,17 @@ const MyInfoWindow = ({ marker }) => {
 
         {/* header with reputation */}
         <div className='header-button-wrapper'>
-          <button
-            className='header-button'
-            onClick={() => setRating(THUMBS_UP)}
-          >
-            👍
+        <button
+          className={`header-button ${votedup ? 'voted' : ''}`}
+          onClick={() => setRating(THUMBS_UP)}
+        >
+          {votedup ? "👍🏼" : "👍"}
           </button>
-          <button
-            className='header-button'
-            onClick={() => setRating(THUMBS_DOWN)}
+        <button
+          className={`header-button ${votedup ? 'voted' : ''}`}
+          onClick={() => setRating(THUMBS_DOWN)}
           >
-            👎
+            {voteddown ? "👎🏼" : "👎"}
           </button>
         </div>
       </div>
@@ -418,6 +500,7 @@ const Map = ({ excludedArr }) => {
             image: imageType,
             type: marker.title,
             street: marker.street,
+            pinTag: marker.tags[0],
           };
         });
         console.log(excludedArr);
@@ -520,11 +603,10 @@ const Map = ({ excludedArr }) => {
       );
     }
 
-    const mapOptions =
-    {
-      fullscreenControl: false,
-      mapTypeControl: false
-    };
+  const mapOptions =
+  {
+    fullscreenControl: false
+  };
 
     return (
       <div id='wrapper'>
