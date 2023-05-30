@@ -149,6 +149,20 @@ namespace TravelCompanionAPI.Controllers
         }
 
         /// <summary>
+        /// Deletes a pin.
+        /// </summary>
+        /// <returns>
+        /// Returns a JsonResult of Ok(pin), where the pin is the one added to the database.
+        ///</returns>
+        [HttpPost("delete")]
+        public JsonResult delete(int pinId)
+        {
+            bool result = _pin_repo.delete(pinId);
+
+            return new JsonResult(Ok(result));
+        }
+
+        /// <summary>
         /// Puts the supercharger pins into the database
         /// </summary>
         /// <returns>

@@ -91,7 +91,7 @@ export default function PinCreator()
             <option value="Supercharger">Supercharger</option>
             <option value="Diesel">Diesel</option>
             <option value="Wi-Fi">Free Wi-Fi</option>
-            <option value="Pin">Gnome</option>
+            <option value="Pin">Gnome (Misc)</option>
             <option value="Fuel">Regular Fuel</option>
           </select>
         </div>

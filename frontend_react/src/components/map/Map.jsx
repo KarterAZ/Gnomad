@@ -16,6 +16,7 @@ import './map.css';
 // internal imports.
 import { get } from '../../utilities/api/api.js';
 import createPin from '../../utilities/api/create_pin';
+import deletePin from '../../utilities/api/delete_pin';
 import Pin from '../../data/pin';
 import { ratePin, getPinRating, cancelVote, haveVoted, getVote, aRemove } from '../../utilities/api/rating';
 
@@ -188,15 +189,22 @@ const MyInfoWindow = ({ marker }) => {
   // toggles favorite state between true/false on click. 
   const handleFavoriteClick = () => {
     setIsFavorite((currentIsFavorite) => !currentIsFavorite);
-  }
+   }
+
+    // toggles favorite state between true/false on click. 
+    const handleDeleteClick = async () => {
+        const response = await deletePin(marker.id);
+        if(response == null || response == false)
+            console.log('delete pin failed:', response);
+    }
 
   return (
     <div className='info-window' >
       <div className='info-window-header'>
-        {/* favorite button */}
+        {/* delete button */}
         <div className='header-button-wrapper'>
-          <button className='header-button' onClick={handleFavoriteClick}>
-            {isFavorite ? "❤️" : "🖤"}
+          <button className='header-button' onClick={handleDeleteClick}>
+            {"🗑️"}
           </button>
         </div>
 

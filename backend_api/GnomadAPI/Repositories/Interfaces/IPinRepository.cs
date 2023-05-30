@@ -24,6 +24,8 @@ namespace TravelCompanionAPI.Data
 
         public bool add(Pin data);
 
+        public bool delete(int pinId);
+
         public bool contains(Pin data);
         
         public List<Pin> getAllByUser(int uid);

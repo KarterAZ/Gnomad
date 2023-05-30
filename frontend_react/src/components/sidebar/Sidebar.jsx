@@ -269,7 +269,7 @@ export default function Sidebar({ setExcludedArray })
               </label>
               <label>
                 <input type='checkbox' name='checkboxGnome' value='/static/media/Pin.70731107db4fbfc9454c.png' onClick={handleCheckboxClick} />
-                Gnome
+                Gnome (Misc)
               </label>
             </div>
           </div>
