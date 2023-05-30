@@ -90,6 +90,12 @@ export default function RouteCreator()
       // get the pins matching the search from backend.
       let pins = await searchPins(searchQuery);
 
+      if (pins === null)
+      {
+        console.log("Failed to get routes with search: " + searchQuery);
+        return;
+      }
+
       // set the pins to a pin list.
       setPinResults(pins.map((pin, index) => <ResultPin key={index} pin={pin}/>));
     }

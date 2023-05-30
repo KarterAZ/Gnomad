@@ -18,6 +18,26 @@
   background-color: var(--primary-foreground-hover);
 }
 
+.invert-button {
+  height: 2em;
+
+  width: 100%;
+
+  border: none;
+  cursor: pointer;
+
+  overflow: hidden;
+
+  background-color: var(--primary-background);
+
+  border-radius: 4px;
+  color: var(--primary-foreground);
+}
+
+.invert-button:hover {
+  background-color: var(--primary-background-accent);
+}
+
 #sidebar-container {
   display: flex;
   flex-direction: column;
@@ -68,6 +88,8 @@
 
   height: 100%;
 
+  overflow: hidden;
+
   padding: 10px;
   color: var(--primary-foreground);
 }
@@ -98,9 +120,17 @@
   justify-content: space-between;
 }
 
+#settings-button-wrapper {
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+
 #settings-button {
   font-size: 2em;
   color: var(--primary-foreground);
+  
+  aspect-ratio: 1;
+  border-radius: 50%;
 
   transition-duration: 0.15s;
   transition-property: transform;
@@ -126,6 +156,8 @@
 #pins-section {
   display: flex;
   flex-direction: column;
+
+  overflow: hidden;
 
   margin: 0;
 
@@ -338,4 +370,24 @@ input:checked + .slider:before {
   padding-right: 20px;
 }
 
+#sidebar-list {
+  display: flex;
+  flex-direction: column;
+  padding: 0px;
+}
+
+.sidebar-list-header {
+  display: flex;
+  justify-content: center;
+}
+
+.route-list-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.route-list-item:hover {
+  background-color: var(--secondary-background-accent);
+}
 /* end of slider css */

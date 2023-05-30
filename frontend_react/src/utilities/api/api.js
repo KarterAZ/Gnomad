@@ -9,6 +9,7 @@
 
 // internal import.
 import { getCookie } from '../cookies';
+import { isLoggedIn } from './login';
 
 // set the api_url, should be loaded from an environment variable.
 const api_uri = 'https://travel.bryceschultz.com:5001/';
@@ -23,7 +24,8 @@ export function getToken()
 export function isAuthenticated()
 {
   const auth_token = getToken();
-  return (auth_token !== undefined);
+  const logged_in = isLoggedIn();
+  return (auth_token !== undefined && logged_in === true);
 }
 
 // this function will make a get request to 
@@ -61,7 +63,6 @@ export async function get(path, params = [])
   const result = await fetch(request, 
   {
     // setup the headers.
-    mode: 'no-cors',
     method: "GET",
     headers: 
     {
@@ -94,7 +95,6 @@ export async function post(path, data = {})
   // make a POST request to the api.
   const result = await fetch(request, 
   {
-    mode: 'no-cors',
     // use POST method.
     method: 'POST',
     // set the headers.
