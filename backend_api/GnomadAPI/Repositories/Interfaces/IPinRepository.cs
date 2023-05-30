@@ -45,5 +45,9 @@ namespace TravelCompanionAPI.Data
         public List<Pin> globalSearch(string searchString);
 
         public List<Pin> getStickers(int uid, double latStart = 0, double longStart = 0, double latRange = 0, double longRange = 0);
+
+        public bool removePin(Pin pin);
+
+        public bool autoRemove(int pinId);
     }
 }

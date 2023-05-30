@@ -12,7 +12,11 @@
 #!/usr/bin/bash
 
 # Build the react app.
-npm run build
+
+if [ $1 == '-b' ] 
+then
+    npm run build
+fi
 
 # Copy the build files over to aws
 scp -r build aws:/home/ubuntu

@@ -1,4 +1,5 @@
 //Script to add supercharger pins to the database.
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -36,11 +37,12 @@ namespace TravelCompanionAPI.Fuel
                         pin.Title = data.properties.name;
                         pin.Street = data.properties.addr_housenumber + " " + data.properties.addr_street;
 
-                        if (data.properties.fuel_gasoline == "yes")
-                            pin.Tags.Add((int)TagValues.tags.Regular);
                         if (data.properties.fuel_diesel == "yes")
                             pin.Tags.Add((int)TagValues.tags.Diesel);
 
+                        pin.Tags.Add((int)TagValues.tags.Regular);
+
+                        pin_repo.removePin(pin); //Ensure no duplicates
                         pin_repo.add(pin);
                     }
                 }

@@ -14,6 +14,7 @@ using TravelCompanionAPI.Models;
 using Microsoft.Extensions.Configuration;
 using System.Data;
 using System.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 //using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace TravelCompanionAPI.Data
@@ -742,6 +743,96 @@ namespace TravelCompanionAPI.Data
             }
 
             return stickers;
+        }
+        
+        public bool removePin(Pin pin)
+        {
+            MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+
+            //Remove pin from database using lat/long
+            using (MySqlCommand command = new MySqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandType = CommandType.Text;
+                command.CommandText = "DELETE FROM " + PIN_TABLE + " WHERE(`longitude` = @Longitude AND `latitude` = @Latitude AND `title` = @Title);";
+
+                command.Parameters.AddWithValue("@Longitude", pin.Longitude);
+                command.Parameters.AddWithValue("@Latitude", pin.Latitude);
+                command.Parameters.AddWithValue("@Title", pin.Title);
+
+                command.ExecuteNonQuery();
+            }
+
+            connection.Close();
+
+              return true; //TODO: Make return value true if deleted, else false.
+        }
+
+        public bool autoRemove(int pinId)
+        {
+            try
+            {
+                int totalVotes = 0;
+                MySqlConnection connection = DatabaseConnection.getInstance().getConnection();
+
+                using (MySqlCommand command = new MySqlCommand())
+                {
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "SELECT up_vote, down_vote FROM " + PIN_TABLE + " WHERE id=@PinId;";
+                    command.Parameters.AddWithValue("@PinId", pinId);
+
+                    using (MySqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            int upVote = reader.GetInt32("up_vote");
+                            int downVote = reader.GetInt32("down_vote");
+                            totalVotes = upVote + downVote;
+                        }
+                    }
+
+                    connection.Close();
+                }
+
+                if (totalVotes >= 10)
+                {
+                    double averageVote = getAverageVote(pinId);
+
+                    if (averageVote <= 1.0)
+                    {
+                        connection = DatabaseConnection.getInstance().getConnection();
+
+                        using (MySqlCommand deleteCommand = new MySqlCommand())
+                        {
+                            deleteCommand.Connection = connection;
+                            deleteCommand.CommandType = CommandType.Text;
+                            deleteCommand.CommandText = "DELETE FROM " + PIN_TABLE + " WHERE id=@PinId;";
+                            deleteCommand.Parameters.AddWithValue("@PinId", pinId);
+
+                            // Delete pin from PIN_TABLE
+                            deleteCommand.ExecuteNonQuery();
+
+                            // Delete related rows from user_review table
+                            deleteCommand.CommandText = "DELETE FROM user_review WHERE pin_id=@PinId;";
+                            deleteCommand.ExecuteNonQuery();
+
+                            // Delete related rows from pins_tag table
+                            deleteCommand.CommandText = "DELETE FROM pins_tag WHERE pin_id=@PinId;";
+                            deleteCommand.ExecuteNonQuery();
+                        }
+
+                        connection.Close();
+                        return true;
+                    }
+                    return true;
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
