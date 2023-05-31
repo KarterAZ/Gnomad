@@ -26,7 +26,7 @@ export default function SettingsPage()
 
           <div id ='author-section'>
             <p>Gnomad was developed by the Codenomes:</p>
-            <p>Andrew Ramirez, Andrew Rice, Bryce Schultz, Stephen Thompson, and Karter Zwetschke</p>
+            <p>Andrew Ramirez, Andrew Rice, Bryce Schultz, Stephen Thomson, and Karter Zwetschke</p>
           </div>
 
           {/* cancel button */}
