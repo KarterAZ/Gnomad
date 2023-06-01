@@ -36,6 +36,12 @@ export default function RouteCreator()
       status = false;
     }
 
+    if (routeName.length > 25)
+    {
+      setNameError('Exceeds max of 25 characters.');
+      status = false;
+    }
+
     // validate there is at least 1 pin in the route.
     if (routePins.length <= 0)
     {

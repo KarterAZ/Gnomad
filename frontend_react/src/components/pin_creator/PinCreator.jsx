@@ -25,6 +25,12 @@ export default function PinCreator()
       status = false;
     }
 
+    if (pinName.length > 25)
+    {
+      setNameError('Exceeds max of 25 characters.');
+      status = false;
+    }
+
     if (pinType.trim().length === 0)
     {
       setTypeError('This cannot be left blank.');
