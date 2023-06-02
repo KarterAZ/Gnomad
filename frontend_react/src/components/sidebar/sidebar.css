@@ -379,6 +379,9 @@ input:checked + .slider:before {
 .sidebar-list-header {
   display: flex;
   justify-content: center;
+
+  font-weight: bold;
+  text-decoration: underline;
 }
 
 .route-list-item {
