@@ -195,7 +195,9 @@ const MyInfoWindow = ({ marker }) => {
     const handleDeleteClick = async () => {
         const response = await deletePin(marker.id);
         if(response == null || response == false)
-            console.log('delete pin failed:', response);
+          console.log('delete pin failed:', response);
+        else
+          handleMapChange();
     }
 
   return (
