@@ -25,12 +25,6 @@ import DOMPurify from 'dompurify';
 // internal imports.
 import './map.css';
 
-// internal imports.
-import { get } from '../../utilities/api/api.js';
-import createPin from '../../utilities/api/create_pin';
-import Pin from '../../data/pin';
-import { ratePin, getPinRating, cancelVote, haveVoted, getVote } from '../../utilities/api/rating';
-
 import event from '../../utilities/event';
 import pin from '../../images/Pin.png';
 import bathroom from '../../images/Restroom.png';
@@ -43,7 +37,7 @@ import electric from '../../images/Charger.png';
 import getRoutes from '../../utilities/api/get_routes';
 import { get } from '../../utilities/api/api.js';
 import createPin from '../../utilities/api/create_pin';
-import { ratePin, getPinRating } from '../../utilities/api/rating';
+import { ratePin, getPinRating, cancelVote, haveVoted, getVote } from '../../utilities/api/rating';
 import Pin from '../../data/pin';
 import getAllCoords from '../../utilities/api/get_cell_coords';
 
@@ -329,6 +323,16 @@ const Map = ({ excludedArr }) => {
       setOverlayPolygons([])
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    event.on('draw-route', (data) => {
+      fetchRoute(data.id);
+
+     console.log("clicked");
+     console.log(data);
+     
+     setShowDirections(true);
+    });
+
   }, []);
 
   // function handling onclick events on the map that will result in marker creation.
@@ -427,7 +431,7 @@ const Map = ({ excludedArr }) => {
       const selectedRoute = response.filter(route => route.id === selectedID);
       //console.log("Selected Route ",selectedRoute[0].pins);
       setDirectionsMarkers(selectedRoute[0].pins);
-      console.log(selectedRoute[0].pins);
+      //console.log(selectedRoute[0].pins);
 
       const origin = directionsMarkers.length > 0 ? {
         lat: directionsMarkers[0].latitude,
@@ -521,7 +525,7 @@ const Map = ({ excludedArr }) => {
     }
 
     function onDirectionsFetched(directions) {
-
+      //console.log(directions);
       if (directions !== null) {
         const steps = directions.routes[0].legs[0].steps;
         const directionsPanelContent = steps.map(step => {
@@ -533,8 +537,11 @@ const Map = ({ excludedArr }) => {
     }
 
     const handleCloseDirections = () => {
-      setShowDirections(prevState => !prevState);
+      setShowDirections(false);
       setDirections(null);
+      setOrigin(null);
+      setDestination(null);
+      setWaypoints(null);
     };
 
 

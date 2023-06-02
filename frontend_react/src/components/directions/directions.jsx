@@ -27,7 +27,8 @@ const DirectionsPanel = ({ directions, onClose, setShowDirections  }) =>
   {
     return null;
   }
-
+  //console.log(directionsPanelContent);
+  
   const { routes } = directions;
   const route = routes[0];
   const { legs } = route;
