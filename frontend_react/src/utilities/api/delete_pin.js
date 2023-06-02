@@ -15,7 +15,7 @@ import { get, post, isAuthenticated } from './api';
 export default async function deletePin(pinId)
 {
     if (!isAuthenticated()) return null;
-
-    const response = await post('pins/delete', pinId);
+    console.log(pinId);
+    const response = await post(`pins/delete/${pinId}`);
     return response;
 }
