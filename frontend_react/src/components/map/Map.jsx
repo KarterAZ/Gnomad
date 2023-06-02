@@ -202,9 +202,9 @@ const MyInfoWindow = ({ marker }) => {
       <div className='info-window-header'>
         {/* delete button */}
         <div className='header-button-wrapper'>
-          <button className='header-button' onClick={handleDeleteClick}>
+                  {/*<button className='header-button' onClick={handleDeleteClick}>
             {"🗑️"}
-          </button>
+          </button>*/}
         </div>
 
         {/* show pin type as the title */}
