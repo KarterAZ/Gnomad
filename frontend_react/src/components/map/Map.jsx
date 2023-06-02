@@ -193,7 +193,8 @@ const MyInfoWindow = ({ marker }) => {
 
     // toggles favorite state between true/false on click. 
     const handleDeleteClick = async () => {
-        await deletePin(marker.id);
+        const resp = await deletePin(marker.id);
+        console.log(resp);
     }
 
   return (
