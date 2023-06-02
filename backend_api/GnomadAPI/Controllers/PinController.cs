@@ -154,7 +154,7 @@ namespace TravelCompanionAPI.Controllers
         /// <returns>
         /// Returns a JsonResult of Ok(pin), where the pin is the one added to the database.
         ///</returns>
-        [HttpPost("delete")]
+        [HttpPost("delete/{pinId}")]
         public JsonResult delete(int pinId)
         {
             bool result = _pin_repo.delete(pinId);
