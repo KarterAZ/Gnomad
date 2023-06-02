@@ -273,7 +273,7 @@ const Map = ({ excludedArr }) => {
 
 
   //State declared for storing markers
-  const [markers, setMarkers] = useState(presetMarkers);
+  const [markers, setMarkers] = useState([]);
   const [overlayPolygons, setOverlayPolygons] = useState([]);
 
   // state declared for enabling/disabling marker creation on click with sidebar.
@@ -331,6 +331,7 @@ const Map = ({ excludedArr }) => {
      console.log(data);
      
      setShowDirections(true);
+     
     });
 
   }, []);
@@ -538,7 +539,7 @@ const Map = ({ excludedArr }) => {
 
     const handleCloseDirections = () => {
       setShowDirections(false);
-      setDirections(null);
+      //setDirections(null);
       setOrigin(null);
       setDestination(null);
       setWaypoints(null);
@@ -663,16 +664,17 @@ const Map = ({ excludedArr }) => {
                   callback={onDirectionsFetched}
                 />
               )}
-              {directions && (
+              
+              {showDirections && (
                 <DirectionsRenderer
-                  directions={directions}
                   options={{
+                    directions: directions,
                     polylineOptions: {
                       strokeColor: "#000",
                     },
                     panel: document.getElementById('directions-panel'),
-                    suppressMarkers: true,
-
+                    //suppressMarkers: true,
+                      
                   }}
                 />
               )}
