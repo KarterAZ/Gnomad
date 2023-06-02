@@ -95,7 +95,7 @@ export default function Sidebar({ setExcludedArray })
         <div className='route-list-item'>
           <div>{route.title}</div>
           <div>
-            <button className='invert-button' onClick={event.emit('draw-route', route)}>Draw Route</button>
+            <button className='invert-button' onClick={() => { alert("Coming Soon! 😀"); }}>Draw Route</button>
           </div>
         </div>
       </li>
