@@ -1,3 +1,12 @@
+//################################################################
+//
+// Authors: Bryce Schultz, Stephen Thomson
+// Date: 12/19/2022
+// 
+// Purpose: The pin creator component.
+//
+//################################################################
+
 import { useState } from "react";
 import event from "../../utilities/event";
 

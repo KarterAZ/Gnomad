@@ -1,5 +1,7 @@
-#This program is to polish the bathroom data in the database.
-#It makes sure the entire street address is in the address column.
+# Author: Stephen Thomson
+# Date: 2/3/2023
+# Purpose: This program is to polish the bathroom data in the database.
+# It makes sure the entire street address is in the address column.
 
 import mysql.connector
 import re

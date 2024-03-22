@@ -1,6 +1,6 @@
 //################################################################
 //
-// Authors: Bryce Schultz
+// Authors: Bryce Schultz, Stephen Thomson
 // Date: 12/19/2022
 // 
 // Purpose: The home page component.

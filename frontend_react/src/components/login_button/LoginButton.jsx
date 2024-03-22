@@ -1,6 +1,6 @@
 //################################################################
 //
-// Authors: Bryce Schultz, Andrew Rice
+// Authors: Bryce Schultz, Andrew Rice, Stephen Thomson
 // Date: 12/19/2022
 // 
 // Purpose: Creates the google login react component

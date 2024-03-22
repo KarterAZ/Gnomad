@@ -1,6 +1,6 @@
 //################################################################
 //
-// Authors: Bryce Schultz, Andrew Ramirez
+// Authors: Bryce Schultz, Andrew Ramirez, Stephen Thomson
 // Date: 12/19/2022
 // 
 // Purpose: The google map component.
